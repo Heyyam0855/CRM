@@ -1,5 +1,53 @@
 # GitHub Copilot İstifadə Təlimatları — LMS Platformu
 
+---
+
+## 🚨 MƏCBURİ QAYDA — HƏR TAPŞIRIQDAN SONRA AUTO-COMMIT
+
+**Bu qayda dəyişdirilməzdir. Hər prompt tamamlandıqdan sonra aşağıdakı addımlar MÜTLƏQdir:**
+
+### Claude/Copilot hər işin sonunda bu əmrləri çalışdırmalıdır:
+
+```powershell
+# 1. Bütün dəyişiklikləri stage et
+git add .
+
+# 2. Azərbaycan dilində qısa commit mesajı yaz
+#    Format: "<emoji> <nə edildi> (<fayl sayı> fayl) — dd.MM.yyyy HH:mm"
+#    Nümunələr:
+#    ✅ Tapşırıq tamamlandı (3 fayl) — 27.02.2026 14:30
+#    🗃️ Model strukturu yeniləndi (2 fayl) — 27.02.2026 14:30
+#    🔧 Servis məntiqi yeniləndi (1 fayl) — 27.02.2026 14:30
+#    🎨 Template və UI yeniləndi (4 fayl) — 27.02.2026 14:30
+#    🐍 Python kodu yeniləndi (2 fayl) — 27.02.2026 14:30
+#    📝 Sənədlər yeniləndi (1 fayl) — 27.02.2026 14:30
+#    🧪 Testlər əlavə edildi (3 fayl) — 27.02.2026 14:30
+#    ⚙️ Konfiqurasiya yeniləndi (1 fayl) — 27.02.2026 14:30
+git commit -m "<emoji> <nə edildi> (<N> fayl) — <tarix>"
+
+# 3. GitHub-a push et
+git push origin main
+```
+
+### Commit Mesajı Seçim Qaydası:
+| Dəyişən fayllar           | Emoji | Mesaj nümunəsi                              |
+|---------------------------|-------|---------------------------------------------|
+| `models.py`               | 🗃️   | Model strukturu yeniləndi                   |
+| `views.py`                | 👁️   | View-lar yeniləndi                          |
+| `services.py`             | 🔧    | Servis məntiqi yeniləndi                   |
+| `tasks.py`                | ⚡    | Celery task-lar yeniləndi                   |
+| `tests/`, `test_*.py`     | 🧪    | Testlər əlavə edildi/yeniləndi              |
+| `*.html` + `*.py`         | ✅    | Backend və frontend yeniləndi               |
+| `*.html`                  | 🎨    | Template və UI yeniləndi                    |
+| `*.md`                    | 📝    | Sənədlər yeniləndi                          |
+| `.json`, `.yaml`, `.env`  | ⚙️   | Konfiqurasiya yeniləndi                     |
+| Digər / qarışıq           | ✅    | Tapşırıq tamamlandı                        |
+
+> **Not**: `.claude/hooks/auto-commit.ps1` skripti Claude Code `Stop` hook-u vasitəsilə avtomatik işə düşür.  
+> Manuel commit etmədən əvvəl dəyişiklik olmadığını yoxla: `git status`
+
+---
+
 ## 🤖 AI Model Məlumatı
 - **Əsas AI Model**: Claude Sonnet 4.6 (arxitektura, code review, debugging)
 - **Kod Yaratma**: GitHub Copilot (real-time completion, boilerplate)
