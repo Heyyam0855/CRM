@@ -1,0 +1,104 @@
+<div class="sidebar bg-dark text-white d-flex flex-column"
+     style="width:250px;min-height:calc(100vh - 56px);position:sticky;top:56px">
+    <div class="p-3">
+        <ul class="nav flex-column gap-1">
+
+            {% if request.user.is_teacher %}
+            <!-- Müəllim menyusu -->
+            <li class="nav-item">
+                <a class="nav-link text-white-50 fw-semibold small text-uppercase px-2 py-1"
+                   style="pointer-events:none">Müəllim</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {% if request.resolver_match.app_name == 'analytics' %}active bg-primary rounded{% endif %}"
+                   href="{% url 'analytics:dashboard' %}">
+                    <i class="bi bi-speedometer2 me-2"></i>Panel
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {% if request.resolver_match.app_name == 'users' %}active bg-primary rounded{% endif %}"
+                   href="{% url 'users:profile' %}">
+                    <i class="bi bi-people me-2"></i>Tələbələr
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {% if request.resolver_match.app_name == 'bookings' %}active bg-primary rounded{% endif %}"
+                   href="{% url 'bookings:list' %}">
+                    <i class="bi bi-calendar-check me-2"></i>Dərslər
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {% if request.resolver_match.app_name == 'payments' %}active bg-primary rounded{% endif %}"
+                   href="{% url 'payments:list' %}">
+                    <i class="bi bi-credit-card me-2"></i>Ödənişlər
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {% if request.resolver_match.app_name == 'assessments' %}active bg-primary rounded{% endif %}"
+                   href="{% url 'assessments:list' %}">
+                    <i class="bi bi-clipboard-check me-2"></i>Qiymətlər
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {% if request.resolver_match.app_name == 'courses' %}active bg-primary rounded{% endif %}"
+                   href="{% url 'courses:list' %}">
+                    <i class="bi bi-book me-2"></i>Kurslar
+                </a>
+            </li>
+
+            {% else %}
+            <!-- Tələbə menyusu -->
+            <li class="nav-item">
+                <a class="nav-link text-white {% if request.resolver_match.view_name == 'analytics:student-dashboard' %}active bg-primary rounded{% endif %}"
+                   href="{% url 'analytics:student-dashboard' %}">
+                    <i class="bi bi-house me-2"></i>Əsas Səhifə
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {% if request.resolver_match.app_name == 'bookings' %}active bg-primary rounded{% endif %}"
+                   href="{% url 'bookings:list' %}">
+                    <i class="bi bi-calendar me-2"></i>Dərslərim
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {% if request.resolver_match.app_name == 'payments' %}active bg-primary rounded{% endif %}"
+                   href="{% url 'payments:list' %}">
+                    <i class="bi bi-receipt me-2"></i>Ödənişlər
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {% if request.resolver_match.app_name == 'assessments' %}active bg-primary rounded{% endif %}"
+                   href="{% url 'assessments:list' %}">
+                    <i class="bi bi-clipboard2-check me-2"></i>Tapşırıqlar
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {% if request.resolver_match.app_name == 'courses' %}active bg-primary rounded{% endif %}"
+                   href="{% url 'courses:list' %}">
+                    <i class="bi bi-play-circle me-2"></i>Kurs Materialları
+                </a>
+            </li>
+            {% endif %}
+
+            <li class="nav-item mt-2">
+                <hr class="border-secondary">
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {% if request.resolver_match.app_name == 'support' %}active bg-primary rounded{% endif %}"
+                   href="{% url 'support:list' %}">
+                    <i class="bi bi-headset me-2"></i>Dəstək
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {% if request.resolver_match.app_name == 'notifications' %}active bg-primary rounded{% endif %}"
+                   href="{% url 'notifications:list' %}">
+                    <i class="bi bi-bell me-2"></i>Bildirişlər
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="mt-auto p-3 border-top border-secondary">
+        <small class="text-white-50">Dərs qiyməti: <strong class="text-white">25 AZN</strong></small>
+    </div>
+</div>

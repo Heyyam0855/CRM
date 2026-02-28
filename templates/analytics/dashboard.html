@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}İdarəçilik Paneli — LMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold">İdarəçilik Paneli</h1>
+    <span class="text-muted">{{ request.user.get_full_name }}</span>
+</div>
+
+<!-- KPI Kartları -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm bg-primary text-white">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <small class="text-white-75 d-block">Aktiv Tələbələr</small>
+                    <h2 class="fw-bold mb-0">{{ total_students }}</h2>
+                </div>
+                <i class="bi bi-people-fill fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm bg-success text-white">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <small class="text-white-75 d-block">Bu ay dərslər</small>
+                    <h2 class="fw-bold mb-0">{{ this_month_bookings }}</h2>
+                </div>
+                <i class="bi bi-calendar-check-fill fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm bg-warning text-dark">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <small class="d-block">Aylıq gəlir</small>
+                    <h2 class="fw-bold mb-0">{{ monthly_revenue }} AZN</h2>
+                </div>
+                <i class="bi bi-currency-exchange fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm {% if pending_students > 0 %}bg-danger text-white{% else %}bg-light{% endif %}">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <small class="d-block {% if pending_students > 0 %}text-white-75{% else %}text-muted{% endif %}">
+                        Gözləyən tələbələr
+                    </small>
+                    <h2 class="fw-bold mb-0">{{ pending_students }}</h2>
+                </div>
+                <i class="bi bi-person-plus-fill fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Yaxınlaşan dərslər -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-transparent fw-semibold border-bottom">
+        <i class="bi bi-calendar3 me-2"></i>Yaxınlaşan Dərslər
+    </div>
+    <div class="card-body p-0">
+        {% if upcoming_bookings %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tələbə</th>
+                            <th>Tarix / Saat</th>
+                            <th>Mövzu</th>
+                            <th>Meet Linki</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in upcoming_bookings %}
+                        <tr>
+                            <td class="fw-semibold">{{ booking.student.get_full_name }}</td>
+                            <td>{{ booking.slot.start_time|date:"d M Y, H:i" }}</td>
+                            <td>{{ booking.topic|default:"—" }}</td>
+                            <td>
+                                {% if booking.meet_link %}
+                                    <a href="{{ booking.meet_link }}" target="_blank"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-camera-video me-1"></i>Qoşul
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted small">Gözləyir...</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-4 text-muted">
+                <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
+                Yaxınlaşan dərs yoxdur
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

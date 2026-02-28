@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Ödənişlər — LMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold">Ödənişlər</h1>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        {% if payments %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Faktura</th>
+                            {% if request.user.is_teacher %}<th>Tələbə</th>{% endif %}
+                            <th>Məbləğ</th>
+                            <th>Üsul</th>
+                            <th>Status</th>
+                            <th>Tarix</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr>
+                            <td><code>{{ payment.invoice_number }}</code></td>
+                            {% if request.user.is_teacher %}
+                            <td>{{ payment.student.get_full_name }}</td>
+                            {% endif %}
+                            <td class="fw-bold">{{ payment.amount }} AZN</td>
+                            <td>{{ payment.get_payment_method_display }}</td>
+                            <td>
+                                <span class="badge
+                                    {% if payment.status == 'completed' %}bg-success
+                                    {% elif payment.status == 'overdue' %}bg-danger
+                                    {% elif payment.status == 'failed' %}bg-secondary
+                                    {% else %}bg-warning text-dark{% endif %}">
+                                    {{ payment.get_status_display }}
+                                </span>
+                            </td>
+                            <td class="text-muted small">
+                                {{ payment.paid_at|date:"d.m.Y H:i"|default:payment.created_at|date:"d.m.Y" }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% include 'partials/pagination.html' with page_obj=page_obj %}
+        {% else %}
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-receipt fs-1 d-block mb-3"></i>
+                <p>Hələ heç bir ödəniş yoxdur.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
