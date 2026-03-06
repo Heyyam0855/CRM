@@ -186,6 +186,7 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 # ─────────────────────────────────────────────
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_ADAPTER = 'apps.users.adapters.CustomAccountAdapter'

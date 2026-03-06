@@ -1,0 +1,48 @@
+{% if slots %}
+    <div class="list-group list-group-flush">
+        {% for slot in slots %}
+        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
+            <div>
+                <div class="fw-semibold">{{ slot.start_time|date:"l, d MMMM Y" }}</div>
+                <small class="text-muted">
+                    <i class="bi bi-clock me-1"></i>
+                    {{ slot.start_time|date:"H:i" }} — {{ slot.end_time|date:"H:i" }}
+                    ({{ slot.duration_minutes }} dəq)
+                </small>
+            </div>
+            <button class="btn btn-sm btn-outline-primary slot-select-btn"
+                    data-slot-id="{{ slot.id }}"
+                    data-slot-time="{{ slot.start_time|date:'d.m.Y H:i' }}">
+                Seç
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    <script>
+    // HTMX-siz normal yüklənmə üçün slot seçimi
+    document.querySelectorAll('.slot-select-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const slotId = this.dataset.slotId;
+            const slotTime = this.dataset.slotTime;
+
+            document.getElementById('selected-slot-id').value = slotId;
+            document.getElementById('selected-slot-display').textContent = slotTime;
+            document.getElementById('selected-slot-display').classList.remove('text-muted');
+            document.getElementById('submit-btn').removeAttribute('disabled');
+
+            document.querySelectorAll('.slot-select-btn').forEach(b => {
+                b.classList.remove('btn-primary');
+                b.classList.add('btn-outline-primary');
+            });
+            this.classList.remove('btn-outline-primary');
+            this.classList.add('btn-primary');
+        });
+    });
+    </script>
+{% else %}
+    <div class="text-center py-5 text-muted">
+        <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
+        <p class="mb-0">Hazırda əlçatan vaxt slotu yoxdur.</p>
+        <small>Müəllim tezliklə yeni vaxtlar əlavə edəcək.</small>
+    </div>
+{% endif %}
