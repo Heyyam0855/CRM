@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Qiymətləndirmələr — LMS{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold">Qiymətləndirmələr</h1>
+    {% if request.user.is_teacher %}
+    <a href="{% url 'assessments:create' %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-2"></i>Yeni Qiymətləndirmə
+    </a>
+    {% endif %}
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        {% if assessments %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            {% if request.user.is_teacher %}<th>Tələbə</th>{% endif %}
+                            <th>Başlıq</th>
+                            <th>Növ</th>
+                            <th>Bal</th>
+                            <th>Son tarix</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for assessment in assessments %}
+                        <tr>
+                            {% if request.user.is_teacher %}
+                            <td class="fw-semibold">{{ assessment.student.get_full_name }}</td>
+                            {% endif %}
+                            <td>{{ assessment.title }}</td>
+                            <td>
+                                <span class="badge bg-secondary">{{ assessment.get_type_display }}</span>
+                            </td>
+                            <td>
+                                {% if assessment.score is not None %}
+                                    <span class="fw-semibold
+                                        {% if assessment.score >= 85 %}text-success
+                                        {% elif assessment.score >= 60 %}text-warning
+                                        {% else %}text-danger{% endif %}">
+                                        {{ assessment.score }} / {{ assessment.max_score }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if assessment.due_date %}
+                                    {{ assessment.due_date|date:"d M Y, H:i" }}
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if assessment.score is not None %}
+                                    <span class="badge bg-success">Qiymətləndirilib</span>
+                                {% elif assessment.submitted_at %}
+                                    <span class="badge bg-info">Göndərilib</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Gözlənilir</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if request.user.is_teacher %}
+                                    <a href="{% url 'assessments:grade' assessment.pk %}"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                {% endif %}
+                                {% if assessment.submission_url %}
+                                    <a href="{{ assessment.submission_url }}" target="_blank"
+                                       class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-github"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% include 'partials/pagination.html' with page_obj=page_obj %}
+        {% else %}
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-clipboard-check fs-1 d-block mb-3"></i>
+                <p>Hələ heç bir qiymətləndirmə yoxdur.</p>
+                {% if request.user.is_teacher %}
+                <a href="{% url 'assessments:create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-lg me-2"></i>İlk Qiymətləndirməni Yarat
+                </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
