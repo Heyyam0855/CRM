@@ -12,69 +12,7 @@
 
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
-        {% if bookings %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            {% if request.user.is_teacher %}<th>Tələbə</th>{% endif %}
-                            <th>Tarix</th>
-                            <th>Növ</th>
-                            <th>Mövzu</th>
-                            <th>Status</th>
-                            <th>Ödəniş</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for booking in bookings %}
-                        <tr>
-                            {% if request.user.is_teacher %}
-                            <td class="fw-semibold">{{ booking.student.get_full_name }}</td>
-                            {% endif %}
-                            <td>{{ booking.slot.start_time|date:"d M Y, H:i" }}</td>
-                            <td>{{ booking.get_lesson_type_display }}</td>
-                            <td>{{ booking.topic|default:"—"|truncatechars:30 }}</td>
-                            <td>
-                                <span class="badge
-                                    {% if booking.status == 'confirmed' %}bg-success
-                                    {% elif booking.status == 'cancelled' %}bg-secondary
-                                    {% elif booking.status == 'completed' %}bg-primary
-                                    {% else %}bg-warning text-dark{% endif %}">
-                                    {{ booking.get_status_display }}
-                                </span>
-                            </td>
-                            <td>
-                                {% if booking.is_paid %}
-                                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Ödənib</span>
-                                {% else %}
-                                    <span class="badge bg-warning text-dark">25 AZN</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if booking.meet_link %}
-                                    <a href="{{ booking.meet_link }}" target="_blank"
-                                       class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-camera-video"></i>
-                                    </a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-
-            {% include 'partials/pagination.html' with page_obj=page_obj %}
-        {% else %}
-            <div class="text-center py-5 text-muted">
-                <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
-                <p>Hələ heç bir rezervasiya yoxdur.</p>
-                <a href="{% url 'bookings:create' %}" class="btn btn-primary">
-                    <i class="bi bi-plus-lg me-2"></i>İlk Rezervasiyanı Yarat
-                </a>
-            </div>
-        {% endif %}
+        {% include 'bookings/partials/booking_list.html' %}
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Bildirişlər — LMS Platform{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 fw-bold">Bildirişlər</h1>
+    {% if notifications %}
+        <form method="post" action="{% url 'notifications:mark-all-read' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-check-all me-1"></i>Hamısını oxunmuş et
+            </button>
+        </form>
+    {% endif %}
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        {% if notifications %}
+            <ul class="list-group list-group-flush">
+                {% for notification in notifications %}
+                <li class="list-group-item d-flex align-items-start gap-3 py-3
+                    {% if not notification.is_read %}bg-primary bg-opacity-5{% endif %}">
+                    <div class="mt-1">
+                        {% if not notification.is_read %}
+                            <span class="badge rounded-pill bg-primary p-1">&nbsp;</span>
+                        {% else %}
+                            <span class="badge rounded-pill bg-secondary p-1 opacity-25">&nbsp;</span>
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold {% if notification.is_read %}text-muted{% endif %}">
+                            {{ notification.title }}
+                        </div>
+                        <div class="small text-muted mt-1">{{ notification.message }}</div>
+                        <div class="small text-muted mt-1">
+                            <i class="bi bi-clock me-1"></i>
+                            {{ notification.created_at|date:"d M Y, H:i" }}
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% include 'partials/pagination.html' with page_obj=page_obj %}
+        {% else %}
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-bell-slash fs-1 d-block mb-3"></i>
+                <p>Hələ heç bir bildiriş yoxdur.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
