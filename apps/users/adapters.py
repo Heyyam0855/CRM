@@ -14,4 +14,4 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         return '/dashboard/'
 
     def get_logout_redirect_url(self, request) -> str:
-        return '/auth/login/'
+        return '/accounts/login/'
