@@ -41,6 +41,11 @@ INSTALLED_APPS += ['debug_toolbar']  # noqa: F405
 MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']  # noqa: F405
 INTERNAL_IPS = ['127.0.0.1', 'localhost']
 
+# Debug Toolbar redirect interception-ı söndür
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False,
+}
+
 # Lokal media saxlama
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 MEDIA_URL = '/media/'

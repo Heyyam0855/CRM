@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ course.title }} — LMS{% endblock %}
+
+{% block content %}
+<!-- Başlıq -->
+<div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'courses:list' %}">Kurslar</a></li>
+                <li class="breadcrumb-item active">{{ course.title }}</li>
+            </ol>
+        </nav>
+        <h1 class="h3 fw-bold mb-1">{{ course.title }}</h1>
+        <div class="d-flex gap-2 align-items-center">
+            {% if course.category %}
+            <span class="badge bg-secondary">{{ course.category.name }}</span>
+            {% endif %}
+            <span class="badge
+                {% if course.level == 'beginner' %}bg-success
+                {% elif course.level == 'intermediate' %}bg-warning text-dark
+                {% else %}bg-danger{% endif %}">
+                {{ course.get_level_display }}
+            </span>
+            <span class="badge bg-info text-dark">{{ course.duration_weeks }} həftə</span>
+        </div>
+    </div>
+    {% if request.user.is_teacher %}
+    <a href="/admin/courses/course/{{ course.pk }}/change/" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-pencil me-1"></i>Redaktə et
+    </a>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    <!-- Sol: Kurs məzmunu -->
+    <div class="col-lg-8">
+        {% if course.cover_image %}
+        <img src="{{ course.cover_image.url }}" class="img-fluid rounded mb-4 w-100"
+             alt="{{ course.title }}" style="max-height:300px; object-fit:cover;">
+        {% endif %}
+
+        <!-- Təsvir -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="fw-semibold mb-3"><i class="bi bi-info-circle me-2 text-primary"></i>Kurs haqqında</h5>
+                <p class="text-muted">{{ course.description }}</p>
+            </div>
+        </div>
+
+        {% if course.objectives %}
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="fw-semibold mb-3"><i class="bi bi-check2-circle me-2 text-success"></i>Kurs məqsədləri</h5>
+                <p class="text-muted">{{ course.objectives }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if course.prerequisites %}
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="fw-semibold mb-3"><i class="bi bi-exclamation-circle me-2 text-warning"></i>Ön şərtlər</h5>
+                <p class="text-muted">{{ course.prerequisites }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Modullar -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom py-3">
+                <h5 class="fw-semibold mb-0">
+                    <i class="bi bi-collection me-2 text-primary"></i>Kurs məzmunu
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                {% if course.modules.all %}
+                <div class="accordion accordion-flush" id="modulesAccordion">
+                    {% for module in course.modules.all %}
+                    <div class="accordion-item border-0 border-bottom">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %} fw-semibold"
+                                    type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#module{{ module.pk }}">
+                                <i class="bi bi-folder2 me-2 text-primary"></i>
+                                {{ module.title }}
+                                <span class="badge bg-light text-dark ms-2">
+                                    {{ module.lessons.count }} dərs
+                                </span>
+                            </button>
+                        </h2>
+                        <div id="module{{ module.pk }}"
+                             class="accordion-collapse collapse {% if forloop.first %}show{% endif %}">
+                            <div class="accordion-body p-0">
+                                {% if module.lessons.all %}
+                                <ul class="list-group list-group-flush">
+                                    {% for lesson in module.lessons.all %}
+                                    <li class="list-group-item d-flex align-items-center gap-3 px-4 py-3">
+                                        <i class="bi
+                                            {% if lesson.material_type == 'video' %}bi-play-circle-fill text-danger
+                                            {% elif lesson.material_type == 'text' %}bi-file-text text-info
+                                            {% elif lesson.material_type == 'pdf' %}bi-file-pdf text-danger
+                                            {% elif lesson.material_type == 'code' %}bi-code-slash text-success
+                                            {% elif lesson.material_type == 'task' %}bi-check-square text-warning
+                                            {% else %}bi-link-45deg text-secondary{% endif %}
+                                            fs-5"></i>
+                                        <div class="flex-grow-1">
+                                            <span class="fw-medium">{{ lesson.title }}</span>
+                                            {% if lesson.youtube_duration %}
+                                            <small class="text-muted ms-2">{{ lesson.youtube_duration }}</small>
+                                            {% endif %}
+                                        </div>
+                                        {% if lesson.is_free_preview %}
+                                        <span class="badge bg-success">Pulsuz</span>
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% else %}
+                                <p class="text-muted px-4 py-3 mb-0">Bu modulda hələ dərs yoxdur.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-collection text-muted" style="font-size:2.5rem;"></i>
+                    <p class="text-muted mt-2 mb-0">Hələ modul əlavə edilməyib.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Sağ: Qeydiyyat kartı -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm sticky-top" style="top:80px;">
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <span class="fs-3 fw-bold text-primary">25 AZN</span>
+                    <span class="text-muted">/dərs</span>
+                </div>
+
+                {% if request.user.is_student_user %}
+                    {% if enrollment %}
+                    <div class="alert alert-success text-center py-2 mb-3">
+                        <i class="bi bi-check-circle me-1"></i>Qeydiyyatlısınız
+                    </div>
+                    <a href="{% url 'bookings:create' %}" class="btn btn-primary w-100">
+                        <i class="bi bi-calendar-plus me-2"></i>Dərs rezerv et
+                    </a>
+                    {% else %}
+                    <a href="{% url 'bookings:create' %}" class="btn btn-primary w-100">
+                        <i class="bi bi-person-plus me-2"></i>Kursa qeydiyyat
+                    </a>
+                    {% endif %}
+                {% elif request.user.is_teacher %}
+                <div class="d-grid gap-2">
+                    <a href="/admin/courses/course/{{ course.pk }}/change/" class="btn btn-outline-primary">
+                        <i class="bi bi-pencil me-1"></i>Kursu redaktə et
+                    </a>
+                </div>
+                {% endif %}
+
+                <hr>
+                <ul class="list-unstyled mb-0 text-muted small">
+                    <li class="mb-2">
+                        <i class="bi bi-collection me-2 text-primary"></i>
+                        {{ course.modules.count }} modul
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-clock me-2 text-primary"></i>
+                        {{ course.duration_weeks }} həftə
+                    </li>
+                    <li class="mb-2">
+                        <i class="bi bi-bar-chart me-2 text-primary"></i>
+                        {{ course.get_level_display }}
+                    </li>
+                    <li>
+                        <i class="bi bi-camera-video me-2 text-primary"></i>
+                        Online (Zoom / Meet)
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
