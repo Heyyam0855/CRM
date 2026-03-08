@@ -1,48 +1,3 @@
-<<<<<<< HEAD
-{% extends 'account/base.html' %}
-
-{% block title %}Qeydiyyat — LMS Platform{% endblock %}
-
-{% block content %}
-<div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
-    <div class="card shadow-sm border-0" style="width:520px">
-        <div class="card-body p-5">
-            <div class="text-center mb-4">
-                <i class="bi bi-mortarboard-fill text-primary" style="font-size:3rem"></i>
-                <h3 class="fw-bold mt-2 text-primary">LMS Platform</h3>
-                <p class="text-muted small">Tələbə hesabı yaradın</p>
-            </div>
-
-            <form method="post" novalidate>
-                {% csrf_token %}
-                {% if form.non_field_errors %}
-                    <div class="alert alert-danger py-2">
-                        {% for error in form.non_field_errors %}
-                            <p class="mb-0">{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-
-                <div class="row g-3 mb-3">
-                    <div class="col-6">
-                        <label class="form-label fw-semibold">{{ form.first_name.label }}</label>
-                        {{ form.first_name }}
-                        {% if form.first_name.errors %}
-                            <div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="col-6">
-                        <label class="form-label fw-semibold">{{ form.last_name.label }}</label>
-                        {{ form.last_name }}
-                        {% if form.last_name.errors %}
-                            <div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">{{ form.email.label }}</label>
-=======
 {% load static %}
 <!DOCTYPE html>
 <html lang="az">
@@ -50,283 +5,178 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dərs qeydiyyat formu — LMS Platform</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <style>
-        body { background-color: #f0ebf8; }
-        .form-card { border-top: 10px solid #673ab7; border-radius: 12px; }
-        .form-section { background: #fff; border-radius: 12px; border: 1px solid #e0e0e0; }
-        .radio-option { border: 1px solid #e0e0e0; border-radius: 8px; padding: 10px 16px; transition: all 0.2s; cursor: pointer; }
-        .radio-option:hover { border-color: #673ab7; background: #faf8ff; }
-        .radio-option input:checked + label { color: #673ab7; font-weight: 600; }
-        .radio-option:has(input:checked) { border-color: #673ab7; background: #f3e8ff; }
-        .bank-info { background: #1a1a2e; color: #fff; border-radius: 12px; padding: 24px 32px; }
-        .bank-info h5,
-        .bank-info p { margin-bottom: 4px; }
-        .required-star { color: #d32f2f; }
-        .form-label { font-weight: 500; margin-bottom: 8px; }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
-<body>
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-7">
+<body class="bg-gradient-to-br from-primary-50 to-primary-100 min-h-screen" x-data x-cloak>
+<div class="max-w-2xl mx-auto px-4 py-8">
 
-            {# Başlıq kartı #}
-            <div class="form-card form-section p-4 mb-3">
-                <h2 class="fw-bold mb-2">Dərs qeydiyyat formu</h2>
-                <p class="text-muted mb-0">
-                    Qeydiyyat formu doldurulduqdan sonra sizin üçün dərs sistemi yaradılacaq, məlumat veriləcək.
-                    Hər hansı şərtlə ya da problem olduğu zaman
-                    <a href="https://wa.me/994502360901" target="_blank" rel="noopener">Whatsapp</a>
-                    üzərindən əlaqə saxlaya bilərsiniz.
-                </p>
-            </div>
+    {# Başlıq kartı #}
+    <div class="bg-white rounded-2xl shadow-sm border-t-4 border-primary-600 p-6 mb-4">
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Dərs qeydiyyat formu</h1>
+        <p class="text-gray-500 text-sm">
+            Qeydiyyat formu doldurulduqdan sonra sizin üçün dərs sistemi yaradılacaq, məlumat veriləcək.
+            Hər hansı şərtlə ya da problem olduğu zaman
+            <a href="https://wa.me/994502360901" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">Whatsapp</a>
+            üzərindən əlaqə saxlaya bilərsiniz.
+        </p>
+    </div>
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
+    {% if messages %}
+    <div class="space-y-2 mb-4">
+        {% for message in messages %}
+        <div class="px-4 py-3 rounded-lg text-sm font-medium
+            {% if message.tags == 'success' %}bg-emerald-50 text-emerald-800 border border-emerald-200
+            {% elif message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200
+            {% else %}bg-amber-50 text-amber-800 border border-amber-200{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if form.non_field_errors %}
+    <div class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-4">
+        {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {# Ad Soyad #}
+        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3">
+            <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.full_name.id_for_label }}">
+                Ad Soyad <span class="text-red-500">*</span>
+            </label>
+            {{ form.full_name }}
+            {% if form.full_name.errors %}
+            <p class="text-red-600 text-xs mt-1">{{ form.full_name.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        {# Email #}
+        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3">
+            <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.email.id_for_label }}">
+                Email <span class="text-red-500">*</span>
+            </label>
+            {{ form.email }}
+            {% if form.email.errors %}
+            <p class="text-red-600 text-xs mt-1">{{ form.email.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        {# Telefon #}
+        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3">
+            <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.phone.id_for_label }}">
+                Telefon (Whatsapp) <span class="text-red-500">*</span>
+            </label>
+            {{ form.phone }}
+            {% if form.phone.errors %}
+            <p class="text-red-600 text-xs mt-1">{{ form.phone.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        {# Dərs paketi #}
+        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3" x-data="{ selected: '' }">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Hansı dərs paketi üzrə dərs almaq istəyirsiniz? <span class="text-red-500">*</span>
+            </label>
+            <div class="flex flex-col gap-2 mt-2">
+                {% for widget in form.course_package %}
+                <label class="flex items-center gap-3 border border-gray-200 rounded-lg px-4 py-3 cursor-pointer
+                             hover:border-primary-400 hover:bg-primary-50 transition-all
+                             has-[:checked]:border-primary-600 has-[:checked]:bg-primary-50"
+                       @click="selected = '{{ widget.data.value }}'">
+                    {{ widget.tag }}
+                    <span class="text-sm text-gray-700">{{ widget.choice_label }}</span>
+                </label>
                 {% endfor %}
+            </div>
+            {% if form.course_package.errors %}
+            <p class="text-red-600 text-xs mt-1">{{ form.course_package.errors.0 }}</p>
             {% endif %}
 
-            {% if form.non_field_errors %}
-                <div class="alert alert-danger">
-                    {% for error in form.non_field_errors %}
-                        <div>{{ error }}</div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+            {# Digər input #}
+            <div class="mt-3" x-show="selected === 'other'" x-transition>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.other_course.id_for_label }}">
+                    Digər dərs paketi
+                </label>
+                {{ form.other_course }}
+                {% if form.other_course.errors %}
+                <p class="text-red-600 text-xs mt-1">{{ form.other_course.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
 
-            <form method="post" novalidate>
-                {% csrf_token %}
-
-                {# Ad Soyad #}
-                <div class="form-section p-4 mb-3">
-                    <label class="form-label" for="{{ form.full_name.id_for_label }}">
-                        Ad Soyad <span class="required-star">*</span>
-                    </label>
-                    {{ form.full_name }}
-                    {% if form.full_name.errors %}
-                        <div class="text-danger small mt-1">{{ form.full_name.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                {# Email #}
-                <div class="form-section p-4 mb-3">
-                    <label class="form-label" for="{{ form.email.id_for_label }}">
-                        Email <span class="required-star">*</span>
-                    </label>
->>>>>>> dd5f541 ( Dərs qeydiyyat formu yaradıldı (9 fayl)  08.03.2026 20:30)
-                    {{ form.email }}
-                    {% if form.email.errors %}
-                        <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-<<<<<<< HEAD
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">{{ form.phone.label }}
-                        <span class="text-muted fw-normal">(ixtiyari)</span>
-=======
-                {# Telefon #}
-                <div class="form-section p-4 mb-3">
-                    <label class="form-label" for="{{ form.phone.id_for_label }}">
-                        Telefon (Whatsapp) <span class="required-star">*</span>
->>>>>>> dd5f541 ( Dərs qeydiyyat formu yaradıldı (9 fayl)  08.03.2026 20:30)
-                    </label>
-                    {{ form.phone }}
-                    {% if form.phone.errors %}
-                        <div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-<<<<<<< HEAD
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">{{ form.password1.label }}</label>
-                    {{ form.password1 }}
-                    {% if form.password1.errors %}
-                        <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">{{ form.password2.label }}</label>
-                    {{ form.password2 }}
-                    {% if form.password2.errors %}
-                        <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">{{ form.payment_model.label }}</label>
-                    <div class="d-flex gap-3 mt-1">
-                        {% for radio in form.payment_model %}
-                            <div class="form-check">
-                                {{ radio.tag }}
-                                <label class="form-check-label" for="{{ radio.id_for_label }}">
-                                    {{ radio.choice_label }}
-=======
-                {# Dərs paketi #}
-                <div class="form-section p-4 mb-3">
-                    <label class="form-label d-block">
-                        Hansı dərs paketi üzrə dərs almaq istəyirsiniz? <span class="required-star">*</span>
-                    </label>
-                    <div class="d-flex flex-column gap-2 mt-2">
-                        {% for widget in form.course_package %}
-                            <div class="radio-option d-flex align-items-center gap-2">
-                                {{ widget.tag }}
-                                <label class="form-check-label mb-0 w-100" for="{{ widget.id_for_label }}" style="cursor: pointer;">
-                                    {{ widget.choice_label }}
->>>>>>> dd5f541 ( Dərs qeydiyyat formu yaradıldı (9 fayl)  08.03.2026 20:30)
-                                </label>
-                            </div>
-                        {% endfor %}
-                    </div>
-<<<<<<< HEAD
-                    {% if form.payment_model.errors %}
-                        <div class="text-danger small mt-1">{{ form.payment_model.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <div class="mb-4">
-                    <label class="form-label fw-semibold">{{ form.lessons_per_week.label }}</label>
-                    {{ form.lessons_per_week }}
-                    <div class="form-text text-muted">Həftəlik dərs saatı: <strong id="weekly-price">50 AZN</strong></div>
-                    {% if form.lessons_per_week.errors %}
-                        <div class="text-danger small mt-1">{{ form.lessons_per_week.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-lg w-100 fw-semibold">
-                    <i class="bi bi-person-plus me-2"></i>Qeydiyyatdan keç
-                </button>
-            </form>
-
-            <hr class="my-4">
-            <p class="text-center text-muted small mb-0">
-                Artıq hesabınız var?
-                <a href="{% url 'account_login' %}" class="text-decoration-none fw-semibold">Daxil olun</a>
+        {# Bank məlumatı + Ödəmə #}
+        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3">
+            <p class="text-gray-500 text-sm mb-3">
+                Ödəmə etdikdən sonra ödəmə şəklini
+                <strong class="text-gray-700">+994502360901</strong> / Whatsapp nömrəsinə göndərin
             </p>
+            <div class="bg-sidebar text-white rounded-xl px-6 py-5 mb-4">
+                <p class="font-bold text-sm">Bank : ABB</p>
+                <p class="font-bold text-sm">Hesab No : 4127 2093 0136 9358</p>
+                <p class="font-bold text-sm">Hesab Sahibi : Samir Kərimov</p>
+            </div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.payment_receipt.id_for_label }}">
+                Ödəmə məlumatı
+            </label>
+            {{ form.payment_receipt }}
+            {% if form.payment_receipt.errors %}
+            <p class="text-red-600 text-xs mt-1">{{ form.payment_receipt.errors.0 }}</p>
+            {% endif %}
         </div>
-    </div>
-</div>
-{% endblock %}
 
-{% block extra_js %}
-<script>
-    const lessonsInput = document.getElementById('{{ form.lessons_per_week.id_for_label }}');
-    const priceDisplay = document.getElementById('weekly-price');
-    if (lessonsInput && priceDisplay) {
-        lessonsInput.addEventListener('input', function() {
-            const lessons = parseInt(this.value) || 0;
-            priceDisplay.textContent = (lessons * 25) + ' AZN';
-        });
-    }
-</script>
-{% endblock %}
-=======
-                    {% if form.course_package.errors %}
-                        <div class="text-danger small mt-1">{{ form.course_package.errors.0 }}</div>
-                    {% endif %}
-
-                    {# Digər input (yalnız "Digər" seçildikdə görünür) #}
-                    <div class="mt-3" id="other-course-wrapper" style="display: none;">
-                        <label class="form-label" for="{{ form.other_course.id_for_label }}">
-                            Digər dərs paketi
-                        </label>
-                        {{ form.other_course }}
-                        {% if form.other_course.errors %}
-                            <div class="text-danger small mt-1">{{ form.other_course.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                {# Bank məlumatı + Ödəmə #}
-                <div class="form-section p-4 mb-3">
-                    <p class="text-muted mb-3">
-                        Ödəmə etdikdən sonra ödəmə şəklini
-                        <strong>+994502360901</strong> / Whatsapp nömrəsinə göndərin
-                    </p>
-                    <div class="bank-info mb-3">
-                        <h5 class="fw-bold">Bank : ABB</h5>
-                        <p class="fw-bold">Hesab No : 4127 2093 0136 9358</p>
-                        <p class="fw-bold">Hesab Sahibi : Samir Kərimov</p>
-                    </div>
-                    <label class="form-label" for="{{ form.payment_receipt.id_for_label }}">
-                        Ödəmə məlumatı
-                    </label>
-                    {{ form.payment_receipt }}
-                    {% if form.payment_receipt.errors %}
-                        <div class="text-danger small mt-1">{{ form.payment_receipt.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                {# Başlama tarixi #}
-                <div class="form-section p-4 mb-3">
-                    <label class="form-label" for="{{ form.preferred_start_date.id_for_label }}">
-                        Dərslərə hansı tarixdən etibarən başlamaq istədiyinizi qeyd edin <span class="required-star">*</span>
-                    </label>
-                    {{ form.preferred_start_date }}
-                    {% if form.preferred_start_date.errors %}
-                        <div class="text-danger small mt-1">{{ form.preferred_start_date.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                {# GitHub profil linki #}
-                <div class="form-section p-4 mb-3">
-                    <label class="form-label" for="{{ form.github_profile_url.id_for_label }}">
-                        <a href="https://github.com" target="_blank" rel="noopener">GitHub</a> platformasında qeydiyyatdan keç. Profil linkini yaz
-                    </label>
-                    {{ form.github_profile_url }}
-                    {% if form.github_profile_url.errors %}
-                        <div class="text-danger small mt-1">{{ form.github_profile_url.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                {# Göndər düyməsi #}
-                <div class="d-flex justify-content-between align-items-center mt-4 mb-5">
-                    <button type="submit" class="btn btn-primary btn-lg px-5 fw-semibold"
-                            style="background-color: #673ab7; border-color: #673ab7;">
-                        Göndər
-                    </button>
-                    <button type="reset" class="btn btn-link text-decoration-none text-muted">
-                        Formu təmizlə
-                    </button>
-                </div>
-            </form>
-
+        {# Başlama tarixi #}
+        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3">
+            <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.preferred_start_date.id_for_label }}">
+                Dərslərə hansı tarixdən etibarən başlamaq istədiyinizi qeyd edin <span class="text-red-500">*</span>
+            </label>
+            {{ form.preferred_start_date }}
+            {% if form.preferred_start_date.errors %}
+            <p class="text-red-600 text-xs mt-1">{{ form.preferred_start_date.errors.0 }}</p>
+            {% endif %}
         </div>
-    </div>
+
+        {# GitHub profil linki #}
+        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3">
+            <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.github_profile_url.id_for_label }}">
+                <a href="https://github.com" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">GitHub</a>
+                platformasında qeydiyyatdan keç. Profil linkini yaz
+            </label>
+            {{ form.github_profile_url }}
+            {% if form.github_profile_url.errors %}
+            <p class="text-red-600 text-xs mt-1">{{ form.github_profile_url.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        {# Göndər düyməsi #}
+        <div class="flex items-center justify-between mt-6 mb-8">
+            <button type="submit" class="px-8 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 transition-colors">
+                Göndər
+            </button>
+            <button type="reset" class="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+                Formu təmizlə
+            </button>
+        </div>
+    </form>
+
 </div>
 
+<script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script>
-    // "Digər" radio seçildikdə other_course input-u göstər
     document.addEventListener('DOMContentLoaded', function() {
-        const radios = document.querySelectorAll('input[name="course_package"]');
-        const otherWrapper = document.getElementById('other-course-wrapper');
-
-        function toggleOther() {
-            const selected = document.querySelector('input[name="course_package"]:checked');
-            if (selected && selected.value === 'other') {
-                otherWrapper.style.display = 'block';
-            } else {
-                otherWrapper.style.display = 'none';
-            }
+        const checked = document.querySelector('input[name="course_package"]:checked');
+        if (checked && checked.value === 'other') {
+            const el = document.querySelector('[x-data]');
+            if (el && el.__x) el.__x.$data.selected = 'other';
         }
-
-        radios.forEach(function(radio) {
-            radio.addEventListener('change', toggleOther);
-        });
-
-        // Əgər form xəta ilə qayıdıbsa, "Digər" seçilidirsə göstər
-        toggleOther();
     });
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
->>>>>>> dd5f541 ( Dərs qeydiyyat formu yaradıldı (9 fayl)  08.03.2026 20:30)

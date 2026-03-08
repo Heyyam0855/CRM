@@ -17,11 +17,13 @@ RUN pip install --upgrade pip \
 
 COPY . /app/
 
-RUN python manage.py collectstatic --noinput 2>/dev/null || true
+COPY entrypoint.sh /app/entrypoint.sh
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
-RUN useradd --create-home --shell /bin/bash lmsuser && chown -R lmsuser /app
-USER lmsuser
+RUN useradd --create-home --shell /bin/bash lmsuser \
+    && mkdir -p /app/staticfiles /app/media \
+    && chown -R lmsuser:lmsuser /app
 
 EXPOSE 8000
 
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "config.asgi:application"]
+CMD ["/app/entrypoint.sh"]
