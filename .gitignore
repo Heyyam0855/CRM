@@ -26,6 +26,7 @@ media/
 .env
 .env.local
 .env.production
+.env.prod
 
 # Static files (collected)
 staticfiles/

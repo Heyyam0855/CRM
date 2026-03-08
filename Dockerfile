@@ -10,10 +10,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev gcc curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements/production.txt /app/requirements.txt
-RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY requirements/ /app/requirements/
+RUN pip install --upgrade pip \
+    && pip install -r requirements/base.txt \
+    && pip install -r requirements/production.txt
 
 COPY . /app/
+
+RUN python manage.py collectstatic --noinput 2>/dev/null || true
 
 RUN useradd --create-home --shell /bin/bash lmsuser && chown -R lmsuser /app
 USER lmsuser

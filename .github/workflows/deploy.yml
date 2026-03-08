@@ -1,0 +1,92 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to droplet
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          DROPLET_IP: ${{ secrets.DROPLET_IP }}
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: DJANGO_SECRET_KEY,POSTGRES_PASSWORD,DROPLET_IP
+          script: |
+            set -e
+
+            APP_DIR="/opt/lms"
+
+            # Clone or pull latest code
+            if [ -d "$APP_DIR/.git" ]; then
+              cd $APP_DIR
+              git fetch origin main
+              git reset --hard origin/main
+            else
+              rm -rf $APP_DIR
+              git clone https://github.com/pragmatechai/crm.git $APP_DIR
+              cd $APP_DIR
+            fi
+
+            # Write production env file
+            cat > $APP_DIR/.env.prod << EOF
+            SECRET_KEY=${DJANGO_SECRET_KEY}
+            DEBUG=False
+            ALLOWED_HOSTS=${DROPLET_IP},localhost
+            DJANGO_SETTINGS_MODULE=config.settings.production
+            POSTGRES_DB=lms_db
+            POSTGRES_USER=lms_user
+            POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            DATABASE_URL=postgresql://lms_user:${POSTGRES_PASSWORD}@db:5432/lms_db
+            REDIS_URL=redis://redis:6379/0
+            SENDGRID_API_KEY=
+            DEFAULT_FROM_EMAIL=noreply@pragmalife.az
+            STRIPE_PUBLIC_KEY=
+            STRIPE_SECRET_KEY=
+            STRIPE_WEBHOOK_SECRET=
+            GITHUB_TOKEN=
+            GITHUB_TEACHER_USERNAME=
+            YOUTUBE_API_KEY=
+            AWS_ACCESS_KEY_ID=
+            AWS_SECRET_ACCESS_KEY=
+            AWS_STORAGE_BUCKET_NAME=
+            AWS_S3_ENDPOINT_URL=
+            AWS_S3_REGION_NAME=fra1
+            SENTRY_DSN=
+            LESSON_PRICE_AZN=25.00
+            CANCELLATION_HOURS=24
+            MAX_LESSONS_PER_WEEK=7
+            TRIAL_LESSON_DISCOUNT=50
+            EOF
+
+            # Remove leading whitespace from env file
+            sed -i 's/^            //' $APP_DIR/.env.prod
+
+            # Build and deploy
+            cd $APP_DIR
+            export POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            docker compose -f docker-compose.prod.yml build
+            docker compose -f docker-compose.prod.yml down
+            docker compose -f docker-compose.prod.yml up -d
+
+            # Wait for services
+            sleep 15
+
+            # Show status
+            docker compose -f docker-compose.prod.yml ps
+
+            # Clean up old images
+            docker image prune -f
+
+            echo "Deployment completed!"
