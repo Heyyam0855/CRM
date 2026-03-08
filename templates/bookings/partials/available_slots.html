@@ -1,10 +1,10 @@
 {% if slots %}
-<div class="divide-y divide-surface-border">
+<div class="divide-y divide-slate-100">
     {% for slot in slots %}
-    <div class="flex items-center justify-between px-5 py-3.5 hover:bg-gray-50 transition-colors">
+    <div class="flex items-center justify-between px-5 py-3.5 hover:bg-slate-50 transition-colors">
         <div>
-            <p class="text-sm font-semibold text-gray-900">{{ slot.start_time|date:"l, d MMMM Y" }}</p>
-            <p class="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+            <p class="text-sm font-semibold text-slate-900">{{ slot.start_time|date:"l, d MMMM Y" }}</p>
+            <p class="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
                 {{ slot.start_time|date:"H:i" }} — {{ slot.end_time|date:"H:i" }} ({{ slot.duration_minutes }} dəq)
             </p>
@@ -26,8 +26,8 @@ document.querySelectorAll('.slot-select-btn').forEach(function(btn) {
         document.getElementById('selected-slot-id').value = slotId;
         var display = document.getElementById('selected-slot-display');
         display.textContent = slotTime;
-        display.classList.remove('text-gray-400');
-        display.classList.add('text-gray-900');
+        display.classList.remove('text-slate-400');
+        display.classList.add('text-slate-900');
         document.getElementById('submit-btn').removeAttribute('disabled');
 
         document.querySelectorAll('.slot-select-btn').forEach(function(b) {
@@ -38,9 +38,9 @@ document.querySelectorAll('.slot-select-btn').forEach(function(btn) {
 });
 </script>
 {% else %}
-<div class="text-center py-12 text-gray-400">
+<div class="text-center py-12 text-slate-400">
     <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
-    <p class="text-sm font-medium text-gray-500">Hazırda əlçatan vaxt slotu yoxdur.</p>
-    <p class="text-xs text-gray-400 mt-1">Müəllim tezliklə yeni vaxtlar əlavə edəcək.</p>
+    <p class="text-sm font-medium text-slate-500">Hazırda əlçatan vaxt slotu yoxdur.</p>
+    <p class="text-xs text-slate-400 mt-1">Müəllim tezliklə yeni vaxtlar əlavə edəcək.</p>
 </div>
 {% endif %}

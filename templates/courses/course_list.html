@@ -4,14 +4,14 @@
 
 {% block content %}
 <div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-bold text-gray-900">Kurslar</h1>
+    <h1 class="text-2xl font-bold text-slate-900">Kurslar</h1>
     {% comment %}Müəllim üçün kurs yaratma — admin paneldən: /admin/courses/course/add/{% endcomment %}
 </div>
 
 {% if courses %}
 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
     {% for course in courses %}
-    <div class="bg-white rounded-xl shadow-sm border border-surface-border overflow-hidden flex flex-col">
+    <div class="card overflow-hidden flex flex-col">
         {% if course.cover_image %}
         <img src="{{ course.cover_image.url }}" class="w-full h-44 object-cover" alt="{{ course.title }}">
         {% else %}
@@ -23,7 +23,7 @@
         <div class="p-5 flex flex-col flex-1">
             <div class="flex items-start justify-between mb-2">
                 {% if course.category %}
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">{{ course.category.name }}</span>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">{{ course.category.name }}</span>
                 {% endif %}
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                     {% if course.level == 'beginner' %}bg-emerald-100 text-emerald-800
@@ -33,10 +33,10 @@
                 </span>
             </div>
 
-            <h3 class="text-base font-semibold text-gray-900 mb-2">{{ course.title }}</h3>
-            <p class="text-sm text-gray-500 flex-1 mb-3">{{ course.description|truncatechars:100 }}</p>
+            <h3 class="text-base font-semibold text-slate-900 mb-2">{{ course.title }}</h3>
+            <p class="text-sm text-slate-500 flex-1 mb-3">{{ course.description|truncatechars:100 }}</p>
 
-            <div class="flex items-center text-xs text-gray-500 mb-4">
+            <div class="flex items-center text-xs text-slate-500 mb-4">
                 <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
                 {{ course.duration_weeks }} həftə
             </div>
@@ -55,10 +55,10 @@
 
 {% else %}
 <div class="text-center py-16">
-    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg>
-    <h3 class="text-lg font-medium text-gray-500 mb-2">Hələ ki kurs yoxdur</h3>
+    <svg class="w-16 h-16 mx-auto mb-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/></svg>
+    <h3 class="text-lg font-medium text-slate-500 mb-2">Hələ ki kurs yoxdur</h3>
     {% if request.user.is_teacher %}
-    <p class="text-sm text-gray-400">Kurs əlavə etmək üçün <a href="/admin/courses/course/add/" class="text-primary-600 hover:underline">Admin Panel</a>-dən istifadə edin.</p>
+    <p class="text-sm text-slate-400">Kurs əlavə etmək üçün <a href="/admin/courses/course/add/" class="text-primary-600 hover:underline">Admin Panel</a>-dən istifadə edin.</p>
     {% endif %}
 </div>
 {% endif %}

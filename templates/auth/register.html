@@ -14,8 +14,8 @@
 
     {# Başlıq kartı #}
     <div class="bg-white rounded-2xl shadow-sm border-t-4 border-primary-600 p-6 mb-4">
-        <h1 class="text-2xl font-bold text-gray-900 mb-2">Dərs qeydiyyat formu</h1>
-        <p class="text-gray-500 text-sm">
+        <h1 class="text-2xl font-bold text-slate-900 mb-2">Dərs qeydiyyat formu</h1>
+        <p class="text-slate-500 text-sm">
             Qeydiyyat formu doldurulduqdan sonra sizin üçün dərs sistemi yaradılacaq, məlumat veriləcək.
             Hər hansı şərtlə ya da problem olduğu zaman
             <a href="https://wa.me/994502360901" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">Whatsapp</a>
@@ -48,8 +48,8 @@
         {% csrf_token %}
 
         {# Ad Soyad #}
-        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3">
-            <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.full_name.id_for_label }}">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 mb-3">
+            <label class="block text-sm font-medium text-slate-700 mb-1.5" for="{{ form.full_name.id_for_label }}">
                 Ad Soyad <span class="text-red-500">*</span>
             </label>
             {{ form.full_name }}
@@ -59,8 +59,8 @@
         </div>
 
         {# Email #}
-        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3">
-            <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.email.id_for_label }}">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 mb-3">
+            <label class="block text-sm font-medium text-slate-700 mb-1.5" for="{{ form.email.id_for_label }}">
                 Email <span class="text-red-500">*</span>
             </label>
             {{ form.email }}
@@ -70,8 +70,8 @@
         </div>
 
         {# Telefon #}
-        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3">
-            <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.phone.id_for_label }}">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 mb-3">
+            <label class="block text-sm font-medium text-slate-700 mb-1.5" for="{{ form.phone.id_for_label }}">
                 Telefon (Whatsapp) <span class="text-red-500">*</span>
             </label>
             {{ form.phone }}
@@ -81,18 +81,18 @@
         </div>
 
         {# Dərs paketi #}
-        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3" x-data="{ selected: '' }">
-            <label class="block text-sm font-medium text-gray-700 mb-2">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 mb-3" x-data="{ selected: '' }">
+            <label class="block text-sm font-medium text-slate-700 mb-2">
                 Hansı dərs paketi üzrə dərs almaq istəyirsiniz? <span class="text-red-500">*</span>
             </label>
             <div class="flex flex-col gap-2 mt-2">
                 {% for widget in form.course_package %}
-                <label class="flex items-center gap-3 border border-gray-200 rounded-lg px-4 py-3 cursor-pointer
+                <label class="flex items-center gap-3 border border-slate-200 rounded-lg px-4 py-3 cursor-pointer
                              hover:border-primary-400 hover:bg-primary-50 transition-all
                              has-[:checked]:border-primary-600 has-[:checked]:bg-primary-50"
                        @click="selected = '{{ widget.data.value }}'">
                     {{ widget.tag }}
-                    <span class="text-sm text-gray-700">{{ widget.choice_label }}</span>
+                    <span class="text-sm text-slate-700">{{ widget.choice_label }}</span>
                 </label>
                 {% endfor %}
             </div>
@@ -102,7 +102,7 @@
 
             {# Digər input #}
             <div class="mt-3" x-show="selected === 'other'" x-transition>
-                <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.other_course.id_for_label }}">
+                <label class="block text-sm font-medium text-slate-700 mb-1.5" for="{{ form.other_course.id_for_label }}">
                     Digər dərs paketi
                 </label>
                 {{ form.other_course }}
@@ -113,22 +113,22 @@
         </div>
 
         {# Bank məlumatı + Ödəmə #}
-        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 mb-3">
 
             {# Həftəlik dərs sayı seçimi #}
             <div class="mb-5" x-data="pricingCalc()">
-                <label class="block text-sm font-medium text-gray-700 mb-2">
+                <label class="block text-sm font-medium text-slate-700 mb-2">
                     Həftəlik neçə dərs almaq istəyirsiniz? <span class="text-red-500">*</span>
                 </label>
                 <div class="grid grid-cols-5 gap-2 mt-2">
                     {% for widget in form.lessons_per_week %}
-                    <label class="relative flex flex-col items-center justify-center border-2 border-gray-200 rounded-xl px-2 py-4 cursor-pointer
+                    <label class="relative flex flex-col items-center justify-center border-2 border-slate-200 rounded-xl px-2 py-4 cursor-pointer
                                   hover:border-primary-400 hover:bg-primary-50 transition-all text-center
                                   has-[:checked]:border-primary-600 has-[:checked]:bg-primary-50 has-[:checked]:shadow-md"
                            @click="setLessons({{ widget.data.value }})">
                         {{ widget.tag }}
-                        <span class="text-2xl font-bold text-gray-900 mt-1">{{ widget.data.value }}</span>
-                        <span class="text-xs text-gray-500">dərs/həftə</span>
+                        <span class="text-2xl font-bold text-slate-900 mt-1">{{ widget.data.value }}</span>
+                        <span class="text-xs text-slate-500">dərs/həftə</span>
                     </label>
                     {% endfor %}
                 </div>
@@ -139,40 +139,40 @@
                 {# Qiymət hesablama paneli #}
                 <div class="mt-4 bg-gradient-to-r from-primary-50 to-primary-100 rounded-xl p-5 border border-primary-200">
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-sm text-gray-600">1 dərs qiyməti</span>
-                        <span class="text-sm font-semibold text-gray-800">25 AZN</span>
+                        <span class="text-sm text-slate-600">1 dərs qiyməti</span>
+                        <span class="text-sm font-semibold text-slate-800">25 AZN</span>
                     </div>
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-sm text-gray-600">Həftəlik dərs sayı</span>
-                        <span class="text-sm font-semibold text-gray-800" x-text="lessons + ' dərs'">2 dərs</span>
+                        <span class="text-sm text-slate-600">Həftəlik dərs sayı</span>
+                        <span class="text-sm font-semibold text-slate-800" x-text="lessons + ' dərs'">2 dərs</span>
                     </div>
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-sm text-gray-600">Aylıq dərs sayı (×4 həftə)</span>
-                        <span class="text-sm font-semibold text-gray-800" x-text="(lessons * 4) + ' dərs'">8 dərs</span>
+                        <span class="text-sm text-slate-600">Aylıq dərs sayı (×4 həftə)</span>
+                        <span class="text-sm font-semibold text-slate-800" x-text="(lessons * 4) + ' dərs'">8 dərs</span>
                     </div>
                     <div class="border-t border-primary-300 pt-3 mt-1">
                         <div class="flex items-center justify-between">
-                            <span class="text-base font-bold text-gray-900">Aylıq ödəniş</span>
+                            <span class="text-base font-bold text-slate-900">Aylıq ödəniş</span>
                             <div class="text-right">
                                 <span class="text-2xl font-extrabold text-primary-700" x-text="monthlyPrice + ' AZN'">200 AZN</span>
-                                <p class="text-xs text-gray-500 mt-0.5">Hər ay ödənilir</p>
+                                <p class="text-xs text-slate-500 mt-0.5">Hər ay ödənilir</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="border-t border-gray-100 pt-4">
-                <p class="text-gray-500 text-sm mb-3">
+            <div class="border-t border-slate-100 pt-4">
+                <p class="text-slate-500 text-sm mb-3">
                     Ödəmə etdikdən sonra ödəmə şəklini
-                    <strong class="text-gray-700">+994502360901</strong> / Whatsapp nömrəsinə göndərin
+                    <strong class="text-slate-700">+994502360901</strong> / Whatsapp nömrəsinə göndərin
                 </p>
                 <div class="bg-sidebar text-white rounded-xl px-6 py-5 mb-4">
                     <p class="font-bold text-sm">Bank : ABB</p>
                     <p class="font-bold text-sm">Hesab No : 4127 2093 0136 9358</p>
                     <p class="font-bold text-sm">Hesab Sahibi : Samir Kərimov</p>
                 </div>
-                <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.payment_receipt.id_for_label }}">
+                <label class="block text-sm font-medium text-slate-700 mb-1.5" for="{{ form.payment_receipt.id_for_label }}">
                     Ödəmə məlumatı
                 </label>
                 {{ form.payment_receipt }}
@@ -183,8 +183,8 @@
         </div>
 
         {# Başlama tarixi #}
-        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3">
-            <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.preferred_start_date.id_for_label }}">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 mb-3">
+            <label class="block text-sm font-medium text-slate-700 mb-1.5" for="{{ form.preferred_start_date.id_for_label }}">
                 Dərslərə hansı tarixdən etibarən başlamaq istədiyinizi qeyd edin <span class="text-red-500">*</span>
             </label>
             {{ form.preferred_start_date }}
@@ -194,8 +194,8 @@
         </div>
 
         {# GitHub profil linki #}
-        <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3">
-            <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.github_profile_url.id_for_label }}">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 mb-3">
+            <label class="block text-sm font-medium text-slate-700 mb-1.5" for="{{ form.github_profile_url.id_for_label }}">
                 <a href="https://github.com" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">GitHub</a>
                 platformasında qeydiyyatdan keç. Profil linkini yaz
             </label>
@@ -210,7 +210,7 @@
             <button type="submit" class="px-8 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 focus:ring-4 focus:ring-primary-300 transition-colors">
                 Göndər
             </button>
-            <button type="reset" class="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+            <button type="reset" class="text-sm text-slate-500 hover:text-slate-700 transition-colors">
                 Formu təmizlə
             </button>
         </div>
