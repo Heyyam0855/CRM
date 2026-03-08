@@ -2,86 +2,204 @@
 
 {% block title %}İdarəçilik Paneli — LMS{% endblock %}
 
+{% block breadcrumb %}
+<div class="flex items-center justify-between">
+    <div>
+        <h1 class="text-xl font-bold text-slate-800">İdarəçilik Paneli</h1>
+        <p class="mt-0.5 text-sm text-slate-400">Xoş gəldiniz, {{ request.user.first_name }}!</p>
+    </div>
+    <div class="flex items-center gap-2 text-sm text-slate-400">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+        <span>/</span>
+        <span class="text-slate-600 font-medium">Panel</span>
+    </div>
+</div>
+{% endblock %}
+
 {% block content %}
-<div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-bold text-gray-900">İdarəçilik Paneli</h1>
-    <span class="text-sm text-gray-500">{{ request.user.get_full_name }}</span>
+{# ── KPI Cards Row ── #}
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
+    {# Card 1 — Aktiv Tələbələr #}
+    <div class="kpi-card">
+        <div class="flex items-center justify-between mb-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
+            </div>
+            <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600">
+                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
+                Aktiv
+            </span>
+        </div>
+        <p class="text-2xl font-bold text-slate-800">{{ total_students }}</p>
+        <p class="mt-1 text-[13px] text-slate-400">Aktiv Tələbələr</p>
+        <div class="kpi-sparkline" id="sparkline-students"></div>
+    </div>
+
+    {# Card 2 — Bu ay dərslər #}
+    <div class="kpi-card">
+        <div class="flex items-center justify-between mb-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+            </div>
+            <span class="text-xs font-medium text-slate-400">Bu ay</span>
+        </div>
+        <p class="text-2xl font-bold text-slate-800">{{ this_month_bookings }}</p>
+        <p class="mt-1 text-[13px] text-slate-400">Keçirilən Dərslər</p>
+        <div class="kpi-sparkline" id="sparkline-lessons"></div>
+    </div>
+
+    {# Card 3 — Aylıq Gəlir #}
+    <div class="kpi-card">
+        <div class="flex items-center justify-between mb-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600">
+                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
+                Gəlir
+            </span>
+        </div>
+        <p class="text-2xl font-bold text-slate-800">{{ monthly_revenue }} <span class="text-sm font-medium text-slate-400">AZN</span></p>
+        <p class="mt-1 text-[13px] text-slate-400">Aylıq Gəlir</p>
+        <div class="kpi-sparkline" id="sparkline-revenue"></div>
+    </div>
+
+    {# Card 4 — Gözləyən Tələbələr #}
+    <div class="kpi-card {% if pending_students > 0 %}ring-1 ring-red-200{% endif %}">
+        <div class="flex items-center justify-between mb-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl {% if pending_students > 0 %}bg-red-50 text-red-600{% else %}bg-slate-50 text-slate-400{% endif %}">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 019.374 21c-2.331 0-4.512-.645-6.374-1.766z"/></svg>
+            </div>
+            {% if pending_students > 0 %}
+            <span class="inline-flex items-center gap-1 text-xs font-medium text-red-500">
+                <span class="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></span>
+                Gözləyir
+            </span>
+            {% endif %}
+        </div>
+        <p class="text-2xl font-bold text-slate-800">{{ pending_students }}</p>
+        <p class="mt-1 text-[13px] text-slate-400">Gözləyən Tələbələr</p>
+    </div>
 </div>
 
-<!-- KPI Kartları -->
-<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-    <div class="rounded-xl bg-primary-600 text-white p-5 shadow-sm">
-        <div class="flex items-center justify-between">
+{# ── Charts Row ── #}
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-6">
+    {# Main Revenue Chart #}
+    <div class="xl:col-span-2 rounded-xl bg-white border border-surface-border p-5">
+        <div class="flex items-center justify-between mb-4">
             <div>
-                <p class="text-sm text-primary-200">Aktiv Tələbələr</p>
-                <p class="text-3xl font-bold mt-1">{{ total_students }}</p>
+                <h3 class="text-[15px] font-semibold text-slate-800">Aylıq Gəlir</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Son 6 ayın gəlir statistikası</p>
             </div>
-            <svg class="w-10 h-10 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg>
+            <div class="flex items-center gap-4 text-xs text-slate-400">
+                <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-primary-500"></span> Gəlir</span>
+                <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-emerald-400"></span> Dərslər</span>
+            </div>
         </div>
+        <div id="revenue-chart" style="height: 280px;"></div>
     </div>
-    <div class="rounded-xl bg-emerald-600 text-white p-5 shadow-sm">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-emerald-200">Bu ay dərslər</p>
-                <p class="text-3xl font-bold mt-1">{{ this_month_bookings }}</p>
+
+    {# Quick Stats Panel #}
+    <div class="rounded-xl bg-white border border-surface-border p-5">
+        <h3 class="text-[15px] font-semibold text-slate-800 mb-4">Sürətli Baxış</h3>
+        <div class="space-y-4">
+            <div class="flex items-center justify-between p-3 rounded-lg bg-[#f0f3f9]">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-100 text-primary-600">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">Tələbələr</p>
+                        <p class="text-sm font-bold text-slate-700">{{ total_students }}</p>
+                    </div>
+                </div>
             </div>
-            <svg class="w-10 h-10 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"/></svg>
-        </div>
-    </div>
-    <div class="rounded-xl bg-amber-500 text-white p-5 shadow-sm">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm text-amber-100">Aylıq gəlir</p>
-                <p class="text-3xl font-bold mt-1">{{ monthly_revenue }} AZN</p>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-[#f0f3f9]">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">Bu ay dərslər</p>
+                        <p class="text-sm font-bold text-slate-700">{{ this_month_bookings }}</p>
+                    </div>
+                </div>
             </div>
-            <svg class="w-10 h-10 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-        </div>
-    </div>
-    <div class="rounded-xl {% if pending_students > 0 %}bg-red-600 text-white{% else %}bg-white border border-surface-border{% endif %} p-5 shadow-sm">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-sm {% if pending_students > 0 %}text-red-200{% else %}text-gray-500{% endif %}">Gözləyən tələbələr</p>
-                <p class="text-3xl font-bold mt-1">{{ pending_students }}</p>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-[#f0f3f9]">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100 text-amber-600">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">Aylıq gəlir</p>
+                        <p class="text-sm font-bold text-slate-700">{{ monthly_revenue }} AZN</p>
+                    </div>
+                </div>
             </div>
-            <svg class="w-10 h-10 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"/></svg>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-[#f0f3f9]">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-red-100 text-red-600">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">Gecikmiş ödənişlər</p>
+                        <p class="text-sm font-bold text-slate-700">{{ overdue_count }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Yaxınlaşan dərslər -->
-<div class="bg-white rounded-xl shadow-sm border border-surface-border">
-    <div class="px-5 py-4 border-b border-surface-border">
-        <h2 class="font-semibold text-gray-900 flex items-center gap-2">
-            <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
-            Yaxınlaşan Dərslər
-        </h2>
+{# ── Upcoming Lessons Table ── #}
+<div class="rounded-xl bg-white border border-surface-border">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-surface-border">
+        <div class="flex items-center gap-2">
+            <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+            </div>
+            <h3 class="text-[15px] font-semibold text-slate-800">Yaxınlaşan Dərslər</h3>
+        </div>
+        <a href="{% url 'bookings:list' %}" class="text-xs font-medium text-primary-600 hover:text-primary-700 transition">
+            Hamısına bax →
+        </a>
     </div>
     {% if upcoming_bookings %}
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
-            <thead class="bg-gray-50 text-gray-600 text-left">
-                <tr>
-                    <th class="px-5 py-3 font-medium">Tələbə</th>
-                    <th class="px-5 py-3 font-medium">Tarix / Saat</th>
-                    <th class="px-5 py-3 font-medium">Mövzu</th>
-                    <th class="px-5 py-3 font-medium">Meet Linki</th>
+            <thead>
+                <tr class="border-b border-surface-border">
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-400">Tələbə</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-400">Tarix / Saat</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-400">Mövzu</th>
+                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-400">Meet</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-surface-border">
                 {% for booking in upcoming_bookings %}
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-5 py-3 font-semibold text-gray-900">{{ booking.student.get_full_name }}</td>
-                    <td class="px-5 py-3 text-gray-600">{{ booking.slot.start_time|date:"d M Y, H:i" }}</td>
-                    <td class="px-5 py-3 text-gray-600">{{ booking.topic|default:"—" }}</td>
-                    <td class="px-5 py-3">
+                <tr class="hover:bg-[#f8fafc] transition-colors">
+                    <td class="px-5 py-3.5">
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-xs font-bold text-primary-700">
+                                {{ booking.student.first_name|first|upper }}
+                            </div>
+                            <span class="font-medium text-slate-700">{{ booking.student.get_full_name }}</span>
+                        </div>
+                    </td>
+                    <td class="px-5 py-3.5 text-slate-500">{{ booking.slot.start_time|date:"d M Y, H:i" }}</td>
+                    <td class="px-5 py-3.5 text-slate-500">{{ booking.topic|default:"—" }}</td>
+                    <td class="px-5 py-3.5">
                         {% if booking.meet_link %}
                         <a href="{{ booking.meet_link }}" target="_blank" rel="noopener"
-                           class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary-700 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+                           class="inline-flex items-center gap-1.5 rounded-lg bg-primary-50 px-3 py-1.5 text-xs font-medium text-primary-700 transition hover:bg-primary-100">
+                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
                             Qoşul
                         </a>
                         {% else %}
-                        <span class="text-gray-400 text-xs">Gözləyir...</span>
+                        <span class="inline-flex items-center gap-1.5 text-xs text-slate-400">
+                            <span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span>
+                            Gözlənilir
+                        </span>
                         {% endif %}
                     </td>
                 </tr>
@@ -90,10 +208,95 @@
         </table>
     </div>
     {% else %}
-    <div class="text-center py-10 text-gray-400">
-        <svg class="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
-        Yaxınlaşan dərs yoxdur
+    <div class="py-12 text-center">
+        <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100">
+            <svg class="h-6 w-6 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+        </div>
+        <p class="text-sm text-slate-400">Yaxınlaşan dərs yoxdur</p>
     </div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Sparkline defaults
+    var sparkDefaults = {
+        chart: { type: 'area', height: 40, sparkline: { enabled: true } },
+        stroke: { width: 1.5, curve: 'smooth' },
+        fill: { type: 'gradient', gradient: { opacityFrom: 0.3, opacityTo: 0.05 } },
+        tooltip: { enabled: false }
+    };
+
+    // Students sparkline
+    new ApexCharts(document.querySelector("#sparkline-students"), {
+        ...sparkDefaults,
+        series: [{ data: [5, 8, 7, 12, 10, {{ total_students }}] }],
+        colors: ['#3b82f6']
+    }).render();
+
+    // Lessons sparkline
+    new ApexCharts(document.querySelector("#sparkline-lessons"), {
+        ...sparkDefaults,
+        series: [{ data: [3, 6, 4, 8, {{ this_month_bookings }}, 5] }],
+        colors: ['#10b981']
+    }).render();
+
+    // Revenue sparkline
+    new ApexCharts(document.querySelector("#sparkline-revenue"), {
+        ...sparkDefaults,
+        series: [{ data: [100, 200, 175, 250, 300, {{ monthly_revenue }}] }],
+        colors: ['#f59e0b']
+    }).render();
+
+    // Main revenue chart
+    var revenueOptions = {
+        chart: {
+            type: 'area',
+            height: 280,
+            toolbar: { show: false },
+            fontFamily: 'Inter, sans-serif',
+            zoom: { enabled: false }
+        },
+        series: [
+            {
+                name: 'Gəlir (AZN)',
+                data: {{ monthly_revenue_data|default:"[0,0,0,0,0,0]" }}
+            },
+            {
+                name: 'Dərslər',
+                data: {{ monthly_bookings_data|default:"[0,0,0,0,0,0]" }}
+            }
+        ],
+        colors: ['#3b82f6', '#10b981'],
+        stroke: { width: [2, 2], curve: 'smooth' },
+        fill: {
+            type: 'gradient',
+            gradient: { opacityFrom: 0.25, opacityTo: 0.05, stops: [0, 90, 100] }
+        },
+        xaxis: {
+            categories: {{ month_labels|default:"['Yan','Fev','Mar','Apr','May','İyn']" }},
+            labels: { style: { fontSize: '12px', colors: '#94a3b8' } },
+            axisBorder: { show: false },
+            axisTicks: { show: false }
+        },
+        yaxis: {
+            labels: { style: { fontSize: '12px', colors: '#94a3b8' } }
+        },
+        grid: {
+            borderColor: '#f1f5f9',
+            strokeDashArray: 4,
+            xaxis: { lines: { show: false } }
+        },
+        legend: { show: false },
+        dataLabels: { enabled: false },
+        tooltip: {
+            theme: 'light',
+            y: { formatter: function(val, opts) { return opts.seriesIndex === 0 ? val + ' AZN' : val + ' dərs'; } }
+        }
+    };
+    new ApexCharts(document.querySelector("#revenue-chart"), revenueOptions).render();
+});
+</script>
 {% endblock %}

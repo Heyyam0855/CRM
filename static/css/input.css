@@ -67,3 +67,24 @@
 .sidebar-transition {
   transition: width 200ms ease-in-out;
 }
+
+/* ── Sidebar Link ── */
+.sidebar-link {
+  @apply flex items-center gap-3 rounded-lg py-2.5 text-[13px] font-medium transition text-slate-400;
+}
+.sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+.sidebar-link.active {
+  background-color: rgba(37, 99, 235, 0.2);
+  color: #fff;
+}
+
+/* ── KPI Card Sparkline ── */
+.kpi-card {
+  @apply relative overflow-hidden rounded-xl bg-white border border-surface-border p-5;
+}
+.kpi-card .kpi-sparkline {
+  @apply absolute bottom-0 left-0 right-0;
+}
