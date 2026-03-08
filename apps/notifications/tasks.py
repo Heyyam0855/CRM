@@ -88,3 +88,41 @@ def send_student_approval_email(self, student_id: str) -> dict:
 
     except Exception as exc:
         raise self.retry(exc=exc)
+
+
+@shared_task(bind=True, max_retries=3, default_retry_delay=60, queue='notifications')
+def send_student_credentials_email(self, student_id: str, password: str) -> dict:
+    """Tələbəyə login məlumatlarını email ilə göndərir."""
+    try:
+        from apps.users.models import User
+        from django.core.mail import send_mail
+        from django.conf import settings
+
+        student = User.objects.get(id=student_id)
+        login_url = f"{settings.SITE_URL}/accounts/login/" if hasattr(settings, 'SITE_URL') else "/accounts/login/"
+
+        subject = "Hesabınız yaradıldı — LMS Platform"
+        message = (
+            f"Hörmətli {student.get_full_name()},\n\n"
+            f"LMS Platformunda hesabınız yaradıldı.\n\n"
+            f"Giriş məlumatlarınız:\n"
+            f"  Email: {student.email}\n"
+            f"  Parol: {password}\n\n"
+            f"Platforma giriş linki: {login_url}\n\n"
+            f"Təhlükəsizlik üçün ilk girişdən sonra parolunuzu dəyişdirməyiniz tövsiyə olunur.\n\n"
+            f"Uğurlar!\n"
+            f"LMS Platform"
+        )
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[student.email],
+            fail_silently=False,
+        )
+        logger.info(f"Login məlumatları göndərildi: {student.email}")
+        return {'success': True, 'student_id': student_id}
+
+    except Exception as exc:
+        logger.error(f"Credentials email xətası: {exc}", exc_info=True)
+        raise self.retry(exc=exc)

@@ -7,8 +7,12 @@ class CustomAccountAdapter(DefaultAccountAdapter):
     """LMS-ə uyğun allauth adapter."""
 
     def is_open_for_signup(self, request) -> bool:
-        """Qeydiyyat açıqdır (yalnız tələbələr üçün)."""
-        return True
+        """
+        Allauth vasitəsilə birbaşa qeydiyyat bağlıdır.
+        Tələbələr yalnız qeydiyyat formu ilə müraciət edir,
+        hesab müəllim təsdiqi ilə yaradılır.
+        """
+        return False
 
     def get_login_redirect_url(self, request) -> str:
         return '/dashboard/'
