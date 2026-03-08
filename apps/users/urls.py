@@ -15,6 +15,9 @@ urlpatterns = [
         name='register-success',
     ),
 
+    # Tələbələr (müəllim)
+    path('students/', views.StudentListView.as_view(), name='student-list'),
+
     # Profil
     path('profile/', views.ProfileView.as_view(), name='profile'),
     path('profile/edit/', views.StudentProfileUpdateView.as_view(), name='profile-edit'),

@@ -1,14 +1,37 @@
 """Users App — Views"""
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import ListView, TemplateView, UpdateView
 from django.contrib.auth import login, logout
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.urls import reverse_lazy
 
+from core.mixins import TeacherRequiredMixin
 from .models import User, StudentProfile
 from .forms import CourseRegistrationForm, StudentProfileUpdateForm
 from .services import UserService
+
+
+class StudentListView(TeacherRequiredMixin, ListView):
+    """Müəllim üçün tələbələr siyahısı."""
+
+    model = User
+    template_name = 'users/student_list.html'
+    context_object_name = 'students'
+    paginate_by = 20
+
+    def get_queryset(self):
+        return (
+            User.objects
+            .filter(role=User.Role.STUDENT)
+            .select_related('student_profile')
+            .order_by('-date_joined')
+        )
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Tələbələr'
+        return context
 
 
 class StudentRegisterView(TemplateView):
