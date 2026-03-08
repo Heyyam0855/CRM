@@ -1,24 +1,24 @@
 ﻿{% extends 'base.html' %}
 
-{% block title %}Pəncərəm  LMS Platform{% endblock %}
+{% block title %}Pəncərəm — LMS Platform{% endblock %}
 
 {% block breadcrumb %}
-<div class="flex items-center justify-between animate-fade-in">
+<div class="flex items-center justify-between mb-1">
     <div>
-        <h1 class="text-xl font-bold text-slate-800">Salam, {{ request.user.first_name }}!</h1>
-        <p class="mt-0.5 text-sm text-slate-400">Tədris panelinə xoş gəldiniz</p>
+        <h1 class="text-lg font-semibold text-slate-800">Salam, {{ request.user.first_name }}</h1>
+        <p class="text-[13px] text-slate-400">Tədris panelinə xoş gəldiniz</p>
     </div>
     <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-xs border border-surface-border shadow-sm"
+        <div class="hidden sm:flex items-center gap-2 text-xs text-slate-400"
              x-data="liveClock()" x-init="start()">
-            <span class="live-dot"></span>
-            <span class="font-medium text-slate-600" x-text="time"></span>
-            <span class="text-slate-300">|</span>
-            <span class="text-slate-400" x-text="date"></span>
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+            <span x-text="date"></span>
+            <span class="text-slate-300">·</span>
+            <span class="font-medium text-slate-500" x-text="time"></span>
         </div>
         <a href="{% url 'bookings:create' %}"
-           class="inline-flex items-center gap-2 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-primary-700 hover:shadow-md">
-            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+           class="inline-flex items-center gap-1.5 rounded-lg bg-primary-600 px-3.5 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-primary-700">
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
             Dərs rezerv et
         </a>
     </div>
@@ -26,125 +26,109 @@
 {% endblock %}
 
 {% block content %}
-{#  Profile + KPI Row  #}
-<div class="grid grid-cols-1 xl:grid-cols-4 gap-5 mb-6">
+{# ── Profile + KPI ── #}
+<div class="grid grid-cols-1 xl:grid-cols-4 gap-4 mb-5">
     {# Profile Card #}
-    <div class="rounded-xl bg-white border border-surface-border overflow-hidden animate-fade-in-up delay-1">
-        <div class="h-20 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-800"></div>
-        <div class="px-5 pb-5 -mt-8 text-center">
+    <div class="rounded-xl bg-white border border-slate-200/80 overflow-hidden">
+        <div class="h-16 bg-gradient-to-r from-primary-600 to-primary-700"></div>
+        <div class="px-4 pb-4 -mt-7 text-center">
             {% if request.user.avatar %}
-                <img src="{{ request.user.avatar.url }}" class="mx-auto h-16 w-16 rounded-full border-4 border-white object-cover shadow-md" alt="Avatar">
+                <img src="{{ request.user.avatar.url }}" class="mx-auto h-14 w-14 rounded-full border-[3px] border-white object-cover shadow-sm" alt="Avatar">
             {% else %}
-                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-4 border-white bg-gradient-to-br from-primary-500 to-primary-700 text-xl font-bold text-white shadow-md">
+                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-[3px] border-white bg-primary-600 text-lg font-bold text-white shadow-sm">
                     {{ request.user.first_name|first|upper }}
                 </div>
             {% endif %}
-            <h3 class="mt-2 text-[15px] font-semibold text-slate-800">{{ request.user.get_full_name }}</h3>
-            <p class="text-xs text-slate-400">Tələbə</p>
-            <div class="mt-3 flex items-center justify-center gap-2">
-                <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600">
-                    <span class="live-dot" style="width:6px;height:6px"></span>
-                    Aktiv
-                </span>
-            </div>
+            <h3 class="mt-2 text-sm font-semibold text-slate-800">{{ request.user.get_full_name }}</h3>
+            <p class="text-[11px] text-slate-400">Tələbə</p>
+            <span class="mt-2 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>Aktiv
+            </span>
         </div>
     </div>
 
     {# KPI Cards #}
-    <div class="xl:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div class="kpi-card kpi-gradient-blue animate-fade-in-up delay-2">
+    <div class="xl:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="stat-card">
+            <div class="stat-card-accent bg-blue-500"></div>
             <div class="flex items-center justify-between mb-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                    <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
                 </div>
-                <span class="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 text-[11px] font-semibold text-blue-600">Yaxın</span>
             </div>
-            <p class="text-2xl font-bold text-slate-800 animate-count-up" x-data="counter({{ upcoming_lessons|length }})" x-text="display"></p>
-            <p class="mt-1 text-[13px] text-slate-500">Yaxınlaşan Dərslər</p>
-            <div class="kpi-sparkline" id="sparkline-upcoming"></div>
+            <p class="text-[26px] font-bold text-slate-800 leading-none" x-data="counter({{ upcoming_lessons|length }})" x-text="display">0</p>
+            <p class="mt-1.5 text-xs text-slate-400 font-medium">Yaxınlaşan Dərslər</p>
         </div>
 
-        <div class="kpi-card kpi-gradient-green animate-fade-in-up delay-3">
+        <div class="stat-card">
+            <div class="stat-card-accent bg-emerald-500"></div>
             <div class="flex items-center justify-between mb-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                    <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-                <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-600">Bitdi</span>
             </div>
-            <p class="text-2xl font-bold text-slate-800 animate-count-up" x-data="counter({{ completed_lessons|default:0 }})" x-text="display"></p>
-            <p class="mt-1 text-[13px] text-slate-500">Tamamlanmış Dərslər</p>
-            <div class="kpi-sparkline" id="sparkline-completed"></div>
+            <p class="text-[26px] font-bold text-slate-800 leading-none" x-data="counter({{ completed_lessons|default:0 }})" x-text="display">0</p>
+            <p class="mt-1.5 text-xs text-slate-400 font-medium">Tamamlanmış Dərslər</p>
         </div>
 
-        <div class="kpi-card kpi-gradient-amber animate-fade-in-up delay-4">
+        <div class="stat-card">
+            <div class="stat-card-accent bg-amber-500"></div>
             <div class="flex items-center justify-between mb-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+                    <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
                 </div>
-                <span class="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-600">Toplam</span>
             </div>
             <div class="flex items-baseline gap-1">
-                <p class="text-2xl font-bold text-slate-800 animate-count-up" x-data="counter({{ total_paid|default:0 }})" x-text="display"></p>
-                <span class="text-sm font-medium text-slate-400">AZN</span>
+                <p class="text-[26px] font-bold text-slate-800 leading-none" x-data="counter({{ total_paid|default:0 }})" x-text="display">0</p>
+                <span class="text-xs font-medium text-slate-400">AZN</span>
             </div>
-            <p class="mt-1 text-[13px] text-slate-500">Ümumi Ödəniş</p>
+            <p class="mt-1.5 text-xs text-slate-400 font-medium">Ümumi Ödəniş</p>
         </div>
     </div>
 </div>
 
-{#  Upcoming Lessons + Recent Payments  #}
-<div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+{# ── Lessons + Payments ── #}
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
     {# Upcoming Lessons #}
-    <div class="rounded-xl bg-white border border-surface-border animate-fade-in-up delay-4">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-surface-border">
-            <div class="flex items-center gap-2">
-                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
-                </div>
-                <h3 class="text-[15px] font-semibold text-slate-800">Yaxınlaşan Dərslər</h3>
-            </div>
-            <a href="{% url 'bookings:list' %}" class="inline-flex items-center gap-1 rounded-lg bg-primary-50 px-3 py-1.5 text-xs font-medium text-primary-600 transition hover:bg-primary-100">
-                Hamısı
-                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-            </a>
+    <div class="rounded-xl bg-white border border-slate-200/80">
+        <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
+            <h3 class="text-sm font-semibold text-slate-700">Yaxınlaşan Dərslər</h3>
+            <a href="{% url 'bookings:list' %}" class="text-xs font-medium text-primary-600 hover:text-primary-700 transition">Hamısı →</a>
         </div>
         {% if upcoming_lessons %}
-        <div class="divide-y divide-surface-border">
+        <div class="divide-y divide-slate-50">
             {% for booking in upcoming_lessons %}
-            <div class="flex items-center justify-between px-5 py-4 table-row-hover">
+            <div class="flex items-center justify-between px-5 py-3 transition hover:bg-slate-50/80">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 text-primary-600 text-xs font-bold">
-                        {{ booking.slot.start_time|date:"d" }}
-                        <span class="text-[9px] ml-0.5">{{ booking.slot.start_time|date:"M" }}</span>
+                    <div class="flex flex-col items-center justify-center h-10 w-10 rounded-lg bg-primary-50 text-primary-600">
+                        <span class="text-sm font-bold leading-none">{{ booking.slot.start_time|date:"d" }}</span>
+                        <span class="text-[9px] font-medium uppercase">{{ booking.slot.start_time|date:"M" }}</span>
                     </div>
                     <div>
-                        <p class="text-sm font-medium text-slate-700">{{ booking.topic|default:"Dərs" }}</p>
-                        <p class="text-xs text-slate-400">{{ booking.slot.start_time|date:"H:i" }}</p>
+                        <p class="text-[13px] font-medium text-slate-700">{{ booking.topic|default:"Dərs" }}</p>
+                        <p class="text-[11px] text-slate-400">{{ booking.slot.start_time|date:"H:i" }}</p>
                     </div>
                 </div>
                 {% if booking.meet_link %}
                 <a href="{{ booking.meet_link }}" target="_blank" rel="noopener"
-                   class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 transition hover:bg-emerald-100">
-                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+                   class="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 transition hover:bg-emerald-100">
+                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
                     Qoşul
                 </a>
                 {% else %}
-                <span class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-medium text-slate-500">
-                    <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>
-                    Gözlənilir
+                <span class="inline-flex items-center gap-1 text-[11px] text-slate-400">
+                    <span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span>Gözlənilir
                 </span>
                 {% endif %}
             </div>
             {% endfor %}
         </div>
         {% else %}
-        <div class="py-14 text-center">
-            <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
-                <svg class="h-7 w-7 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
-            </div>
-            <p class="text-sm font-medium text-slate-400">Yaxınlaşan dərs yoxdur</p>
-            <a href="{% url 'bookings:create' %}" class="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-700">
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        <div class="py-10 text-center">
+            <svg class="mx-auto h-8 w-8 text-slate-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+            <p class="mt-2 text-sm text-slate-400">Yaxınlaşan dərs yoxdur</p>
+            <a href="{% url 'bookings:create' %}" class="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary-600 hover:text-primary-700">
+                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                 Rezervasiya et
             </a>
         </div>
@@ -152,40 +136,32 @@
     </div>
 
     {# Recent Payments #}
-    <div class="rounded-xl bg-white border border-surface-border animate-fade-in-up delay-5">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-surface-border">
-            <div class="flex items-center gap-2">
-                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
-                </div>
-                <h3 class="text-[15px] font-semibold text-slate-800">Son Ödənişlər</h3>
-            </div>
-            <a href="{% url 'payments:list' %}" class="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-600 transition hover:bg-emerald-100">
-                Hamısı
-                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-            </a>
+    <div class="rounded-xl bg-white border border-slate-200/80">
+        <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
+            <h3 class="text-sm font-semibold text-slate-700">Son Ödənişlər</h3>
+            <a href="{% url 'payments:list' %}" class="text-xs font-medium text-primary-600 hover:text-primary-700 transition">Hamısı →</a>
         </div>
         {% if recent_payments %}
-        <div class="divide-y divide-surface-border">
+        <div class="divide-y divide-slate-50">
             {% for payment in recent_payments %}
-            <div class="flex items-center justify-between px-5 py-4 table-row-hover">
+            <div class="flex items-center justify-between px-5 py-3 transition hover:bg-slate-50/80">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg
                         {% if payment.status == 'completed' %}bg-emerald-50 text-emerald-600
-                        {% elif payment.status == 'overdue' %}bg-red-50 text-red-600
+                        {% elif payment.status == 'overdue' %}bg-red-50 text-red-500
                         {% else %}bg-amber-50 text-amber-600{% endif %}">
                         {% if payment.status == 'completed' %}
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         {% else %}
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         {% endif %}
                     </div>
                     <div>
-                        <p class="text-sm font-bold text-slate-700">{{ payment.amount }} AZN</p>
-                        <p class="text-xs text-slate-400">{{ payment.paid_at|date:"d.m.Y"|default:payment.created_at|date:"d.m.Y" }}</p>
+                        <p class="text-[13px] font-semibold text-slate-700">{{ payment.amount }} AZN</p>
+                        <p class="text-[11px] text-slate-400">{{ payment.paid_at|date:"d.m.Y"|default:payment.created_at|date:"d.m.Y" }}</p>
                     </div>
                 </div>
-                <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold
+                <span class="rounded-full px-2 py-0.5 text-[10px] font-semibold
                     {% if payment.status == 'completed' %}bg-emerald-50 text-emerald-700
                     {% elif payment.status == 'overdue' %}bg-red-50 text-red-700
                     {% else %}bg-amber-50 text-amber-700{% endif %}">
@@ -195,11 +171,9 @@
             {% endfor %}
         </div>
         {% else %}
-        <div class="py-14 text-center">
-            <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
-                <svg class="h-7 w-7 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
-            </div>
-            <p class="text-sm font-medium text-slate-400">Hələ ödəniş yoxdur</p>
+        <div class="py-10 text-center">
+            <svg class="mx-auto h-8 w-8 text-slate-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+            <p class="mt-2 text-sm text-slate-400">Hələ ödəniş yoxdur</p>
         </div>
         {% endif %}
     </div>
@@ -208,66 +182,29 @@
 
 {% block extra_js %}
 <script>
-//  Live Clock Component 
 function liveClock() {
-    const months = ['Yan','Fev','Mar','Apr','May','İyn','İyl','Avq','Sen','Okt','Noy','Dek'];
+    const m = ['Yan','Fev','Mar','Apr','May','İyn','İyl','Avq','Sen','Okt','Noy','Dek'];
     return {
         time: '', date: '',
-        start() {
-            this.update();
-            setInterval(() => this.update(), 1000);
-        },
-        update() {
-            const now = new Date();
-            this.time = now.toLocaleTimeString('az-AZ', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-            this.date = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+        start() { this.tick(); setInterval(() => this.tick(), 1000); },
+        tick() {
+            const n = new Date();
+            this.time = n.toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+            this.date = n.getDate()+' '+m[n.getMonth()]+' '+n.getFullYear();
         }
     };
 }
-
-//  Animated Counter Component 
 function counter(target) {
     return {
         display: '0',
         init() {
-            const t = parseInt(target) || 0;
-            if (t === 0) { this.display = '0'; return; }
-            const duration = 800;
-            const start = performance.now();
-            const step = (ts) => {
-                const p = Math.min((ts - start) / duration, 1);
-                const ease = 1 - Math.pow(1 - p, 3);
-                this.display = Math.round(ease * t).toLocaleString('az-AZ');
-                if (p < 1) requestAnimationFrame(step);
-            };
-            requestAnimationFrame(step);
+            const t = parseInt(target)||0;
+            if(!t){this.display='0';return;}
+            const dur=600, st=performance.now();
+            const go=(ts)=>{const p=Math.min((ts-st)/dur,1);this.display=Math.round((1-Math.pow(1-p,3))*t).toLocaleString('az-AZ');if(p<1)requestAnimationFrame(go);};
+            requestAnimationFrame(go);
         }
     };
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-    var sparkDefaults = {
-        chart: { type: 'area', height: 45, sparkline: { enabled: true }, animations: { enabled: true, easing: 'easeinout', speed: 1200 } },
-        stroke: { width: 1.5, curve: 'smooth' },
-        fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0.05 } },
-        tooltip: { enabled: false }
-    };
-
-    if (document.querySelector("#sparkline-upcoming")) {
-        new ApexCharts(document.querySelector("#sparkline-upcoming"), {
-            ...sparkDefaults,
-            series: [{ data: [2, 3, 1, 4, 2, {{ upcoming_lessons|length }}] }],
-            colors: ['#3b82f6']
-        }).render();
-    }
-
-    if (document.querySelector("#sparkline-completed")) {
-        new ApexCharts(document.querySelector("#sparkline-completed"), {
-            ...sparkDefaults,
-            series: [{ data: [1, 3, 5, 4, 7, {{ completed_lessons|default:0 }}] }],
-            colors: ['#10b981']
-        }).render();
-    }
-});
 </script>
 {% endblock %}
