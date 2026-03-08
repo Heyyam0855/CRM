@@ -3,131 +3,140 @@
 {% block title %}Pəncərəm — LMS Platform{% endblock %}
 
 {% block breadcrumb %}
-<div class="flex items-center justify-between mb-1">
-    <div>
-        <h1 class="text-lg font-semibold text-slate-800">Salam, {{ request.user.first_name }}</h1>
-        <p class="text-[13px] text-slate-400">Tədris panelinə xoş gəldiniz</p>
-    </div>
-    <div class="flex items-center gap-3">
-        <div class="hidden sm:flex items-center gap-2 text-xs text-slate-400"
-             x-data="liveClock()" x-init="start()">
-            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-            <span x-text="date"></span>
-            <span class="text-slate-300">·</span>
-            <span class="font-medium text-slate-500" x-text="time"></span>
+<div class="mb-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-xl font-bold text-slate-900">Salam, {{ request.user.first_name }} 👋</h1>
+            <p class="mt-0.5 text-sm text-slate-500">Tədris panelinə xoş gəldiniz</p>
         </div>
-        <a href="{% url 'bookings:create' %}"
-           class="inline-flex items-center gap-1.5 rounded-lg bg-primary-600 px-3.5 py-2 text-xs font-medium text-white shadow-sm transition hover:bg-primary-700">
-            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-            Dərs rezerv et
-        </a>
+        <div class="flex items-center gap-3">
+            <div class="hidden sm:flex items-center gap-2 rounded-lg bg-white border border-slate-200 px-3 py-2 text-xs text-slate-500 shadow-sm"
+                 x-data="liveClock()" x-init="start()">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span x-text="date"></span>
+                <span class="text-slate-300">|</span>
+                <span class="font-semibold text-slate-700" x-text="time"></span>
+            </div>
+            <a href="{% url 'bookings:create' %}"
+               class="inline-flex items-center gap-1.5 rounded-lg bg-primary-600 px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-primary-700 hover:shadow-md">
+                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                Dərs rezerv et
+            </a>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block content %}
 {# ── Profile + KPI ── #}
-<div class="grid grid-cols-1 xl:grid-cols-4 gap-4 mb-5">
+<div class="grid grid-cols-1 xl:grid-cols-4 gap-5 mb-6">
     {# Profile Card #}
-    <div class="rounded-xl bg-white border border-slate-200/80 overflow-hidden">
-        <div class="h-16 bg-gradient-to-r from-primary-600 to-primary-700"></div>
-        <div class="px-4 pb-4 -mt-7 text-center">
+    <div class="card overflow-hidden">
+        <div class="h-20 bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800"></div>
+        <div class="px-5 pb-5 -mt-8 text-center">
             {% if request.user.avatar %}
-                <img src="{{ request.user.avatar.url }}" class="mx-auto h-14 w-14 rounded-full border-[3px] border-white object-cover shadow-sm" alt="Avatar">
+                <img src="{{ request.user.avatar.url }}" class="mx-auto h-16 w-16 rounded-full border-4 border-white object-cover shadow-md" alt="Avatar">
             {% else %}
-                <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-[3px] border-white bg-primary-600 text-lg font-bold text-white shadow-sm">
+                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-4 border-white bg-gradient-to-br from-primary-500 to-primary-700 text-xl font-bold text-white shadow-md">
                     {{ request.user.first_name|first|upper }}
                 </div>
             {% endif %}
-            <h3 class="mt-2 text-sm font-semibold text-slate-800">{{ request.user.get_full_name }}</h3>
-            <p class="text-[11px] text-slate-400">Tələbə</p>
-            <span class="mt-2 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
-                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>Aktiv
-            </span>
+            <h3 class="mt-3 text-sm font-bold text-slate-800">{{ request.user.get_full_name }}</h3>
+            <p class="text-xs text-slate-400">Tələbə</p>
+            <div class="mt-3 flex items-center justify-center gap-2">
+                <span class="badge bg-emerald-50 text-emerald-700">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>Aktiv
+                </span>
+            </div>
         </div>
     </div>
 
     {# KPI Cards #}
-    <div class="xl:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="stat-card">
-            <div class="stat-card-accent bg-blue-500"></div>
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                    <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+    <div class="xl:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div class="metric-card animate-in delay-1">
+            <div class="flex items-center gap-3.5">
+                <div class="metric-icon bg-blue-100 text-blue-600">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                </div>
+                <div class="min-w-0">
+                    <p class="metric-value" x-data="counter({{ upcoming_lessons|length }})" x-text="display">0</p>
+                    <p class="metric-label">Yaxınlaşan Dərslər</p>
                 </div>
             </div>
-            <p class="text-[26px] font-bold text-slate-800 leading-none" x-data="counter({{ upcoming_lessons|length }})" x-text="display">0</p>
-            <p class="mt-1.5 text-xs text-slate-400 font-medium">Yaxınlaşan Dərslər</p>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-card-accent bg-emerald-500"></div>
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-                    <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="metric-card animate-in delay-2">
+            <div class="flex items-center gap-3.5">
+                <div class="metric-icon bg-emerald-100 text-emerald-600">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div class="min-w-0">
+                    <p class="metric-value" x-data="counter({{ completed_lessons|default:0 }})" x-text="display">0</p>
+                    <p class="metric-label">Tamamlanmış Dərslər</p>
                 </div>
             </div>
-            <p class="text-[26px] font-bold text-slate-800 leading-none" x-data="counter({{ completed_lessons|default:0 }})" x-text="display">0</p>
-            <p class="mt-1.5 text-xs text-slate-400 font-medium">Tamamlanmış Dərslər</p>
         </div>
 
-        <div class="stat-card">
-            <div class="stat-card-accent bg-amber-500"></div>
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
-                    <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+        <div class="metric-card animate-in delay-3">
+            <div class="flex items-center gap-3.5">
+                <div class="metric-icon bg-violet-100 text-violet-600">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-baseline gap-1.5">
+                        <p class="metric-value" x-data="counter({{ total_paid|default:0 }})" x-text="display">0</p>
+                        <span class="text-xs font-semibold text-slate-400">AZN</span>
+                    </div>
+                    <p class="metric-label">Ümumi Ödəniş</p>
                 </div>
             </div>
-            <div class="flex items-baseline gap-1">
-                <p class="text-[26px] font-bold text-slate-800 leading-none" x-data="counter({{ total_paid|default:0 }})" x-text="display">0</p>
-                <span class="text-xs font-medium text-slate-400">AZN</span>
-            </div>
-            <p class="mt-1.5 text-xs text-slate-400 font-medium">Ümumi Ödəniş</p>
         </div>
     </div>
 </div>
 
 {# ── Lessons + Payments ── #}
-<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
     {# Upcoming Lessons #}
-    <div class="rounded-xl bg-white border border-slate-200/80">
-        <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
-            <h3 class="text-sm font-semibold text-slate-700">Yaxınlaşan Dərslər</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3>Yaxınlaşan Dərslər</h3>
             <a href="{% url 'bookings:list' %}" class="text-xs font-medium text-primary-600 hover:text-primary-700 transition">Hamısı →</a>
         </div>
         {% if upcoming_lessons %}
-        <div class="divide-y divide-slate-50">
+        <div class="divide-y divide-slate-100">
             {% for booking in upcoming_lessons %}
-            <div class="flex items-center justify-between px-5 py-3 transition hover:bg-slate-50/80">
-                <div class="flex items-center gap-3">
-                    <div class="flex flex-col items-center justify-center h-10 w-10 rounded-lg bg-primary-50 text-primary-600">
+            <div class="list-row">
+                <div class="flex items-center gap-3 flex-1 min-w-0">
+                    <div class="flex flex-col items-center justify-center h-11 w-11 shrink-0 rounded-lg bg-primary-50 text-primary-600">
                         <span class="text-sm font-bold leading-none">{{ booking.slot.start_time|date:"d" }}</span>
-                        <span class="text-[9px] font-medium uppercase">{{ booking.slot.start_time|date:"M" }}</span>
+                        <span class="text-[9px] font-semibold uppercase">{{ booking.slot.start_time|date:"M" }}</span>
                     </div>
-                    <div>
-                        <p class="text-[13px] font-medium text-slate-700">{{ booking.topic|default:"Dərs" }}</p>
-                        <p class="text-[11px] text-slate-400">{{ booking.slot.start_time|date:"H:i" }}</p>
+                    <div class="min-w-0">
+                        <p class="text-[13px] font-semibold text-slate-700 truncate">{{ booking.topic|default:"Dərs" }}</p>
+                        <p class="text-[11px] text-slate-400">{{ booking.slot.start_time|date:"H:i" }} · {{ booking.slot.start_time|date:"l" }}</p>
                     </div>
                 </div>
                 {% if booking.meet_link %}
                 <a href="{{ booking.meet_link }}" target="_blank" rel="noopener"
-                   class="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 transition hover:bg-emerald-100">
+                   class="badge bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition shrink-0">
                     <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
                     Qoşul
                 </a>
                 {% else %}
-                <span class="inline-flex items-center gap-1 text-[11px] text-slate-400">
-                    <span class="h-1.5 w-1.5 rounded-full bg-slate-300"></span>Gözlənilir
+                <span class="badge bg-slate-100 text-slate-500 shrink-0">
+                    <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>Gözlənilir
                 </span>
                 {% endif %}
             </div>
             {% endfor %}
         </div>
         {% else %}
-        <div class="py-10 text-center">
-            <svg class="mx-auto h-8 w-8 text-slate-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
-            <p class="mt-2 text-sm text-slate-400">Yaxınlaşan dərs yoxdur</p>
-            <a href="{% url 'bookings:create' %}" class="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary-600 hover:text-primary-700">
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+            </div>
+            <p>Yaxınlaşan dərs yoxdur</p>
+            <a href="{% url 'bookings:create' %}" class="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-primary-600 hover:text-primary-700 transition">
                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                 Rezervasiya et
             </a>
@@ -136,32 +145,32 @@
     </div>
 
     {# Recent Payments #}
-    <div class="rounded-xl bg-white border border-slate-200/80">
-        <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
-            <h3 class="text-sm font-semibold text-slate-700">Son Ödənişlər</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3>Son Ödənişlər</h3>
             <a href="{% url 'payments:list' %}" class="text-xs font-medium text-primary-600 hover:text-primary-700 transition">Hamısı →</a>
         </div>
         {% if recent_payments %}
-        <div class="divide-y divide-slate-50">
+        <div class="divide-y divide-slate-100">
             {% for payment in recent_payments %}
-            <div class="flex items-center justify-between px-5 py-3 transition hover:bg-slate-50/80">
-                <div class="flex items-center gap-3">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-lg
+            <div class="list-row">
+                <div class="flex items-center gap-3 flex-1 min-w-0">
+                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg
                         {% if payment.status == 'completed' %}bg-emerald-50 text-emerald-600
                         {% elif payment.status == 'overdue' %}bg-red-50 text-red-500
                         {% else %}bg-amber-50 text-amber-600{% endif %}">
                         {% if payment.status == 'completed' %}
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         {% else %}
-                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         {% endif %}
                     </div>
-                    <div>
-                        <p class="text-[13px] font-semibold text-slate-700">{{ payment.amount }} AZN</p>
+                    <div class="min-w-0">
+                        <p class="text-sm font-bold text-slate-800">{{ payment.amount }} AZN</p>
                         <p class="text-[11px] text-slate-400">{{ payment.paid_at|date:"d.m.Y"|default:payment.created_at|date:"d.m.Y" }}</p>
                     </div>
                 </div>
-                <span class="rounded-full px-2 py-0.5 text-[10px] font-semibold
+                <span class="badge shrink-0
                     {% if payment.status == 'completed' %}bg-emerald-50 text-emerald-700
                     {% elif payment.status == 'overdue' %}bg-red-50 text-red-700
                     {% else %}bg-amber-50 text-amber-700{% endif %}">
@@ -171,9 +180,11 @@
             {% endfor %}
         </div>
         {% else %}
-        <div class="py-10 text-center">
-            <svg class="mx-auto h-8 w-8 text-slate-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
-            <p class="mt-2 text-sm text-slate-400">Hələ ödəniş yoxdur</p>
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+            </div>
+            <p>Hələ ödəniş yoxdur</p>
         </div>
         {% endif %}
     </div>
@@ -200,7 +211,7 @@ function counter(target) {
         init() {
             const t = parseInt(target)||0;
             if(!t){this.display='0';return;}
-            const dur=600, st=performance.now();
+            const dur=500, st=performance.now();
             const go=(ts)=>{const p=Math.min((ts-st)/dur,1);this.display=Math.round((1-Math.pow(1-p,3))*t).toLocaleString('az-AZ');if(p<1)requestAnimationFrame(go);};
             requestAnimationFrame(go);
         }

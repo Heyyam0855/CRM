@@ -2,7 +2,7 @@
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
 
-/* ── LMS Custom Theme ── */
+/* ── LMS Design System ── */
 @theme {
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;
@@ -19,7 +19,7 @@
   --color-sidebar-hover: #1e293b;
   --color-sidebar-active: #334155;
 
-  --color-surface: #f8fafc;
+  --color-surface: #f1f5f9;
   --color-surface-card: #ffffff;
   --color-surface-border: #e2e8f0;
 
@@ -33,8 +33,8 @@
   }
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { @apply bg-slate-200 rounded-full; }
-  ::-webkit-scrollbar-thumb:hover { @apply bg-slate-300; }
+  ::-webkit-scrollbar-thumb { @apply bg-slate-300 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-slate-400; }
 }
 
 /* ── Utilities ── */
@@ -56,7 +56,7 @@
   color: #e2e8f0;
 }
 .sidebar-link.active {
-  background: rgba(59, 130, 246, 0.12);
+  background: rgba(59, 130, 246, 0.15);
   color: #fff;
 }
 .sidebar-link.active::before {
@@ -66,32 +66,78 @@
   top: 50%;
   transform: translateY(-50%);
   width: 3px;
-  height: 55%;
+  height: 60%;
   border-radius: 0 3px 3px 0;
   background: #3b82f6;
 }
 
-/* ── Stat Card (KPI) ── */
-.stat-card {
-  @apply relative rounded-xl bg-white border border-slate-200/80 p-5 overflow-hidden;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+/* ── Card System ── */
+.card {
+  @apply bg-white rounded-xl border border-slate-200;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
 }
-.stat-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-  border-color: #cbd5e1;
+.card-header {
+  @apply flex items-center justify-between px-5 py-4 border-b border-slate-100;
 }
-.stat-card-accent {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  border-radius: 3px 0 0 3px;
+.card-header h3 {
+  @apply text-[13px] font-semibold text-slate-800 tracking-tight;
+}
+.card-body {
+  @apply p-5;
 }
 
-/* ── Table rows ── */
-.table-row-hover { transition: background-color 0.1s ease; }
-.table-row-hover:hover { background-color: #f8fafc; }
+/* ── KPI Metric Card ── */
+.metric-card {
+  @apply bg-white rounded-xl border border-slate-200 p-5;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
+  transition: all 0.2s ease;
+}
+.metric-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  transform: translateY(-1px);
+}
+.metric-icon {
+  @apply flex items-center justify-center rounded-lg;
+  width: 40px;
+  height: 40px;
+}
+.metric-value {
+  @apply text-2xl font-bold text-slate-900 leading-none tracking-tight;
+}
+.metric-label {
+  @apply text-xs font-medium text-slate-500 mt-1;
+}
+
+/* ── Subtle list rows ── */
+.list-row {
+  @apply flex items-center gap-3 px-5 py-3.5;
+  transition: background-color 0.1s ease;
+}
+.list-row:hover {
+  background-color: #f8fafc;
+}
+
+/* ── Badge / tag ── */
+.badge {
+  @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  @apply py-12 text-center;
+}
+.empty-state-icon {
+  @apply mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100;
+}
+.empty-state-icon svg {
+  @apply h-5 w-5 text-slate-400;
+}
+.empty-state p {
+  @apply mt-3 text-sm font-medium text-slate-400;
+}
+.empty-state .sub {
+  @apply mt-1 text-xs text-slate-300;
+}
 
 /* ── Skeleton ── */
 @keyframes shimmer {
@@ -104,7 +150,16 @@
   animation: shimmer 1.5s infinite;
   border-radius: 4px;
 }
-.progress-bar-fill {
-  @apply h-full rounded-full;
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+
+/* ── Fade in ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+.animate-in {
+  animation: fadeIn 0.4s ease both;
+}
+.delay-1 { animation-delay: 50ms; }
+.delay-2 { animation-delay: 100ms; }
+.delay-3 { animation-delay: 150ms; }
+.delay-4 { animation-delay: 200ms; }
