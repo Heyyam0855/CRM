@@ -42,6 +42,9 @@ static_root/
 .DS_Store
 Thumbs.db
 
+# Node.js / Tailwind
+node_modules/
+
 # Testing
 .pytest_cache/
 .coverage
