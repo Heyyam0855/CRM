@@ -46,10 +46,11 @@ if SENTRY_DSN:
         send_default_pii=False,
     )
 
-# Email — SendGrid key yoxdursa console backend
+# Email — SendGrid key yoxdursa console backend + email verification söndür
 _sendgrid_key = config('SENDGRID_API_KEY', default='')
 if not _sendgrid_key:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 # Static files — manifest-siz WhiteNoise (Tailwind source fayl uyğunsuzluğunu qarşısını alır)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
