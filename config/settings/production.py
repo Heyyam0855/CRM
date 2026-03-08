@@ -51,5 +51,8 @@ _sendgrid_key = config('SENDGRID_API_KEY', default='')
 if not _sendgrid_key:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# Static files — manifest-siz WhiteNoise (Tailwind source fayl uyğunsuzluğunu qarşısını alır)
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+
 # Logging to stdout (DigitalOcean logs)
 LOGGING['handlers']['console']['formatter'] = 'verbose'  # noqa: F405
