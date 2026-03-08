@@ -239,6 +239,10 @@ class RegistrationRequest(BaseModel):
     preferred_start_date = models.DateField(
         verbose_name='Başlamaq istədiyi tarix'
     )
+    lessons_per_week = models.PositiveSmallIntegerField(
+        default=2,
+        verbose_name='Həftəlik dərs sayı'
+    )
     github_profile_url = models.URLField(
         blank=True,
         verbose_name='GitHub profil linki'

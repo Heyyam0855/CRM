@@ -114,22 +114,72 @@
 
         {# Bank məlumatı + Ödəmə #}
         <div class="bg-white rounded-xl border border-gray-200 p-5 mb-3">
-            <p class="text-gray-500 text-sm mb-3">
-                Ödəmə etdikdən sonra ödəmə şəklini
-                <strong class="text-gray-700">+994502360901</strong> / Whatsapp nömrəsinə göndərin
-            </p>
-            <div class="bg-sidebar text-white rounded-xl px-6 py-5 mb-4">
-                <p class="font-bold text-sm">Bank : ABB</p>
-                <p class="font-bold text-sm">Hesab No : 4127 2093 0136 9358</p>
-                <p class="font-bold text-sm">Hesab Sahibi : Samir Kərimov</p>
+
+            {# Həftəlik dərs sayı seçimi #}
+            <div class="mb-5" x-data="pricingCalc()">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Həftəlik neçə dərs almaq istəyirsiniz? <span class="text-red-500">*</span>
+                </label>
+                <div class="grid grid-cols-5 gap-2 mt-2">
+                    {% for widget in form.lessons_per_week %}
+                    <label class="relative flex flex-col items-center justify-center border-2 border-gray-200 rounded-xl px-2 py-4 cursor-pointer
+                                  hover:border-primary-400 hover:bg-primary-50 transition-all text-center
+                                  has-[:checked]:border-primary-600 has-[:checked]:bg-primary-50 has-[:checked]:shadow-md"
+                           @click="setLessons({{ widget.data.value }})">
+                        {{ widget.tag }}
+                        <span class="text-2xl font-bold text-gray-900 mt-1">{{ widget.data.value }}</span>
+                        <span class="text-xs text-gray-500">dərs/həftə</span>
+                    </label>
+                    {% endfor %}
+                </div>
+                {% if form.lessons_per_week.errors %}
+                <p class="text-red-600 text-xs mt-1">{{ form.lessons_per_week.errors.0 }}</p>
+                {% endif %}
+
+                {# Qiymət hesablama paneli #}
+                <div class="mt-4 bg-gradient-to-r from-primary-50 to-primary-100 rounded-xl p-5 border border-primary-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm text-gray-600">1 dərs qiyməti</span>
+                        <span class="text-sm font-semibold text-gray-800">25 AZN</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm text-gray-600">Həftəlik dərs sayı</span>
+                        <span class="text-sm font-semibold text-gray-800" x-text="lessons + ' dərs'">2 dərs</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm text-gray-600">Aylıq dərs sayı (×4 həftə)</span>
+                        <span class="text-sm font-semibold text-gray-800" x-text="(lessons * 4) + ' dərs'">8 dərs</span>
+                    </div>
+                    <div class="border-t border-primary-300 pt-3 mt-1">
+                        <div class="flex items-center justify-between">
+                            <span class="text-base font-bold text-gray-900">Aylıq ödəniş</span>
+                            <div class="text-right">
+                                <span class="text-2xl font-extrabold text-primary-700" x-text="monthlyPrice + ' AZN'">200 AZN</span>
+                                <p class="text-xs text-gray-500 mt-0.5">Hər ay ödənilir</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.payment_receipt.id_for_label }}">
-                Ödəmə məlumatı
-            </label>
-            {{ form.payment_receipt }}
-            {% if form.payment_receipt.errors %}
-            <p class="text-red-600 text-xs mt-1">{{ form.payment_receipt.errors.0 }}</p>
-            {% endif %}
+
+            <div class="border-t border-gray-100 pt-4">
+                <p class="text-gray-500 text-sm mb-3">
+                    Ödəmə etdikdən sonra ödəmə şəklini
+                    <strong class="text-gray-700">+994502360901</strong> / Whatsapp nömrəsinə göndərin
+                </p>
+                <div class="bg-sidebar text-white rounded-xl px-6 py-5 mb-4">
+                    <p class="font-bold text-sm">Bank : ABB</p>
+                    <p class="font-bold text-sm">Hesab No : 4127 2093 0136 9358</p>
+                    <p class="font-bold text-sm">Hesab Sahibi : Samir Kərimov</p>
+                </div>
+                <label class="block text-sm font-medium text-gray-700 mb-1.5" for="{{ form.payment_receipt.id_for_label }}">
+                    Ödəmə məlumatı
+                </label>
+                {{ form.payment_receipt }}
+                {% if form.payment_receipt.errors %}
+                <p class="text-red-600 text-xs mt-1">{{ form.payment_receipt.errors.0 }}</p>
+                {% endif %}
+            </div>
         </div>
 
         {# Başlama tarixi #}
@@ -170,6 +220,22 @@
 
 <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 <script>
+    function pricingCalc() {
+        return {
+            lessons: 2,
+            get monthlyPrice() {
+                return this.lessons * 4 * 25;
+            },
+            setLessons(count) {
+                this.lessons = count;
+            },
+            init() {
+                const checked = document.querySelector('input[name="lessons_per_week"]:checked');
+                if (checked) this.lessons = parseInt(checked.value);
+            }
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const checked = document.querySelector('input[name="course_package"]:checked');
         if (checked && checked.value === 'other') {

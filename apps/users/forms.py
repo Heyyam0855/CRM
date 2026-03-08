@@ -8,12 +8,28 @@ from .models import User, StudentProfile, RegistrationRequest
 class CourseRegistrationForm(forms.ModelForm):
     """Tələbə dərs qeydiyyat formu (Google Form tipli)."""
 
+    LESSONS_PER_WEEK_CHOICES = [
+        (1, '1 dərs / həftə'),
+        (2, '2 dərs / həftə'),
+        (3, '3 dərs / həftə'),
+        (4, '4 dərs / həftə'),
+        (5, '5 dərs / həftə'),
+    ]
+
+    lessons_per_week = forms.TypedChoiceField(
+        choices=LESSONS_PER_WEEK_CHOICES,
+        coerce=int,
+        initial=2,
+        widget=forms.RadioSelect(),
+        label='Həftəlik dərs sayı',
+    )
+
     class Meta:
         model = RegistrationRequest
         fields = [
             'full_name', 'email', 'phone', 'course_package',
-            'other_course', 'payment_receipt', 'preferred_start_date',
-            'github_profile_url',
+            'other_course', 'lessons_per_week', 'payment_receipt',
+            'preferred_start_date', 'github_profile_url',
         ]
         widgets = {
             'full_name': forms.TextInput(attrs={
