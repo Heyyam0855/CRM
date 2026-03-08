@@ -2,7 +2,6 @@
 @plugin "@tailwindcss/forms";
 @plugin "@tailwindcss/typography";
 
-/* ── LMS Design System ── */
 @theme {
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;
@@ -20,8 +19,6 @@
   --color-sidebar-active: #334155;
 
   --color-surface: #f1f5f9;
-  --color-surface-card: #ffffff;
-  --color-surface-border: #e2e8f0;
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
@@ -29,21 +26,21 @@
 /* ── Base ── */
 @layer base {
   body {
-    @apply bg-surface text-slate-800 font-sans antialiased;
+    @apply bg-surface text-gray-800 font-sans antialiased;
   }
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { @apply bg-slate-300 rounded-full; }
-  ::-webkit-scrollbar-thumb:hover { @apply bg-slate-400; }
+  ::-webkit-scrollbar-thumb { @apply bg-gray-300 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-gray-400; }
 }
 
-/* ── Utilities ── */
+/* HTMX / Alpine */
 .htmx-indicator { display: none; }
 .htmx-request .htmx-indicator,
 .htmx-request.htmx-indicator { display: inline-flex; }
 [x-cloak] { display: none !important; }
 
-/* ── Sidebar ── */
+/* Sidebar link — needs pseudo-element for active indicator */
 .sidebar-transition { transition: width 200ms ease; }
 
 .sidebar-link {
@@ -71,75 +68,7 @@
   background: #3b82f6;
 }
 
-/* ── Card System ── */
-.card {
-  @apply bg-white rounded-xl border border-slate-200;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
-}
-.card-header {
-  @apply flex items-center justify-between px-5 py-4 border-b border-slate-100;
-}
-.card-header h3 {
-  @apply text-[13px] font-semibold text-slate-800 tracking-tight;
-}
-.card-body {
-  @apply p-5;
-}
-
-/* ── KPI Metric Card ── */
-.metric-card {
-  @apply bg-white rounded-xl border border-slate-200 p-5;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02);
-  transition: all 0.2s ease;
-}
-.metric-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
-  transform: translateY(-1px);
-}
-.metric-icon {
-  @apply flex items-center justify-center rounded-lg;
-  width: 40px;
-  height: 40px;
-}
-.metric-value {
-  @apply text-2xl font-bold text-slate-900 leading-none tracking-tight;
-}
-.metric-label {
-  @apply text-xs font-medium text-slate-500 mt-1;
-}
-
-/* ── Subtle list rows ── */
-.list-row {
-  @apply flex items-center gap-3 px-5 py-3.5;
-  transition: background-color 0.1s ease;
-}
-.list-row:hover {
-  background-color: #f8fafc;
-}
-
-/* ── Badge / tag ── */
-.badge {
-  @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold;
-}
-
-/* ── Empty state ── */
-.empty-state {
-  @apply py-12 text-center;
-}
-.empty-state-icon {
-  @apply mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100;
-}
-.empty-state-icon svg {
-  @apply h-5 w-5 text-slate-400;
-}
-.empty-state p {
-  @apply mt-3 text-sm font-medium text-slate-400;
-}
-.empty-state .sub {
-  @apply mt-1 text-xs text-slate-300;
-}
-
-/* ── Skeleton ── */
+/* Skeleton loader */
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
@@ -150,16 +79,3 @@
   animation: shimmer 1.5s infinite;
   border-radius: 4px;
 }
-
-/* ── Fade in ── */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.animate-in {
-  animation: fadeIn 0.4s ease both;
-}
-.delay-1 { animation-delay: 50ms; }
-.delay-2 { animation-delay: 100ms; }
-.delay-3 { animation-delay: 150ms; }
-.delay-4 { animation-delay: 200ms; }
