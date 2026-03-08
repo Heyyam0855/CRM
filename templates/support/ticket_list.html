@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
-
-{% block title %}Dəstək Ticketləri — LMS Platform{% endblock %}
+{% block title %}Dəstək Ticketləri — LMS{% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -10,67 +9,83 @@
     </a>
 </div>
 
+<!-- Status filter -->
+<div class="mb-3 d-flex gap-2 flex-wrap">
+    <a href="{% url 'support:list' %}"
+       class="btn btn-sm {% if not current_status %}btn-primary{% else %}btn-outline-secondary{% endif %}">Hamısı</a>
+    {% for val, label in status_choices %}
+    <a href="?status={{ val }}"
+       class="btn btn-sm {% if current_status == val %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+        {{ label }}
+    </a>
+    {% endfor %}
+</div>
+
 <div class="card border-0 shadow-sm">
     <div class="card-body p-0">
         {% if tickets %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            {% if request.user.is_teacher %}<th>Tələbə</th>{% endif %}
-                            <th>Mövzu</th>
-                            <th>Prioritet</th>
-                            <th>Status</th>
-                            <th>Tarix</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ticket in tickets %}
-                        <tr>
-                            {% if request.user.is_teacher %}
-                            <td class="fw-semibold">{{ ticket.student.get_full_name }}</td>
-                            {% endif %}
-                            <td>{{ ticket.subject }}</td>
-                            <td>
-                                <span class="badge
-                                    {% if ticket.priority == 'urgent' %}bg-danger
-                                    {% elif ticket.priority == 'high' %}bg-warning text-dark
-                                    {% elif ticket.priority == 'medium' %}bg-info text-dark
-                                    {% else %}bg-secondary{% endif %}">
-                                    {{ ticket.get_priority_display }}
-                                </span>
-                            </td>
-                            <td>
-                                <span class="badge
-                                    {% if ticket.status == 'open' %}bg-primary
-                                    {% elif ticket.status == 'in_progress' %}bg-warning text-dark
-                                    {% elif ticket.status == 'resolved' %}bg-success
-                                    {% else %}bg-secondary{% endif %}">
-                                    {{ ticket.get_status_display }}
-                                </span>
-                            </td>
-                            <td class="text-muted small">{{ ticket.created_at|date:"d.m.Y H:i" }}</td>
-                            <td>
-                                <a href="{% url 'support:detail' ticket.pk %}"
-                                   class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% include 'partials/pagination.html' with page_obj=page_obj %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Mövzu</th>
+                        {% if request.user.is_teacher %}<th>Tələbə</th>{% endif %}
+                        <th>Prioritet</th>
+                        <th>Status</th>
+                        <th>Tarix</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ticket in tickets %}
+                    <tr>
+                        <td class="fw-semibold">{{ ticket.subject }}</td>
+                        {% if request.user.is_teacher %}
+                        <td>
+                            <a href="{% url 'users:student-detail' ticket.student.pk %}">
+                                {{ ticket.student.get_full_name }}
+                            </a>
+                        </td>
+                        {% endif %}
+                        <td>
+                            <span class="badge
+                                {% if ticket.priority == 'urgent' %}bg-danger
+                                {% elif ticket.priority == 'high' %}bg-warning text-dark
+                                {% elif ticket.priority == 'medium' %}bg-info text-dark
+                                {% else %}bg-secondary{% endif %}">
+                                {{ ticket.get_priority_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge
+                                {% if ticket.status == 'open' %}bg-primary
+                                {% elif ticket.status == 'in_progress' %}bg-warning text-dark
+                                {% elif ticket.status == 'resolved' %}bg-success
+                                {% else %}bg-secondary{% endif %}">
+                                {{ ticket.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="text-muted small">{{ ticket.created_at|date:"d M Y" }}</td>
+                        <td>
+                            <a href="{% url 'support:detail' ticket.pk %}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include 'partials/pagination.html' with page_obj=page_obj %}
         {% else %}
-            <div class="text-center py-5 text-muted">
-                <i class="bi bi-headset fs-1 d-block mb-3"></i>
-                <p>Hələ heç bir ticket yoxdur.</p>
-                <a href="{% url 'support:create' %}" class="btn btn-primary">
-                    <i class="bi bi-plus-lg me-2"></i>İlk Ticketi Yarat
-                </a>
-            </div>
+        <div class="text-center py-5 text-muted">
+            <i class="bi bi-headset fs-1 d-block mb-3"></i>
+            <p class="mb-4">Heç bir ticket yoxdur.</p>
+            <a href="{% url 'support:create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-2"></i>İlk Ticketi Yarat
+            </a>
+        </div>
         {% endif %}
     </div>
 </div>

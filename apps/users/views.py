@@ -7,12 +7,12 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 
 from .models import User, StudentProfile
-from .forms import StudentRegistrationForm, StudentProfileUpdateForm
+from .forms import CourseRegistrationForm, StudentProfileUpdateForm
 from .services import UserService
 
 
 class StudentRegisterView(TemplateView):
-    """Tələbə qeydiyyat formu."""
+    """Tələbə dərs qeydiyyat formu (Google Form tipli)."""
     template_name = 'auth/register.html'
 
     def get(self, request, *args, **kwargs):
@@ -22,22 +22,28 @@ class StudentRegisterView(TemplateView):
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
-        context['form'] = StudentRegistrationForm()
-        context['page_title'] = 'Qeydiyyat'
+        context['form'] = CourseRegistrationForm()
+        context['page_title'] = 'Dərs qeydiyyat formu'
         return context
 
     def post(self, request, *args, **kwargs):
-        form = StudentRegistrationForm(request.POST)
+        form = CourseRegistrationForm(request.POST)
         if form.is_valid():
-            service = UserService()
-            user = service.register_student(form.cleaned_data)
-            if user:
-                messages.success(
-                    request,
-                    'Qeydiyyatınız qəbul edildi! Müəllim tərəfindən təsdiqlənəcək.'
-                )
-                return redirect('users:login')
-        return self.render_to_response({'form': form, 'page_title': 'Qeydiyyat'})
+            form.save()
+            messages.success(
+                request,
+                'Qeydiyyatınız uğurla qəbul edildi! Sizinlə əlaqə saxlanılacaq.'
+            )
+            return redirect('users:register-success')
+        return self.render_to_response({
+            'form': form,
+            'page_title': 'Dərs qeydiyyat formu',
+        })
+
+
+class RegisterSuccessView(TemplateView):
+    """Qeydiyyat uğurlu səhifəsi."""
+    template_name = 'auth/register_success.html'
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):

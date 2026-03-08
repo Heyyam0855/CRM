@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import User, StudentProfile
+from .models import User, StudentProfile, RegistrationRequest
 
 
 @admin.register(User)
@@ -32,3 +32,16 @@ class StudentProfileAdmin(admin.ModelAdmin):
     list_filter = ('status', 'payment_model')
     search_fields = ('user__email', 'user__first_name', 'user__last_name')
     raw_id_fields = ('user',)
+
+
+@admin.register(RegistrationRequest)
+class RegistrationRequestAdmin(admin.ModelAdmin):
+    list_display = (
+        'full_name', 'email', 'phone',
+        'course_package', 'status',
+        'preferred_start_date', 'created_at',
+    )
+    list_filter = ('status', 'course_package', 'created_at')
+    search_fields = ('full_name', 'email', 'phone')
+    readonly_fields = ('created_at', 'updated_at')
+    list_editable = ('status',)
