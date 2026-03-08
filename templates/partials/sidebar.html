@@ -23,7 +23,7 @@
     </div>
 
     {# ── Navigation ── #}
-    <nav class="flex-1 overflow-y-auto py-4" :class="sidebarOpen ? 'px-3' : 'px-2'">
+    <nav class="flex-1 overflow-y-auto py-4" :class="sidebarOpen ? 'px-3' : 'px-2'" style="color:#94a3b8">
 
         {% if request.user.is_teacher %}
         <div class="mb-2" x-show="sidebarOpen" x-transition.opacity>
@@ -219,7 +219,7 @@
     </div>
 
     {# ── Mobile Nav ── #}
-    <nav class="flex-1 overflow-y-auto px-3 py-4">
+    <nav class="flex-1 overflow-y-auto px-3 py-4" style="color:#94a3b8">
         {% if request.user.is_teacher %}
         <div class="mb-2">
             <span class="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Müəllim</span>
