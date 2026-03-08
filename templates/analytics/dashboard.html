@@ -1,95 +1,102 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 
-{% block title %}İdarəçilik Paneli — LMS{% endblock %}
+{% block title %}İdarəçilik Paneli  LMS{% endblock %}
 
 {% block breadcrumb %}
-<div class="flex items-center justify-between">
+<div class="flex items-center justify-between animate-fade-in">
     <div>
         <h1 class="text-xl font-bold text-slate-800">İdarəçilik Paneli</h1>
         <p class="mt-0.5 text-sm text-slate-400">Xoş gəldiniz, {{ request.user.first_name }}!</p>
     </div>
-    <div class="flex items-center gap-2 text-sm text-slate-400">
-        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
-        <span>/</span>
-        <span class="text-slate-600 font-medium">Panel</span>
+    <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-xs border border-surface-border shadow-sm"
+             x-data="liveClock()" x-init="start()">
+            <span class="live-dot"></span>
+            <span class="font-medium text-slate-600" x-text="time"></span>
+            <span class="text-slate-300">|</span>
+            <span class="text-slate-400" x-text="date"></span>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block content %}
-{# ── KPI Cards Row ── #}
+{#  KPI Cards Row  #}
 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-6">
-    {# Card 1 — Aktiv Tələbələr #}
-    <div class="kpi-card">
+    {# Card 1  Aktiv Tələbələr #}
+    <div class="kpi-card kpi-gradient-blue animate-fade-in-up delay-1">
         <div class="flex items-center justify-between mb-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 backdrop-blur-sm">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
             </div>
-            <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600">
-                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
+            <span class="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 text-[11px] font-semibold text-blue-600">
+                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
                 Aktiv
             </span>
         </div>
-        <p class="text-2xl font-bold text-slate-800">{{ total_students }}</p>
-        <p class="mt-1 text-[13px] text-slate-400">Aktiv Tələbələr</p>
+        <p class="text-2xl font-bold text-slate-800 animate-count-up" x-data="counter({{ total_students|default:0 }})" x-text="display"></p>
+        <p class="mt-1 text-[13px] text-slate-500">Aktiv Tələbələr</p>
         <div class="kpi-sparkline" id="sparkline-students"></div>
     </div>
 
-    {# Card 2 — Bu ay dərslər #}
-    <div class="kpi-card">
+    {# Card 2  Bu ay dərslər #}
+    <div class="kpi-card kpi-gradient-green animate-fade-in-up delay-2">
         <div class="flex items-center justify-between mb-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 backdrop-blur-sm">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
             </div>
-            <span class="text-xs font-medium text-slate-400">Bu ay</span>
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[11px] font-semibold text-emerald-600">Bu ay</span>
         </div>
-        <p class="text-2xl font-bold text-slate-800">{{ this_month_bookings }}</p>
-        <p class="mt-1 text-[13px] text-slate-400">Keçirilən Dərslər</p>
+        <p class="text-2xl font-bold text-slate-800 animate-count-up" x-data="counter({{ this_month_bookings|default:0 }})" x-text="display"></p>
+        <p class="mt-1 text-[13px] text-slate-500">Keçirilən Dərslər</p>
         <div class="kpi-sparkline" id="sparkline-lessons"></div>
     </div>
 
-    {# Card 3 — Aylıq Gəlir #}
-    <div class="kpi-card">
+    {# Card 3  Aylıq Gəlir #}
+    <div class="kpi-card kpi-gradient-amber animate-fade-in-up delay-3">
         <div class="flex items-center justify-between mb-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 backdrop-blur-sm">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
-            <span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600">
-                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
+            <span class="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-semibold text-amber-600">
+                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"/></svg>
                 Gəlir
             </span>
         </div>
-        <p class="text-2xl font-bold text-slate-800">{{ monthly_revenue }} <span class="text-sm font-medium text-slate-400">AZN</span></p>
-        <p class="mt-1 text-[13px] text-slate-400">Aylıq Gəlir</p>
+        <div class="flex items-baseline gap-1">
+            <p class="text-2xl font-bold text-slate-800 animate-count-up" x-data="counter({{ monthly_revenue|default:0 }})" x-text="display"></p>
+            <span class="text-sm font-medium text-slate-400">AZN</span>
+        </div>
+        <p class="mt-1 text-[13px] text-slate-500">Aylıq Gəlir</p>
         <div class="kpi-sparkline" id="sparkline-revenue"></div>
     </div>
 
-    {# Card 4 — Gözləyən Tələbələr #}
-    <div class="kpi-card {% if pending_students > 0 %}ring-1 ring-red-200{% endif %}">
+    {# Card 4  Gözləyən Tələbələr #}
+    <div class="kpi-card animate-fade-in-up delay-4 {% if pending_students > 0 %}kpi-gradient-red ring-1 ring-red-200{% endif %}">
         <div class="flex items-center justify-between mb-3">
-            <div class="flex h-10 w-10 items-center justify-center rounded-xl {% if pending_students > 0 %}bg-red-50 text-red-600{% else %}bg-slate-50 text-slate-400{% endif %}">
+            <div class="flex h-10 w-10 items-center justify-center rounded-xl {% if pending_students > 0 %}bg-red-500/10 text-red-600{% else %}bg-slate-50 text-slate-400{% endif %} backdrop-blur-sm">
                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 019.374 21c-2.331 0-4.512-.645-6.374-1.766z"/></svg>
             </div>
             {% if pending_students > 0 %}
-            <span class="inline-flex items-center gap-1 text-xs font-medium text-red-500">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-2 py-0.5 text-[11px] font-semibold text-red-500">
                 <span class="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></span>
                 Gözləyir
             </span>
             {% endif %}
         </div>
-        <p class="text-2xl font-bold text-slate-800">{{ pending_students }}</p>
-        <p class="mt-1 text-[13px] text-slate-400">Gözləyən Tələbələr</p>
+        <p class="text-2xl font-bold text-slate-800 animate-count-up" x-data="counter({{ pending_students|default:0 }})" x-text="display"></p>
+        <p class="mt-1 text-[13px] text-slate-500">Gözləyən Tələbələr</p>
     </div>
 </div>
 
-{# ── Charts Row ── #}
+{#  Charts Row  #}
 <div class="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-6">
     {# Main Revenue Chart #}
-    <div class="xl:col-span-2 rounded-xl bg-white border border-surface-border p-5">
+    <div class="xl:col-span-2 rounded-xl bg-white border border-surface-border p-5 animate-fade-in-up delay-3">
         <div class="flex items-center justify-between mb-4">
             <div>
-                <h3 class="text-[15px] font-semibold text-slate-800">Aylıq Gəlir</h3>
-                <p class="text-xs text-slate-400 mt-0.5">Son 6 ayın gəlir statistikası</p>
+                <h3 class="text-[15px] font-semibold text-slate-800">Aylıq Statistika</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Son 6 ayın gəlir və dərs statistikası</p>
             </div>
             <div class="flex items-center gap-4 text-xs text-slate-400">
                 <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-primary-500"></span> Gəlir</span>
@@ -100,49 +107,55 @@
     </div>
 
     {# Quick Stats Panel #}
-    <div class="rounded-xl bg-white border border-surface-border p-5">
+    <div class="rounded-xl bg-white border border-surface-border p-5 animate-fade-in-up delay-4">
         <h3 class="text-[15px] font-semibold text-slate-800 mb-4">Sürətli Baxış</h3>
-        <div class="space-y-4">
-            <div class="flex items-center justify-between p-3 rounded-lg bg-[#f0f3f9]">
+        <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-blue-50 to-blue-50/30 animate-slide-in delay-1">
                 <div class="flex items-center gap-3">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-100 text-primary-600">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400">Tələbələr</p>
+                        <p class="text-[11px] text-slate-400">Tələbələr</p>
                         <p class="text-sm font-bold text-slate-700">{{ total_students }}</p>
                     </div>
                 </div>
+                <div class="progress-bar w-16">
+                    <div class="progress-bar-fill bg-blue-500" style="width: {% widthratio total_students 50 100 %}%"></div>
+                </div>
             </div>
-            <div class="flex items-center justify-between p-3 rounded-lg bg-[#f0f3f9]">
+            <div class="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-emerald-50 to-emerald-50/30 animate-slide-in delay-2">
                 <div class="flex items-center gap-3">
                     <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400">Bu ay dərslər</p>
+                        <p class="text-[11px] text-slate-400">Bu ay dərslər</p>
                         <p class="text-sm font-bold text-slate-700">{{ this_month_bookings }}</p>
                     </div>
                 </div>
+                <div class="progress-bar w-16">
+                    <div class="progress-bar-fill bg-emerald-500" style="width: {% widthratio this_month_bookings 30 100 %}%"></div>
+                </div>
             </div>
-            <div class="flex items-center justify-between p-3 rounded-lg bg-[#f0f3f9]">
+            <div class="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-amber-50 to-amber-50/30 animate-slide-in delay-3">
                 <div class="flex items-center gap-3">
                     <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-100 text-amber-600">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400">Aylıq gəlir</p>
+                        <p class="text-[11px] text-slate-400">Aylıq gəlir</p>
                         <p class="text-sm font-bold text-slate-700">{{ monthly_revenue }} AZN</p>
                     </div>
                 </div>
             </div>
-            <div class="flex items-center justify-between p-3 rounded-lg bg-[#f0f3f9]">
+            <div class="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-red-50 to-red-50/30 animate-slide-in delay-4">
                 <div class="flex items-center gap-3">
                     <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-red-100 text-red-600">
                         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400">Gecikmiş ödənişlər</p>
+                        <p class="text-[11px] text-slate-400">Gecikmiş ödənişlər</p>
                         <p class="text-sm font-bold text-slate-700">{{ overdue_count }}</p>
                     </div>
                 </div>
@@ -151,8 +164,8 @@
     </div>
 </div>
 
-{# ── Upcoming Lessons Table ── #}
-<div class="rounded-xl bg-white border border-surface-border">
+{#  Upcoming Lessons Table  #}
+<div class="rounded-xl bg-white border border-surface-border animate-fade-in-up delay-5">
     <div class="flex items-center justify-between px-5 py-4 border-b border-surface-border">
         <div class="flex items-center gap-2">
             <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
@@ -160,38 +173,46 @@
             </div>
             <h3 class="text-[15px] font-semibold text-slate-800">Yaxınlaşan Dərslər</h3>
         </div>
-        <a href="{% url 'bookings:list' %}" class="text-xs font-medium text-primary-600 hover:text-primary-700 transition">
-            Hamısına bax →
+        <a href="{% url 'bookings:list' %}" class="inline-flex items-center gap-1 rounded-lg bg-primary-50 px-3 py-1.5 text-xs font-medium text-primary-600 transition hover:bg-primary-100">
+            Hamısına bax
+            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
         </a>
     </div>
     {% if upcoming_bookings %}
     <div class="overflow-x-auto">
         <table class="w-full text-sm">
             <thead>
-                <tr class="border-b border-surface-border">
-                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-400">Tələbə</th>
-                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-400">Tarix / Saat</th>
-                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-400">Mövzu</th>
-                    <th class="px-5 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-400">Meet</th>
+                <tr class="border-b border-surface-border bg-slate-50/50">
+                    <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400">Tələbə</th>
+                    <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400">Tarix / Saat</th>
+                    <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400">Mövzu</th>
+                    <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400">Meet</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-surface-border">
                 {% for booking in upcoming_bookings %}
-                <tr class="hover:bg-[#f8fafc] transition-colors">
+                <tr class="table-row-hover">
                     <td class="px-5 py-3.5">
                         <div class="flex items-center gap-3">
-                            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-xs font-bold text-primary-700">
+                            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary-500 to-primary-700 text-xs font-bold text-white shadow-sm">
                                 {{ booking.student.first_name|first|upper }}
                             </div>
-                            <span class="font-medium text-slate-700">{{ booking.student.get_full_name }}</span>
+                            <div>
+                                <span class="font-medium text-slate-700">{{ booking.student.get_full_name }}</span>
+                            </div>
                         </div>
                     </td>
-                    <td class="px-5 py-3.5 text-slate-500">{{ booking.slot.start_time|date:"d M Y, H:i" }}</td>
-                    <td class="px-5 py-3.5 text-slate-500">{{ booking.topic|default:"—" }}</td>
+                    <td class="px-5 py-3.5">
+                        <div class="flex items-center gap-2">
+                            <span class="text-slate-600 font-medium">{{ booking.slot.start_time|date:"d M Y" }}</span>
+                            <span class="rounded bg-slate-100 px-1.5 py-0.5 text-[11px] font-semibold text-slate-500">{{ booking.slot.start_time|date:"H:i" }}</span>
+                        </div>
+                    </td>
+                    <td class="px-5 py-3.5 text-slate-500">{{ booking.topic|default:"" }}</td>
                     <td class="px-5 py-3.5">
                         {% if booking.meet_link %}
                         <a href="{{ booking.meet_link }}" target="_blank" rel="noopener"
-                           class="inline-flex items-center gap-1.5 rounded-lg bg-primary-50 px-3 py-1.5 text-xs font-medium text-primary-700 transition hover:bg-primary-100">
+                           class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 transition hover:bg-emerald-100 hover:shadow-sm">
                             <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
                             Qoşul
                         </a>
@@ -208,11 +229,12 @@
         </table>
     </div>
     {% else %}
-    <div class="py-12 text-center">
-        <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100">
-            <svg class="h-6 w-6 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+    <div class="py-14 text-center">
+        <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
+            <svg class="h-7 w-7 text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
         </div>
-        <p class="text-sm text-slate-400">Yaxınlaşan dərs yoxdur</p>
+        <p class="text-sm font-medium text-slate-400">Yaxınlaşan dərs yoxdur</p>
+        <p class="mt-1 text-xs text-slate-300">Yeni dərs planlaşdırmaq üçün dərslər bölməsinə keçin</p>
     </div>
     {% endif %}
 </div>
@@ -220,81 +242,117 @@
 
 {% block extra_js %}
 <script>
+//  Live Clock Component 
+function liveClock() {
+    const months = ['Yan','Fev','Mar','Apr','May','İyn','İyl','Avq','Sen','Okt','Noy','Dek'];
+    return {
+        time: '', date: '',
+        start() {
+            this.update();
+            setInterval(() => this.update(), 1000);
+        },
+        update() {
+            const now = new Date();
+            this.time = now.toLocaleTimeString('az-AZ', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+            this.date = now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+        }
+    };
+}
+
+//  Animated Counter Component 
+function counter(target) {
+    return {
+        display: '0',
+        init() {
+            const t = parseInt(target) || 0;
+            if (t === 0) { this.display = '0'; return; }
+            const duration = 800;
+            const start = performance.now();
+            const step = (ts) => {
+                const p = Math.min((ts - start) / duration, 1);
+                const ease = 1 - Math.pow(1 - p, 3);
+                this.display = Math.round(ease * t).toLocaleString('az-AZ');
+                if (p < 1) requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+        }
+    };
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Sparkline defaults
+    //  Sparkline defaults 
     var sparkDefaults = {
-        chart: { type: 'area', height: 40, sparkline: { enabled: true } },
+        chart: { type: 'area', height: 45, sparkline: { enabled: true }, animations: { enabled: true, easing: 'easeinout', speed: 1200 } },
         stroke: { width: 1.5, curve: 'smooth' },
-        fill: { type: 'gradient', gradient: { opacityFrom: 0.3, opacityTo: 0.05 } },
+        fill: { type: 'gradient', gradient: { opacityFrom: 0.4, opacityTo: 0.05 } },
         tooltip: { enabled: false }
     };
 
     // Students sparkline
-    new ApexCharts(document.querySelector("#sparkline-students"), {
-        ...sparkDefaults,
-        series: [{ data: [5, 8, 7, 12, 10, {{ total_students }}] }],
-        colors: ['#3b82f6']
-    }).render();
+    if (document.querySelector("#sparkline-students")) {
+        new ApexCharts(document.querySelector("#sparkline-students"), {
+            ...sparkDefaults,
+            series: [{ data: [5, 8, 7, 12, 10, {{ total_students|default:0 }}] }],
+            colors: ['#3b82f6']
+        }).render();
+    }
 
     // Lessons sparkline
-    new ApexCharts(document.querySelector("#sparkline-lessons"), {
-        ...sparkDefaults,
-        series: [{ data: [3, 6, 4, 8, {{ this_month_bookings }}, 5] }],
-        colors: ['#10b981']
-    }).render();
+    if (document.querySelector("#sparkline-lessons")) {
+        new ApexCharts(document.querySelector("#sparkline-lessons"), {
+            ...sparkDefaults,
+            series: [{ data: [3, 6, 4, 8, 5, {{ this_month_bookings|default:0 }}] }],
+            colors: ['#10b981']
+        }).render();
+    }
 
     // Revenue sparkline
-    new ApexCharts(document.querySelector("#sparkline-revenue"), {
-        ...sparkDefaults,
-        series: [{ data: [100, 200, 175, 250, 300, {{ monthly_revenue }}] }],
-        colors: ['#f59e0b']
-    }).render();
+    if (document.querySelector("#sparkline-revenue")) {
+        new ApexCharts(document.querySelector("#sparkline-revenue"), {
+            ...sparkDefaults,
+            series: [{ data: [100, 200, 175, 250, 300, {{ monthly_revenue|default:0 }}] }],
+            colors: ['#f59e0b']
+        }).render();
+    }
 
-    // Main revenue chart
+    //  Main Revenue Chart 
     var revenueOptions = {
         chart: {
             type: 'area',
             height: 280,
             toolbar: { show: false },
             fontFamily: 'Inter, sans-serif',
-            zoom: { enabled: false }
+            zoom: { enabled: false },
+            animations: { enabled: true, easing: 'easeinout', speed: 1000, animateGradually: { enabled: true, delay: 150 } }
         },
         series: [
-            {
-                name: 'Gəlir (AZN)',
-                data: {{ monthly_revenue_data|default:"[0,0,0,0,0,0]" }}
-            },
-            {
-                name: 'Dərslər',
-                data: {{ monthly_bookings_data|default:"[0,0,0,0,0,0]" }}
-            }
+            { name: 'Gəlir (AZN)', data: {{ monthly_revenue_data|default:"[0,0,0,0,0,0]" }} },
+            { name: 'Dərslər', data: {{ monthly_bookings_data|default:"[0,0,0,0,0,0]" }} }
         ],
         colors: ['#3b82f6', '#10b981'],
-        stroke: { width: [2, 2], curve: 'smooth' },
+        stroke: { width: [2.5, 2], curve: 'smooth' },
         fill: {
             type: 'gradient',
-            gradient: { opacityFrom: 0.25, opacityTo: 0.05, stops: [0, 90, 100] }
+            gradient: { opacityFrom: 0.3, opacityTo: 0.02, stops: [0, 95, 100] }
         },
         xaxis: {
             categories: {{ month_labels|default:"['Yan','Fev','Mar','Apr','May','İyn']" }},
-            labels: { style: { fontSize: '12px', colors: '#94a3b8' } },
+            labels: { style: { fontSize: '12px', colors: '#94a3b8', fontWeight: 500 } },
             axisBorder: { show: false },
             axisTicks: { show: false }
         },
         yaxis: {
             labels: { style: { fontSize: '12px', colors: '#94a3b8' } }
         },
-        grid: {
-            borderColor: '#f1f5f9',
-            strokeDashArray: 4,
-            xaxis: { lines: { show: false } }
-        },
+        grid: { borderColor: '#f1f5f9', strokeDashArray: 4, xaxis: { lines: { show: false } } },
         legend: { show: false },
         dataLabels: { enabled: false },
         tooltip: {
             theme: 'light',
+            style: { fontSize: '12px' },
             y: { formatter: function(val, opts) { return opts.seriesIndex === 0 ? val + ' AZN' : val + ' dərs'; } }
-        }
+        },
+        markers: { size: 0, hover: { size: 5 } }
     };
     new ApexCharts(document.querySelector("#revenue-chart"), revenueOptions).render();
 });
