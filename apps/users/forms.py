@@ -25,7 +25,6 @@ class StudentRegistrationForm(forms.Form):
     phone = forms.CharField(
         max_length=20,
         label='Telefon',
-        required=False,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '+994501234567'})
     )
     password1 = forms.CharField(
@@ -48,10 +47,14 @@ class StudentRegistrationForm(forms.Form):
         label='Həftəlik dərs sayı',
         widget=forms.NumberInput(attrs={'class': 'form-control'})
     )
-    goals = forms.CharField(
+    notes = forms.CharField(
         required=False,
-        label='Öyrənmə məqsədləriniz',
-        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
+        label='Qeyd',
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Əlavə məlumat, suallarınız və ya xüsusi istəklərinizi bura yazın...'
+        })
     )
 
     def clean_email(self):

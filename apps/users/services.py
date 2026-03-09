@@ -38,7 +38,7 @@ class UserService:
             profile = user.student_profile
             profile.payment_model = data['payment_model']
             profile.lessons_per_week = data.get('lessons_per_week', 2)
-            profile.goals = data.get('goals', '')
+            profile.goals = data.get('notes', '')
             profile.timezone = data.get('timezone', 'Asia/Baku')
             profile.save()
 

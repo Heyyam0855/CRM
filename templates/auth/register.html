@@ -4,82 +4,131 @@
 
 {% block content %}
 <div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
-    <div class="card shadow-sm border-0" style="width:520px">
-        <div class="card-body p-5">
+    <div class="card shadow-sm border-0" style="max-width:560px; width:100%">
+        <div class="card-body p-4 p-md-5">
+
+            <!-- Başlıq -->
             <div class="text-center mb-4">
-                <i class="bi bi-mortarboard-fill text-primary" style="font-size:3rem"></i>
-                <h3 class="fw-bold mt-2 text-primary">LMS Platform</h3>
-                <p class="text-muted small">Tələbə hesabı yaradın</p>
+                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px">
+                    <i class="bi bi-mortarboard-fill text-primary fs-2"></i>
+                </div>
+                <h3 class="fw-bold text-primary mb-1">LMS Platform</h3>
+                <p class="text-muted small mb-0">Tələbə hesabı yaradın</p>
             </div>
 
             <form method="post" novalidate>
                 {% csrf_token %}
+
                 {% if form.non_field_errors %}
-                    <div class="alert alert-danger py-2">
+                    <div class="alert alert-danger py-2 small">
                         {% for error in form.non_field_errors %}
-                            <p class="mb-0">{{ error }}</p>
+                            <p class="mb-0"><i class="bi bi-exclamation-circle me-1"></i>{{ error }}</p>
                         {% endfor %}
                     </div>
                 {% endif %}
 
+                <!-- Ad / Soyad -->
                 <div class="row g-3 mb-3">
                     <div class="col-6">
-                        <label class="form-label fw-semibold">{{ form.first_name.label }}</label>
+                        <label class="form-label fw-semibold small">
+                            {{ form.first_name.label }} <span class="text-danger">*</span>
+                        </label>
                         {{ form.first_name }}
                         {% if form.first_name.errors %}
-                            <div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>
+                            <div class="text-danger small mt-1">
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ form.first_name.errors.0 }}
+                            </div>
                         {% endif %}
                     </div>
                     <div class="col-6">
-                        <label class="form-label fw-semibold">{{ form.last_name.label }}</label>
+                        <label class="form-label fw-semibold small">
+                            {{ form.last_name.label }} <span class="text-danger">*</span>
+                        </label>
                         {{ form.last_name }}
                         {% if form.last_name.errors %}
-                            <div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>
+                            <div class="text-danger small mt-1">
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ form.last_name.errors.0 }}
+                            </div>
                         {% endif %}
                     </div>
                 </div>
 
+                <!-- Email -->
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">{{ form.email.label }}</label>
-                    {{ form.email }}
-                    {% if form.email.errors %}
-                        <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">{{ form.phone.label }}
-                        <span class="text-muted fw-normal">(ixtiyari)</span>
+                    <label class="form-label fw-semibold small">
+                        {{ form.email.label }} <span class="text-danger">*</span>
                     </label>
-                    {{ form.phone }}
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="bi bi-envelope text-muted"></i>
+                        </span>
+                        <input type="email" name="email" class="form-control border-start-0{% if form.email.errors %} is-invalid{% endif %}"
+                               placeholder="email@example.com"
+                               value="{{ form.email.value|default:'' }}">
+                    </div>
+                    {% if form.email.errors %}
+                        <div class="text-danger small mt-1">
+                            <i class="bi bi-exclamation-circle me-1"></i>{{ form.email.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Telefon -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small">
+                        {{ form.phone.label }} <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="bi bi-telephone text-muted"></i>
+                        </span>
+                        <input type="tel" name="phone" class="form-control border-start-0{% if form.phone.errors %} is-invalid{% endif %}"
+                               placeholder="+994501234567"
+                               value="{{ form.phone.value|default:'' }}">
+                    </div>
                     {% if form.phone.errors %}
-                        <div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>
+                        <div class="text-danger small mt-1">
+                            <i class="bi bi-exclamation-circle me-1"></i>{{ form.phone.errors.0 }}
+                        </div>
                     {% endif %}
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">{{ form.password1.label }}</label>
-                    {{ form.password1 }}
-                    {% if form.password1.errors %}
-                        <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
-                    {% endif %}
+                <!-- Şifrə -->
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <label class="form-label fw-semibold small">
+                            {{ form.password1.label }} <span class="text-danger">*</span>
+                        </label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}
+                            <div class="text-danger small mt-1">
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ form.password1.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label fw-semibold small">
+                            {{ form.password2.label }} <span class="text-danger">*</span>
+                        </label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}
+                            <div class="text-danger small mt-1">
+                                <i class="bi bi-exclamation-circle me-1"></i>{{ form.password2.errors.0 }}
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
 
+                <!-- Ödəniş modeli -->
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">{{ form.password2.label }}</label>
-                    {{ form.password2 }}
-                    {% if form.password2.errors %}
-                        <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
-                    {% endif %}
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label fw-semibold">{{ form.payment_model.label }}</label>
+                    <label class="form-label fw-semibold small">
+                        {{ form.payment_model.label }} <span class="text-danger">*</span>
+                    </label>
                     <div class="d-flex gap-3 mt-1">
                         {% for radio in form.payment_model %}
                             <div class="form-check">
                                 {{ radio.tag }}
-                                <label class="form-check-label" for="{{ radio.id_for_label }}">
+                                <label class="form-check-label small" for="{{ radio.id_for_label }}">
                                     {{ radio.choice_label }}
                                 </label>
                             </div>
@@ -90,18 +139,91 @@
                     {% endif %}
                 </div>
 
-                <div class="mb-4">
-                    <label class="form-label fw-semibold">{{ form.lessons_per_week.label }}</label>
-                    {{ form.lessons_per_week }}
-                    <div class="form-text text-muted">Həftəlik dərs saatı: <strong id="weekly-price">50 AZN</strong></div>
+                <!-- Həftəlik dərs sayı + Aylıq ödəniş kalkulyatoru -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small" for="{{ form.lessons_per_week.id_for_label }}">
+                        {{ form.lessons_per_week.label }} <span class="text-danger">*</span>
+                    </label>
+
+                    <!-- Dərs sayı seçici -->
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <button type="button" class="btn btn-outline-secondary btn-sm px-3" id="btn-decrease">
+                            <i class="bi bi-dash-lg"></i>
+                        </button>
+                        <input type="number" name="lessons_per_week"
+                               id="{{ form.lessons_per_week.id_for_label }}"
+                               class="form-control text-center fw-bold fs-5{% if form.lessons_per_week.errors %} is-invalid{% endif %}"
+                               style="width:80px"
+                               min="1" max="7"
+                               value="{{ form.lessons_per_week.value|default:'2' }}">
+                        <button type="button" class="btn btn-outline-secondary btn-sm px-3" id="btn-increase">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                        <span class="text-muted small">dərs / həftə</span>
+                    </div>
                     {% if form.lessons_per_week.errors %}
-                        <div class="text-danger small mt-1">{{ form.lessons_per_week.errors.0 }}</div>
+                        <div class="text-danger small mb-2">
+                            <i class="bi bi-exclamation-circle me-1"></i>{{ form.lessons_per_week.errors.0 }}
+                        </div>
+                    {% endif %}
+
+                    <!-- Aylıq ödəniş xülasəsi -->
+                    <div class="rounded-3 p-3 border border-success border-opacity-50 bg-success bg-opacity-10" id="payment-summary">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="small text-muted mb-1">
+                                    <i class="bi bi-calculator me-1"></i>Aylıq ödəniş hesablaması
+                                </div>
+                                <div class="small text-muted" id="calc-formula">
+                                    2 dərs × 4 həftə × 25 AZN
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <div class="small text-muted">Aylıq məbləğ</div>
+                                <div class="fw-bold fs-4 text-success" id="monthly-price">200 AZN</div>
+                            </div>
+                        </div>
+                        <hr class="my-2 border-success border-opacity-25">
+                        <div class="row text-center">
+                            <div class="col-4 border-end border-success border-opacity-25">
+                                <div class="small text-muted">Həftəlik</div>
+                                <div class="fw-semibold text-success" id="weekly-price">50 AZN</div>
+                            </div>
+                            <div class="col-4 border-end border-success border-opacity-25">
+                                <div class="small text-muted">Dərs qiyməti</div>
+                                <div class="fw-semibold text-success">25 AZN</div>
+                            </div>
+                            <div class="col-4">
+                                <div class="small text-muted">Həftəlik dərs</div>
+                                <div class="fw-semibold text-success" id="wpw-display">2 dəfə</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Qeyd -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold small">
+                        {{ form.notes.label }}
+                        <span class="text-muted fw-normal">(ixtiyari)</span>
+                    </label>
+                    {{ form.notes }}
+                    {% if form.notes.errors %}
+                        <div class="text-danger small mt-1">
+                            <i class="bi bi-exclamation-circle me-1"></i>{{ form.notes.errors.0 }}
+                        </div>
                     {% endif %}
                 </div>
 
+                <!-- Qeydiyyat düyməsi -->
                 <button type="submit" class="btn btn-primary btn-lg w-100 fw-semibold">
                     <i class="bi bi-person-plus me-2"></i>Qeydiyyatdan keç
                 </button>
+
+                <p class="text-center text-muted small mt-2 mb-0">
+                    <i class="bi bi-shield-check me-1 text-success"></i>
+                    Müəllim tərəfindən təsdiqlənəcək
+                </p>
             </form>
 
             <hr class="my-4">
@@ -109,6 +231,7 @@
                 Artıq hesabınız var?
                 <a href="{% url 'account_login' %}" class="text-decoration-none fw-semibold">Daxil olun</a>
             </p>
+
         </div>
     </div>
 </div>
@@ -116,13 +239,38 @@
 
 {% block extra_js %}
 <script>
-    const lessonsInput = document.getElementById('{{ form.lessons_per_week.id_for_label }}');
-    const priceDisplay = document.getElementById('weekly-price');
-    if (lessonsInput && priceDisplay) {
-        lessonsInput.addEventListener('input', function() {
-            const lessons = parseInt(this.value) || 0;
-            priceDisplay.textContent = (lessons * 25) + ' AZN';
-        });
+(function () {
+    const LESSON_PRICE = 25;
+    const WEEKS_PER_MONTH = 4;
+
+    const input   = document.getElementById('{{ form.lessons_per_week.id_for_label }}');
+    const btnDec  = document.getElementById('btn-decrease');
+    const btnInc  = document.getElementById('btn-increase');
+
+    const elMonthly = document.getElementById('monthly-price');
+    const elWeekly  = document.getElementById('weekly-price');
+    const elFormula = document.getElementById('calc-formula');
+    const elWpw     = document.getElementById('wpw-display');
+
+    function updatePrices() {
+        const n = Math.min(7, Math.max(1, parseInt(input.value) || 1));
+        input.value = n;
+
+        const weekly  = n * LESSON_PRICE;
+        const monthly = n * WEEKS_PER_MONTH * LESSON_PRICE;
+
+        elMonthly.textContent = monthly + ' AZN';
+        elWeekly.textContent  = weekly  + ' AZN';
+        elFormula.textContent = n + ' dərs × ' + WEEKS_PER_MONTH + ' həftə × ' + LESSON_PRICE + ' AZN';
+        elWpw.textContent     = n + ' dəfə';
     }
+
+    if (input) {
+        input.addEventListener('input', updatePrices);
+        btnDec && btnDec.addEventListener('click', function () { input.value = Math.max(1, parseInt(input.value || 1) - 1); updatePrices(); });
+        btnInc && btnInc.addEventListener('click', function () { input.value = Math.min(7, parseInt(input.value || 1) + 1); updatePrices(); });
+        updatePrices();
+    }
+})();
 </script>
 {% endblock %}
