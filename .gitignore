@@ -1,9 +1,9 @@
-# Python
+# Python    
 __pycache__/
-*.py[cod]
-*$py.class
-*.pyc
-*.pyo
+*.py[cod]   
+*$py.class  
+*.pyc       
+*.pyo       
 *.pyd
 .Python
 
