@@ -1,125 +1,214 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 
 {% block title %}Pəncərəm — LMS Platform{% endblock %}
 
-{% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 fw-bold">Salam, {{ request.user.first_name }}! 👋</h1>
-    <a href="{% url 'bookings:create' %}" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-2"></i>Dərs rezerv et
-    </a>
+{% block breadcrumb %}
+<div class="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Salam, {{ request.user.first_name }} 👋</h1>
+        <p class="mt-1.5 text-sm text-slate-500">Tədris panelinə xoş gəldiniz</p>
+    </div>
+    <div class="flex items-center gap-3">
+        <div class="hidden sm:flex items-center gap-2.5 rounded-xl border border-slate-200/60 bg-white px-4 py-2.5 text-xs text-slate-500 shadow-sm"
+             x-data="liveClock()" x-init="start()">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span x-text="date"></span>
+            <span class="text-slate-300">|</span>
+            <span class="font-semibold text-slate-700" x-text="time"></span>
+        </div>
+        <a href="{% url 'bookings:create' %}"
+           class="inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:opacity-90"
+           style="background:linear-gradient(135deg,#6366f1,#4f46e5)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            Dərs rezerv et
+        </a>
+    </div>
 </div>
+{% endblock %}
 
-<!-- Yaxınlaşan dərslər -->
-<div class="row g-4 mb-4">
-    <div class="col-12">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-transparent fw-semibold border-bottom">
-                <i class="bi bi-calendar-check me-2 text-primary"></i>Yaxınlaşan Dərslər
+{% block content %}
+{# ── Profile + KPI ── #}
+<div class="grid grid-cols-1 xl:grid-cols-4 gap-5 mb-8">
+    <div class="card overflow-hidden">
+        <div class="h-[72px]" style="background:linear-gradient(135deg,#6366f1,#4f46e5,#4338ca)"></div>
+        <div class="px-5 pb-5 text-center" style="margin-top:-32px">
+            {% if request.user.avatar %}
+                <img src="{{ request.user.avatar.url }}" alt="Avatar"
+                     class="mx-auto h-16 w-16 rounded-full border-[3px] border-white object-cover" />
+            {% else %}
+                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-white text-xl font-bold text-white"
+                     style="background:linear-gradient(135deg,#6366f1,#4f46e5)">
+                    {{ request.user.first_name|first|upper }}
+                </div>
+            {% endif %}
+            <h3 class="mt-3 text-sm font-semibold text-slate-900">{{ request.user.get_full_name }}</h3>
+            <p class="mt-0.5 text-xs text-slate-400">Tələbə</p>
+            <div class="mt-3 flex items-center justify-center">
+                <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700">
+                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>Aktiv
+                </span>
             </div>
-            <div class="card-body p-0">
-                {% if upcoming_lessons %}
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Tarix / Saat</th>
-                                    <th>Mövzu</th>
-                                    <th>Status</th>
-                                    <th>Meet Linki</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for booking in upcoming_lessons %}
-                                <tr>
-                                    <td class="fw-semibold">{{ booking.slot.start_time|date:"d M Y, H:i" }}</td>
-                                    <td>{{ booking.topic|default:"—" }}</td>
-                                    <td>
-                                        <span class="badge bg-success">{{ booking.get_status_display }}</span>
-                                    </td>
-                                    <td>
-                                        {% if booking.meet_link %}
-                                            <a href="{{ booking.meet_link }}" target="_blank"
-                                               class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-camera-video me-1"></i>Qoşul
-                                            </a>
-                                        {% else %}
-                                            <span class="text-muted small">Gözlənilir...</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+        </div>
+    </div>
+
+    <div class="xl:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div class="card p-5">
+            <div class="flex items-center gap-4">
+                <div class="flex shrink-0 items-center justify-center rounded-xl bg-primary-500 text-white" style="width:44px;height:44px">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-slate-900" x-data="counter({{ upcoming_lessons|length }})" x-text="display">0</p>
+                    <p class="mt-0.5 text-xs font-medium text-slate-500">Yaxınlaşan Dərslər</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-5">
+            <div class="flex items-center gap-4">
+                <div class="flex shrink-0 items-center justify-center rounded-xl bg-emerald-500 text-white" style="width:44px;height:44px">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-slate-900" x-data="counter({{ completed_lessons|default:0 }})" x-text="display">0</p>
+                    <p class="mt-0.5 text-xs font-medium text-slate-500">Tamamlanmış Dərslər</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-5">
+            <div class="flex items-center gap-4">
+                <div class="flex shrink-0 items-center justify-center rounded-xl bg-violet-500 text-white" style="width:44px;height:44px">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                </div>
+                <div>
+                    <div class="flex items-baseline gap-1">
+                        <p class="text-2xl font-bold text-slate-900" x-data="counter({{ total_paid|default:0 }})" x-text="display">0</p>
+                        <span class="text-sm font-bold text-slate-400">₼</span>
                     </div>
-                    <div class="p-3 border-top">
-                        <a href="{% url 'bookings:list' %}" class="text-decoration-none small">
-                            <i class="bi bi-arrow-right me-1"></i>Bütün dərsləri gör
-                        </a>
-                    </div>
-                {% else %}
-                    <div class="text-center py-4 text-muted">
-                        <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
-                        <p class="mb-2">Yaxınlaşan dərs yoxdur.</p>
-                        <a href="{% url 'bookings:create' %}" class="btn btn-sm btn-primary">
-                            <i class="bi bi-plus-lg me-1"></i>Rezervasiya et
-                        </a>
-                    </div>
-                {% endif %}
+                    <p class="mt-0.5 text-xs font-medium text-slate-500">Ümumi Ödəniş</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Son ödənişlər -->
-<div class="card border-0 shadow-sm">
-    <div class="card-header bg-transparent fw-semibold border-bottom">
-        <i class="bi bi-receipt me-2 text-success"></i>Son Ödənişlər
-    </div>
-    <div class="card-body p-0">
-        {% if recent_payments %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Faktura</th>
-                            <th>Məbləğ</th>
-                            <th>Status</th>
-                            <th>Tarix</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for payment in recent_payments %}
-                        <tr>
-                            <td><code>{{ payment.invoice_number }}</code></td>
-                            <td class="fw-bold">{{ payment.amount }} AZN</td>
-                            <td>
-                                <span class="badge
-                                    {% if payment.status == 'completed' %}bg-success
-                                    {% elif payment.status == 'overdue' %}bg-danger
-                                    {% else %}bg-warning text-dark{% endif %}">
-                                    {{ payment.get_status_display }}
-                                </span>
-                            </td>
-                            <td class="text-muted small">
-                                {{ payment.paid_at|date:"d.m.Y"|default:payment.created_at|date:"d.m.Y" }}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="p-3 border-top">
-                <a href="{% url 'payments:list' %}" class="text-decoration-none small">
-                    <i class="bi bi-arrow-right me-1"></i>Bütün ödənişləri gör
+{# ── Lessons + Payments ── #}
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+    <div class="card">
+        <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+            <h3 class="text-sm font-semibold text-slate-900">Yaxınlaşan Dərslər</h3>
+            <a href="{% url 'bookings:list' %}" class="text-xs font-semibold text-primary-600 hover:text-primary-700 transition">Hamısı →</a>
+        </div>
+        {% if upcoming_lessons %}
+        <div class="divide-y divide-slate-100">
+            {% for booking in upcoming_lessons %}
+            <div class="flex items-center gap-4 px-6 py-4 transition hover:bg-slate-50/80">
+                <div class="flex shrink-0 flex-col items-center justify-center rounded-xl border border-primary-100 bg-primary-50" style="width:48px;height:48px">
+                    <span class="text-sm font-bold leading-none text-primary-700">{{ booking.slot.start_time|date:"d" }}</span>
+                    <span class="mt-0.5 text-[9px] font-semibold uppercase text-primary-500">{{ booking.slot.start_time|date:"M" }}</span>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-medium text-slate-700">{{ booking.topic|default:"Dərs" }}</p>
+                    <p class="mt-0.5 text-xs text-slate-400">{{ booking.slot.start_time|date:"H:i" }} · {{ booking.slot.start_time|date:"l" }}</p>
+                </div>
+                {% if booking.meet_link %}
+                <a href="{{ booking.meet_link }}" target="_blank" rel="noopener"
+                   class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-semibold text-emerald-700 transition hover:bg-emerald-100">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+                    Qoşul
                 </a>
+                {% else %}
+                <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-500">
+                    <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>Gözlənilir
+                </span>
+                {% endif %}
             </div>
+            {% endfor %}
+        </div>
         {% else %}
-            <div class="text-center py-4 text-muted">
-                <i class="bi bi-receipt fs-2 d-block mb-2"></i>
-                Hələ ödəniş yoxdur.
+        <div class="px-6 py-16 text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
             </div>
+            <p class="mt-3 text-sm font-medium text-slate-500">Yaxınlaşan dərs yoxdur</p>
+            <a href="{% url 'bookings:create' %}" class="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-primary-600 hover:text-primary-700 transition">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                Rezervasiya et
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+            <h3 class="text-sm font-semibold text-slate-900">Son Ödənişlər</h3>
+            <a href="{% url 'payments:list' %}" class="text-xs font-semibold text-primary-600 hover:text-primary-700 transition">Hamısı →</a>
+        </div>
+        {% if recent_payments %}
+        <div class="divide-y divide-slate-100">
+            {% for payment in recent_payments %}
+            <div class="flex items-center gap-4 px-6 py-4 transition hover:bg-slate-50/80">
+                <div class="flex shrink-0 items-center justify-center rounded-xl
+                    {% if payment.status == 'completed' %}bg-emerald-50 text-emerald-600
+                    {% elif payment.status == 'overdue' %}bg-red-50 text-red-600
+                    {% else %}bg-amber-50 text-amber-600{% endif %}" style="width:40px;height:40px">
+                    {% if payment.status == 'completed' %}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    {% else %}
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    {% endif %}
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-semibold text-slate-900">{{ payment.amount }} ₼</p>
+                    <p class="mt-0.5 text-xs text-slate-400">{{ payment.paid_at|date:"d.m.Y"|default:payment.created_at|date:"d.m.Y" }}</p>
+                </div>
+                <span class="inline-flex shrink-0 items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold
+                    {% if payment.status == 'completed' %}border-emerald-200 bg-emerald-50 text-emerald-700
+                    {% elif payment.status == 'overdue' %}border-red-200 bg-red-50 text-red-700
+                    {% else %}border-amber-200 bg-amber-50 text-amber-700{% endif %}">
+                    {{ payment.get_status_display }}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="px-6 py-16 text-center">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+            </div>
+            <p class="mt-3 text-sm font-medium text-slate-500">Hələ ödəniş yoxdur</p>
+        </div>
         {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function liveClock() {
+    const m = ['Yan','Fev','Mar','Apr','May','İyn','İyl','Avq','Sen','Okt','Noy','Dek'];
+    return {
+        time: '', date: '',
+        start() { this.tick(); setInterval(() => this.tick(), 1000); },
+        tick() {
+            const n = new Date();
+            this.time = n.toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+            this.date = n.getDate()+' '+m[n.getMonth()]+' '+n.getFullYear();
+        }
+    };
+}
+function counter(target) {
+    return {
+        display: '0',
+        init() {
+            const t = parseInt(target)||0;
+            if(!t){this.display='0';return;}
+            const dur=500, st=performance.now();
+            const go=(ts)=>{const p=Math.min((ts-st)/dur,1);this.display=Math.round((1-Math.pow(1-p,3))*t).toLocaleString('az-AZ');if(p<1)requestAnimationFrame(go);};
+            requestAnimationFrame(go);
+        }
+    };
+}
+</script>
 {% endblock %}

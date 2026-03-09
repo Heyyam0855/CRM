@@ -3,100 +3,104 @@
 {% block title %}Qiymətləndirmələr — LMS{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 fw-bold">Qiymətləndirmələr</h1>
+<div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-slate-900">Qiymətləndirmələr</h1>
     {% if request.user.is_teacher %}
-    <a href="{% url 'assessments:create' %}" class="btn btn-primary">
-        <i class="bi bi-plus-lg me-2"></i>Yeni Qiymətləndirmə
+    <a href="{% url 'assessments:create' %}" class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        Yeni Qiymətləndirmə
     </a>
     {% endif %}
 </div>
 
-<div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
-        {% if assessments %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            {% if request.user.is_teacher %}<th>Tələbə</th>{% endif %}
-                            <th>Başlıq</th>
-                            <th>Növ</th>
-                            <th>Bal</th>
-                            <th>Son tarix</th>
-                            <th>Status</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for assessment in assessments %}
-                        <tr>
+<div class="card">
+    {% if assessments %}
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="bg-slate-50/60 text-left">
+                    {% if request.user.is_teacher %}<th class="px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider">Tələbə</th>{% endif %}
+                    <th class="px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider">Başlıq</th>
+                    <th class="px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider">Növ</th>
+                    <th class="px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider">Bal</th>
+                    <th class="px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider">Son tarix</th>
+                    <th class="px-5 py-3 font-medium text-slate-500 text-xs uppercase tracking-wider">Status</th>
+                    <th class="px-5 py-3"></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for assessment in assessments %}
+                <tr class="hover:bg-slate-50 transition-colors">
+                    {% if request.user.is_teacher %}
+                    <td class="px-5 py-3.5 font-medium text-slate-900 whitespace-nowrap">{{ assessment.student.get_full_name }}</td>
+                    {% endif %}
+                    <td class="px-5 py-3.5 text-slate-700">{{ assessment.title }}</td>
+                    <td class="px-5 py-3.5">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">{{ assessment.get_type_display }}</span>
+                    </td>
+                    <td class="px-5 py-3.5">
+                        {% if assessment.score is not None %}
+                        <span class="font-semibold
+                            {% if assessment.score >= 85 %}text-emerald-600
+                            {% elif assessment.score >= 60 %}text-amber-600
+                            {% else %}text-red-600{% endif %}">
+                            {{ assessment.score }} / {{ assessment.max_score }}
+                        </span>
+                        {% else %}
+                        <span class="text-slate-400">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-5 py-3.5 text-slate-700 whitespace-nowrap">
+                        {% if assessment.due_date %}
+                            {{ assessment.due_date|date:"d M Y, H:i" }}
+                        {% else %}
+                            <span class="text-slate-400">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-5 py-3.5">
+                        {% if assessment.score is not None %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Qiymətləndirilib</span>
+                        {% elif assessment.submitted_at %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-100 text-sky-800">Göndərilib</span>
+                        {% else %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">Gözlənilir</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-5 py-3.5">
+                        <div class="flex items-center gap-1">
                             {% if request.user.is_teacher %}
-                            <td class="fw-semibold">{{ assessment.student.get_full_name }}</td>
+                            <a href="{% url 'assessments:grade' assessment.pk %}"
+                               class="inline-flex items-center justify-center w-8 h-8 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+                               title="Qiymət ver">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
+                            </a>
                             {% endif %}
-                            <td>{{ assessment.title }}</td>
-                            <td>
-                                <span class="badge bg-secondary">{{ assessment.get_type_display }}</span>
-                            </td>
-                            <td>
-                                {% if assessment.score is not None %}
-                                    <span class="fw-semibold
-                                        {% if assessment.score >= 85 %}text-success
-                                        {% elif assessment.score >= 60 %}text-warning
-                                        {% else %}text-danger{% endif %}">
-                                        {{ assessment.score }} / {{ assessment.max_score }}
-                                    </span>
-                                {% else %}
-                                    <span class="text-muted">—</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if assessment.due_date %}
-                                    {{ assessment.due_date|date:"d M Y, H:i" }}
-                                {% else %}
-                                    <span class="text-muted">—</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if assessment.score is not None %}
-                                    <span class="badge bg-success">Qiymətləndirilib</span>
-                                {% elif assessment.submitted_at %}
-                                    <span class="badge bg-info">Göndərilib</span>
-                                {% else %}
-                                    <span class="badge bg-warning text-dark">Gözlənilir</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if request.user.is_teacher %}
-                                    <a href="{% url 'assessments:grade' assessment.pk %}"
-                                       class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                {% endif %}
-                                {% if assessment.submission_url %}
-                                    <a href="{{ assessment.submission_url }}" target="_blank"
-                                       class="btn btn-sm btn-outline-secondary">
-                                        <i class="bi bi-github"></i>
-                                    </a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% include 'partials/pagination.html' with page_obj=page_obj %}
-        {% else %}
-            <div class="text-center py-5 text-muted">
-                <i class="bi bi-clipboard-check fs-1 d-block mb-3"></i>
-                <p>Hələ heç bir qiymətləndirmə yoxdur.</p>
-                {% if request.user.is_teacher %}
-                <a href="{% url 'assessments:create' %}" class="btn btn-primary">
-                    <i class="bi bi-plus-lg me-2"></i>İlk Qiymətləndirməni Yarat
-                </a>
-                {% endif %}
-            </div>
+                            {% if assessment.submission_url %}
+                            <a href="{{ assessment.submission_url }}" target="_blank" rel="noopener"
+                               class="inline-flex items-center justify-center w-8 h-8 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                               title="GitHub">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include 'partials/pagination.html' with page_obj=page_obj %}
+    {% else %}
+    <div class="text-center py-12">
+        <svg class="w-12 h-12 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.9-4.414c.376.023.75.05 1.124.08 1.131.094 1.976 1.057 1.976 2.192V16.5A2.25 2.25 0 0 1 18 18.75h-2.25m-7.5-10.5H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V18.75m-7.5-10.5h6.375c.621 0 1.125.504 1.125 1.125v9.375m-8.25-3 1.5 1.5 3-3.75"/></svg>
+        <p class="text-sm text-slate-500 mb-3">Hələ heç bir qiymətləndirmə yoxdur.</p>
+        {% if request.user.is_teacher %}
+        <a href="{% url 'assessments:create' %}" class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            İlk Qiymətləndirməni Yarat
+        </a>
         {% endif %}
     </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -3,22 +3,23 @@
 {% block title %}Çıxış — LMS Platform{% endblock %}
 
 {% block content %}
-<div class="min-vh-100 d-flex align-items-center justify-content-center">
-    <div class="card shadow-sm border-0" style="width:440px">
-        <div class="card-body p-5 text-center">
-            <i class="bi bi-box-arrow-right text-warning" style="font-size:3rem"></i>
-            <h3 class="fw-bold mt-3">Çıxış etmək istəyirsiniz?</h3>
-            <p class="text-muted">Hesabınızdan çıxmaq üçün təsdiq edin.</p>
-            <form method="post" action="{% url 'account_logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-lg px-5">
-                    <i class="bi bi-box-arrow-right me-2"></i>Çıxış et
-                </button>
-                <a href="{% url 'analytics:dashboard' %}" class="btn btn-outline-secondary btn-lg px-5 ms-2">
-                    Geri dön
-                </a>
-            </form>
+<div class="min-h-screen flex items-center justify-center px-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-8 text-center">
+        <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/></svg>
         </div>
+        <h1 class="text-2xl font-bold text-slate-900 mb-2">Çıxış etmək istəyirsiniz?</h1>
+        <p class="text-slate-500 mb-6">Hesabınızdan çıxmaq üçün təsdiq edin.</p>
+        <form method="post" action="{% url 'account_logout' %}" class="flex items-center justify-center gap-3">
+            {% csrf_token %}
+            <button type="submit" class="px-6 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-300 transition-colors flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"/></svg>
+                Çıxış et
+            </button>
+            <a href="{% url 'analytics:dashboard' %}" class="px-6 py-2.5 border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition-colors">
+                Geri dön
+            </a>
+        </form>
     </div>
 </div>
 {% endblock %}

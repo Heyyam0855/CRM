@@ -4,187 +4,187 @@
 
 {% block content %}
 <!-- Başlıq -->
-<div class="d-flex justify-content-between align-items-start mb-4">
+<div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
     <div>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'courses:list' %}">Kurslar</a></li>
-                <li class="breadcrumb-item active">{{ course.title }}</li>
-            </ol>
+        <nav class="flex items-center gap-1.5 text-sm text-slate-500 mb-2">
+            <a href="{% url 'courses:list' %}" class="hover:text-primary-600 transition-colors">Kurslar</a>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8.25 4.5 7.5 7.5-7.5 7.5"/></svg>
+            <span class="text-slate-900 font-medium">{{ course.title }}</span>
         </nav>
-        <h1 class="h3 fw-bold mb-1">{{ course.title }}</h1>
-        <div class="d-flex gap-2 align-items-center">
+        <h1 class="text-2xl font-bold text-slate-900 mb-2">{{ course.title }}</h1>
+        <div class="flex flex-wrap gap-2">
             {% if course.category %}
-            <span class="badge bg-secondary">{{ course.category.name }}</span>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800">{{ course.category.name }}</span>
             {% endif %}
-            <span class="badge
-                {% if course.level == 'beginner' %}bg-success
-                {% elif course.level == 'intermediate' %}bg-warning text-dark
-                {% else %}bg-danger{% endif %}">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                {% if course.level == 'beginner' %}bg-emerald-100 text-emerald-800
+                {% elif course.level == 'intermediate' %}bg-amber-100 text-amber-800
+                {% else %}bg-red-100 text-red-800{% endif %}">
                 {{ course.get_level_display }}
             </span>
-            <span class="badge bg-info text-dark">{{ course.duration_weeks }} həftə</span>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-100 text-sky-800">{{ course.duration_weeks }} həftə</span>
         </div>
     </div>
     {% if request.user.is_teacher %}
-    <a href="/admin/courses/course/{{ course.pk }}/change/" class="btn btn-outline-secondary btn-sm">
-        <i class="bi bi-pencil me-1"></i>Redaktə et
+    <a href="/admin/courses/course/{{ course.pk }}/change/" class="inline-flex items-center gap-1.5 px-3 py-2 border border-slate-300 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
+        Redaktə et
     </a>
     {% endif %}
 </div>
 
-<div class="row g-4">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Sol: Kurs məzmunu -->
-    <div class="col-lg-8">
+    <div class="lg:col-span-2 space-y-6">
         {% if course.cover_image %}
-        <img src="{{ course.cover_image.url }}" class="img-fluid rounded mb-4 w-100"
-             alt="{{ course.title }}" style="max-height:300px; object-fit:cover;">
+        <img src="{{ course.cover_image.url }}" class="w-full rounded-xl object-cover max-h-72"
+             alt="{{ course.title }}">
         {% endif %}
 
         <!-- Təsvir -->
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body">
-                <h5 class="fw-semibold mb-3"><i class="bi bi-info-circle me-2 text-primary"></i>Kurs haqqında</h5>
-                <p class="text-muted">{{ course.description }}</p>
-            </div>
+        <div class="card p-5">
+            <h3 class="flex items-center gap-2 font-semibold text-slate-900 mb-3">
+                <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+                Kurs haqqında
+            </h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{{ course.description }}</p>
         </div>
 
         {% if course.objectives %}
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body">
-                <h5 class="fw-semibold mb-3"><i class="bi bi-check2-circle me-2 text-success"></i>Kurs məqsədləri</h5>
-                <p class="text-muted">{{ course.objectives }}</p>
-            </div>
+        <div class="card p-5">
+            <h3 class="flex items-center gap-2 font-semibold text-slate-900 mb-3">
+                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                Kurs məqsədləri
+            </h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{{ course.objectives }}</p>
         </div>
         {% endif %}
 
         {% if course.prerequisites %}
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body">
-                <h5 class="fw-semibold mb-3"><i class="bi bi-exclamation-circle me-2 text-warning"></i>Ön şərtlər</h5>
-                <p class="text-muted">{{ course.prerequisites }}</p>
-            </div>
+        <div class="card p-5">
+            <h3 class="flex items-center gap-2 font-semibold text-slate-900 mb-3">
+                <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+                Ön şərtlər
+            </h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{{ course.prerequisites }}</p>
         </div>
         {% endif %}
 
-        <!-- Modullar -->
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-bottom py-3">
-                <h5 class="fw-semibold mb-0">
-                    <i class="bi bi-collection me-2 text-primary"></i>Kurs məzmunu
-                </h5>
+        <!-- Modullar — Alpine.js Accordion -->
+        <div class="card">
+            <div class="px-5 py-4 border-b border-slate-200/60">
+                <h3 class="flex items-center gap-2 font-semibold text-slate-900">
+                    <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z"/></svg>
+                    Kurs məzmunu
+                </h3>
             </div>
-            <div class="card-body p-0">
-                {% if course.modules.all %}
-                <div class="accordion accordion-flush" id="modulesAccordion">
-                    {% for module in course.modules.all %}
-                    <div class="accordion-item border-0 border-bottom">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button {% if not forloop.first %}collapsed{% endif %} fw-semibold"
-                                    type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#module{{ module.pk }}">
-                                <i class="bi bi-folder2 me-2 text-primary"></i>
-                                {{ module.title }}
-                                <span class="badge bg-light text-dark ms-2">
-                                    {{ module.lessons.count }} dərs
-                                </span>
-                            </button>
-                        </h2>
-                        <div id="module{{ module.pk }}"
-                             class="accordion-collapse collapse {% if forloop.first %}show{% endif %}">
-                            <div class="accordion-body p-0">
-                                {% if module.lessons.all %}
-                                <ul class="list-group list-group-flush">
-                                    {% for lesson in module.lessons.all %}
-                                    <li class="list-group-item d-flex align-items-center gap-3 px-4 py-3">
-                                        <i class="bi
-                                            {% if lesson.material_type == 'video' %}bi-play-circle-fill text-danger
-                                            {% elif lesson.material_type == 'text' %}bi-file-text text-info
-                                            {% elif lesson.material_type == 'pdf' %}bi-file-pdf text-danger
-                                            {% elif lesson.material_type == 'code' %}bi-code-slash text-success
-                                            {% elif lesson.material_type == 'task' %}bi-check-square text-warning
-                                            {% else %}bi-link-45deg text-secondary{% endif %}
-                                            fs-5"></i>
-                                        <div class="flex-grow-1">
-                                            <span class="fw-medium">{{ lesson.title }}</span>
-                                            {% if lesson.youtube_duration %}
-                                            <small class="text-muted ms-2">{{ lesson.youtube_duration }}</small>
-                                            {% endif %}
-                                        </div>
-                                        {% if lesson.is_free_preview %}
-                                        <span class="badge bg-success">Pulsuz</span>
-                                        {% endif %}
-                                    </li>
-                                    {% endfor %}
-                                </ul>
+            {% if course.modules.all %}
+            <div x-data="{ openModule: 0 }" class="divide-y divide-slate-100">
+                {% for module in course.modules.all %}
+                <div>
+                    <button @click="openModule = openModule === {{ forloop.counter0 }} ? -1 : {{ forloop.counter0 }}"
+                            class="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-2.5">
+                            <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"/></svg>
+                            <span class="font-semibold text-sm text-slate-900">{{ module.title }}</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">{{ module.lessons.count }} dərs</span>
+                        </div>
+                        <svg class="w-5 h-5 text-slate-400 transition-transform duration-200" :class="openModule === {{ forloop.counter0 }} && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>
+                    </button>
+                    <div x-show="openModule === {{ forloop.counter0 }}" x-collapse>
+                        {% if module.lessons.all %}
+                        <div class="divide-y divide-slate-100">
+                            {% for lesson in module.lessons.all %}
+                            <div class="flex items-center gap-3 px-5 py-3 pl-12">
+                                {% if lesson.material_type == 'video' %}
+                                <svg class="w-5 h-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.91 11.672a.375.375 0 0 1 0 .656l-5.603 3.113a.375.375 0 0 1-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112Z"/></svg>
+                                {% elif lesson.material_type == 'text' %}
+                                <svg class="w-5 h-5 text-sky-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+                                {% elif lesson.material_type == 'code' %}
+                                <svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"/></svg>
+                                {% elif lesson.material_type == 'task' %}
+                                <svg class="w-5 h-5 text-amber-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
                                 {% else %}
-                                <p class="text-muted px-4 py-3 mb-0">Bu modulda hələ dərs yoxdur.</p>
+                                <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244"/></svg>
+                                {% endif %}
+                                <div class="flex-1 min-w-0">
+                                    <span class="text-sm font-medium text-slate-700">{{ lesson.title }}</span>
+                                    {% if lesson.youtube_duration %}
+                                    <span class="text-xs text-slate-400 ml-2">{{ lesson.youtube_duration }}</span>
+                                    {% endif %}
+                                </div>
+                                {% if lesson.is_free_preview %}
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">Pulsuz</span>
                                 {% endif %}
                             </div>
+                            {% endfor %}
                         </div>
+                        {% else %}
+                        <p class="text-sm text-slate-400 px-5 py-3 pl-12">Bu modulda hələ dərs yoxdur.</p>
+                        {% endif %}
                     </div>
-                    {% endfor %}
                 </div>
-                {% else %}
-                <div class="text-center py-4">
-                    <i class="bi bi-collection text-muted" style="font-size:2.5rem;"></i>
-                    <p class="text-muted mt-2 mb-0">Hələ modul əlavə edilməyib.</p>
-                </div>
-                {% endif %}
+                {% endfor %}
             </div>
+            {% else %}
+            <div class="text-center py-10">
+                <svg class="w-10 h-10 mx-auto mb-2 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z"/></svg>
+                <p class="text-sm text-slate-400">Hələ modul əlavə edilməyib.</p>
+            </div>
+            {% endif %}
         </div>
     </div>
 
     <!-- Sağ: Qeydiyyat kartı -->
-    <div class="col-lg-4">
-        <div class="card border-0 shadow-sm sticky-top" style="top:80px;">
-            <div class="card-body">
-                <div class="text-center mb-3">
-                    <span class="fs-3 fw-bold text-primary">25 AZN</span>
-                    <span class="text-muted">/dərs</span>
-                </div>
-
-                {% if request.user.is_student_user %}
-                    {% if enrollment %}
-                    <div class="alert alert-success text-center py-2 mb-3">
-                        <i class="bi bi-check-circle me-1"></i>Qeydiyyatlısınız
-                    </div>
-                    <a href="{% url 'bookings:create' %}" class="btn btn-primary w-100">
-                        <i class="bi bi-calendar-plus me-2"></i>Dərs rezerv et
-                    </a>
-                    {% else %}
-                    <a href="{% url 'bookings:create' %}" class="btn btn-primary w-100">
-                        <i class="bi bi-person-plus me-2"></i>Kursa qeydiyyat
-                    </a>
-                    {% endif %}
-                {% elif request.user.is_teacher %}
-                <div class="d-grid gap-2">
-                    <a href="/admin/courses/course/{{ course.pk }}/change/" class="btn btn-outline-primary">
-                        <i class="bi bi-pencil me-1"></i>Kursu redaktə et
-                    </a>
-                </div>
-                {% endif %}
-
-                <hr>
-                <ul class="list-unstyled mb-0 text-muted small">
-                    <li class="mb-2">
-                        <i class="bi bi-collection me-2 text-primary"></i>
-                        {{ course.modules.count }} modul
-                    </li>
-                    <li class="mb-2">
-                        <i class="bi bi-clock me-2 text-primary"></i>
-                        {{ course.duration_weeks }} həftə
-                    </li>
-                    <li class="mb-2">
-                        <i class="bi bi-bar-chart me-2 text-primary"></i>
-                        {{ course.get_level_display }}
-                    </li>
-                    <li>
-                        <i class="bi bi-camera-video me-2 text-primary"></i>
-                        Online (Zoom / Meet)
-                    </li>
-                </ul>
+    <div class="lg:col-span-1">
+        <div class="card p-5 sticky top-20">
+            <div class="text-center mb-4">
+                <span class="text-3xl font-bold text-primary-600">25 AZN</span>
+                <span class="text-slate-500">/dərs</span>
             </div>
+
+            {% if request.user.is_student_user %}
+                {% if enrollment %}
+                <div class="flex items-center justify-center gap-1.5 p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg text-sm text-emerald-700 font-medium mb-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                    Qeydiyyatlısınız
+                </div>
+                <a href="{% url 'bookings:create' %}" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
+                    Dərs rezerv et
+                </a>
+                {% else %}
+                <a href="{% url 'bookings:create' %}" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"/></svg>
+                    Kursa qeydiyyat
+                </a>
+                {% endif %}
+            {% elif request.user.is_teacher %}
+            <a href="/admin/courses/course/{{ course.pk }}/change/" class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-primary-300 text-primary-600 text-sm font-medium rounded-lg hover:bg-primary-50 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"/></svg>
+                Kursu redaktə et
+            </a>
+            {% endif %}
+
+            <hr class="my-4 border-slate-200/60">
+            <ul class="space-y-3 text-sm text-slate-600">
+                <li class="flex items-center gap-2.5">
+                    <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z"/></svg>
+                    {{ course.modules.count }} modul
+                </li>
+                <li class="flex items-center gap-2.5">
+                    <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+                    {{ course.duration_weeks }} həftə
+                </li>
+                <li class="flex items-center gap-2.5">
+                    <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z"/></svg>
+                    {{ course.get_level_display }}
+                </li>
+                <li class="flex items-center gap-2.5">
+                    <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"/></svg>
+                    Online (Zoom / Meet)
+                </li>
+            </ul>
         </div>
     </div>
 </div>

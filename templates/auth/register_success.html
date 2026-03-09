@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qeydiyyat uğurlu — LMS Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+</head>
+<body class="bg-gradient-to-br from-primary-50 to-primary-100 min-h-screen">
+<div class="max-w-xl mx-auto px-4 py-16">
+    <div class="bg-white rounded-2xl shadow-sm border-t-4 border-emerald-500 p-10 text-center">
+        <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
+            <svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+        </div>
+        <h1 class="text-2xl font-bold text-slate-900 mb-3">Qeydiyyatınız qəbul edildi!</h1>
+        <p class="text-slate-500 mb-6">
+            Müraciətiniz uğurla göndərildi. Sizinlə ən qısa zamanda əlaqə saxlanılacaq.
+            Əlavə sualınız varsa
+            <a href="https://wa.me/994502360901" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">Whatsapp</a>
+            üzərindən yaza bilərsiniz.
+        </p>
+        <a href="{% url 'users:register' %}" class="inline-flex items-center gap-2 px-5 py-2.5 border border-primary-600 text-primary-600 font-medium rounded-lg hover:bg-primary-50 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
+            Əsas səhifəyə qayıt
+        </a>
+    </div>
+</div>
+</body>
+</html>

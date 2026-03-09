@@ -10,14 +10,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev gcc curl \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements/production.txt /app/requirements.txt
-RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY requirements/ /app/requirements/
+RUN pip install --upgrade pip \
+    && pip install -r requirements/base.txt \
+    && pip install -r requirements/production.txt
 
 COPY . /app/
 
-RUN useradd --create-home --shell /bin/bash lmsuser && chown -R lmsuser /app
-USER lmsuser
+COPY entrypoint.sh /app/entrypoint.sh
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+
+RUN useradd --create-home --shell /bin/bash lmsuser \
+    && mkdir -p /app/staticfiles /app/media \
+    && chown -R lmsuser:lmsuser /app
 
 EXPOSE 8000
 
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "config.asgi:application"]
+CMD ["/app/entrypoint.sh"]

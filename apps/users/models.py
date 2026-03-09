@@ -191,3 +191,88 @@ class StudentProfile(BaseModel):
         """Aylıq ödəniş məbləğini hesablayır."""
         from core.utils import calculate_monthly_price
         return calculate_monthly_price(self.lessons_per_week)
+
+
+class RegistrationRequest(BaseModel):
+    """
+    Tələbə qeydiyyat müraciəti.
+    Google Form tipli açıq form — hesab yaradılmır, müəllim təsdiqi gözlənilir.
+    """
+
+    class CoursePackage(models.TextChoices):
+        FRONT_END = 'front_end', 'Front End Development'
+        BACK_END = 'back_end', 'Back End Development'
+        FULL_STACK = 'full_stack', 'Full Stack Development'
+        API_DRIVEN = 'api_driven', 'API (API Driven Development)'
+        DSA = 'dsa', 'DSA (Data Structure and Algorithms)'
+        CYBER_SECURITY = 'cyber_security', 'Cyber Security'
+        PROJECT_MENTORSHIP = 'project_mentorship', 'Project Mentorship'
+        OTHER = 'other', 'Digər'
+
+    class Status(models.TextChoices):
+        PENDING = 'pending', 'Gözləyir'
+        APPROVED = 'approved', 'Təsdiqləndi'
+        REJECTED = 'rejected', 'Rədd edildi'
+
+    full_name = models.CharField(max_length=200, verbose_name='Ad Soyad')
+    email = models.EmailField(verbose_name='Email')
+    phone = models.CharField(
+        max_length=20,
+        validators=[validate_phone_number],
+        verbose_name='Telefon (Whatsapp)'
+    )
+    course_package = models.CharField(
+        max_length=30,
+        choices=CoursePackage.choices,
+        verbose_name='Dərs paketi'
+    )
+    other_course = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name='Digər dərs paketi (əgər "Digər" seçilibsə)'
+    )
+    payment_receipt = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name='Ödəmə məlumatı'
+    )
+    preferred_start_date = models.DateField(
+        verbose_name='Başlamaq istədiyi tarix'
+    )
+    lessons_per_week = models.PositiveSmallIntegerField(
+        default=2,
+        verbose_name='Həftəlik dərs sayı'
+    )
+    github_profile_url = models.URLField(
+        blank=True,
+        verbose_name='GitHub profil linki'
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+        verbose_name='Status'
+    )
+    teacher_notes = models.TextField(
+        blank=True,
+        verbose_name='Müəllim qeydləri'
+    )
+    approved_user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='registration_request',
+        verbose_name='Yaradılmış istifadəçi'
+    )
+
+    class Meta:
+        db_table = 'users_registration_request'
+        verbose_name = 'Qeydiyyat müraciəti'
+        verbose_name_plural = 'Qeydiyyat müraciətləri'
+        ordering = ['-created_at']
+
+    def __str__(self) -> str:
+        pkg = self.get_course_package_display()
+        status = self.get_status_display()
+        return f"{self.full_name} — {pkg} ({status})"

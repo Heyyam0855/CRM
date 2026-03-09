@@ -1,107 +1,257 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 
 {% block title %}İdarəçilik Paneli — LMS{% endblock %}
 
+{% block breadcrumb %}
+<div class="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+    <div>
+        <h1 class="text-2xl font-bold text-slate-900 tracking-tight">İdarəçilik Paneli</h1>
+        <p class="mt-1.5 text-sm text-slate-500">Xoş gəldiniz, {{ request.user.first_name }}. Bütün göstəricilər burada.</p>
+    </div>
+    <div class="hidden sm:flex items-center gap-2.5 rounded-xl border border-slate-200/60 bg-white px-4 py-2.5 text-xs text-slate-500 shadow-sm"
+         x-data="liveClock()" x-init="start()">
+        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span x-text="date"></span>
+        <span class="text-slate-300">|</span>
+        <span class="font-semibold text-slate-700" x-text="time"></span>
+    </div>
+</div>
+{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="h3 fw-bold">İdarəçilik Paneli</h1>
-    <span class="text-muted">{{ request.user.get_full_name }}</span>
+{# ── KPI Cards ── #}
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+    <div class="card p-5">
+        <div class="flex items-center gap-4">
+            <div class="flex shrink-0 items-center justify-center rounded-xl bg-primary-500 text-white" style="width:44px;height:44px">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
+            </div>
+            <div>
+                <p class="text-2xl font-bold text-slate-900" x-data="counter({{ total_students|default:0 }})" x-text="display">0</p>
+                <p class="text-xs font-medium text-slate-500 mt-0.5">Aktiv Tələbələr</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-5">
+        <div class="flex items-center gap-4">
+            <div class="flex shrink-0 items-center justify-center rounded-xl bg-emerald-500 text-white" style="width:44px;height:44px">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+            </div>
+            <div>
+                <p class="text-2xl font-bold text-slate-900" x-data="counter({{ this_month_bookings|default:0 }})" x-text="display">0</p>
+                <p class="text-xs font-medium text-slate-500 mt-0.5">Keçirilən Dərslər</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-5">
+        <div class="flex items-center gap-4">
+            <div class="flex shrink-0 items-center justify-center rounded-xl bg-violet-500 text-white" style="width:44px;height:44px">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div>
+                <div class="flex items-baseline gap-1">
+                    <p class="text-2xl font-bold text-slate-900" x-data="counter({{ monthly_revenue|default:0 }})" x-text="display">0</p>
+                    <span class="text-sm font-bold text-slate-400">₼</span>
+                </div>
+                <p class="text-xs font-medium text-slate-500 mt-0.5">Aylıq Gəlir</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-5">
+        <div class="flex items-center gap-4">
+            <div class="flex shrink-0 items-center justify-center rounded-xl {% if pending_students > 0 %}bg-amber-500{% else %}bg-slate-400{% endif %} text-white" style="width:44px;height:44px">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 019.374 21c-2.331 0-4.512-.645-6.374-1.766z"/></svg>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <p class="text-2xl font-bold text-slate-900" x-data="counter({{ pending_students|default:0 }})" x-text="display">0</p>
+                    {% if pending_students > 0 %}<span class="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>{% endif %}
+                </div>
+                <p class="text-xs font-medium text-slate-500 mt-0.5">Gözləyən Müraciətlər</p>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- KPI Kartları -->
-<div class="row g-3 mb-4">
-    <div class="col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm bg-primary text-white">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <small class="text-white-75 d-block">Aktiv Tələbələr</small>
-                    <h2 class="fw-bold mb-0">{{ total_students }}</h2>
-                </div>
-                <i class="bi bi-people-fill fs-1 opacity-50"></i>
+{# ── Chart + Summary Panel ── #}
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-8">
+    <div class="xl:col-span-2 card">
+        <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+            <h3 class="text-sm font-semibold text-slate-900">Aylıq Statistika</h3>
+            <div class="flex items-center gap-4 text-xs font-medium text-slate-400">
+                <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-primary-500"></span>Gəlir</span>
+                <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>Dərslər</span>
             </div>
         </div>
-    </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm bg-success text-white">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <small class="text-white-75 d-block">Bu ay dərslər</small>
-                    <h2 class="fw-bold mb-0">{{ this_month_bookings }}</h2>
-                </div>
-                <i class="bi bi-calendar-check-fill fs-1 opacity-50"></i>
-            </div>
+        <div class="p-5">
+            <div id="revenue-chart" style="height:300px;min-height:300px"></div>
         </div>
     </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm bg-warning text-dark">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <small class="d-block">Aylıq gəlir</small>
-                    <h2 class="fw-bold mb-0">{{ monthly_revenue }} AZN</h2>
-                </div>
-                <i class="bi bi-currency-exchange fs-1 opacity-50"></i>
-            </div>
+
+    <div class="card">
+        <div class="border-b border-slate-100 px-6 py-4">
+            <h3 class="text-sm font-semibold text-slate-900">Ümumi Baxış</h3>
         </div>
-    </div>
-    <div class="col-sm-6 col-xl-3">
-        <div class="card border-0 shadow-sm {% if pending_students > 0 %}bg-danger text-white{% else %}bg-light{% endif %}">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <small class="d-block {% if pending_students > 0 %}text-white-75{% else %}text-muted{% endif %}">
-                        Gözləyən tələbələr
-                    </small>
-                    <h2 class="fw-bold mb-0">{{ pending_students }}</h2>
+        <div class="divide-y divide-slate-100">
+            <a href="{% url 'users:student-list' %}" class="flex items-center gap-4 px-6 py-4 transition hover:bg-slate-50/80">
+                <div class="flex shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600" style="width:40px;height:40px">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
                 </div>
-                <i class="bi bi-person-plus-fill fs-1 opacity-50"></i>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Tələbələr</p>
+                    <p class="text-lg font-bold text-slate-900">{{ total_students|default:0 }}</p>
+                </div>
+                <svg width="16" height="16" class="text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+            </a>
+            <a href="{% url 'bookings:list' %}" class="flex items-center gap-4 px-6 py-4 transition hover:bg-slate-50/80">
+                <div class="flex shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600" style="width:40px;height:40px">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Bu ay dərslər</p>
+                    <p class="text-lg font-bold text-slate-900">{{ this_month_bookings|default:0 }}</p>
+                </div>
+                <svg width="16" height="16" class="text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+            </a>
+            <a href="{% url 'payments:list' %}" class="flex items-center gap-4 px-6 py-4 transition hover:bg-slate-50/80">
+                <div class="flex shrink-0 items-center justify-center rounded-xl bg-violet-50 text-violet-600" style="width:40px;height:40px">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Aylıq gəlir</p>
+                    <p class="text-lg font-bold text-slate-900">{{ monthly_revenue|default:0 }} <span class="text-sm text-slate-400">₼</span></p>
+                </div>
+                <svg width="16" height="16" class="text-slate-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+            </a>
+            <div class="flex items-center gap-4 px-6 py-4">
+                <div class="flex shrink-0 items-center justify-center rounded-xl {% if overdue_count > 0 %}bg-red-50 text-red-600{% else %}bg-slate-100 text-slate-400{% endif %}" style="width:40px;height:40px">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+                </div>
+                <div class="min-w-0 flex-1">
+                    <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Gecikmiş ödəniş</p>
+                    <p class="text-lg font-bold {% if overdue_count > 0 %}text-red-600{% else %}text-slate-900{% endif %}">{{ overdue_count|default:0 }}</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Yaxınlaşan dərslər -->
-<div class="card border-0 shadow-sm">
-    <div class="card-header bg-transparent fw-semibold border-bottom">
-        <i class="bi bi-calendar3 me-2"></i>Yaxınlaşan Dərslər
+{# ── Upcoming Lessons Table ── #}
+<div class="card">
+    <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+        <h3 class="text-sm font-semibold text-slate-900">Yaxınlaşan Dərslər</h3>
+        <a href="{% url 'bookings:list' %}" class="text-xs font-semibold text-primary-600 hover:text-primary-700 transition">Hamısına bax →</a>
     </div>
-    <div class="card-body p-0">
-        {% if upcoming_bookings %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Tələbə</th>
-                            <th>Tarix / Saat</th>
-                            <th>Mövzu</th>
-                            <th>Meet Linki</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for booking in upcoming_bookings %}
-                        <tr>
-                            <td class="fw-semibold">{{ booking.student.get_full_name }}</td>
-                            <td>{{ booking.slot.start_time|date:"d M Y, H:i" }}</td>
-                            <td>{{ booking.topic|default:"—" }}</td>
-                            <td>
-                                {% if booking.meet_link %}
-                                    <a href="{{ booking.meet_link }}" target="_blank"
-                                       class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-camera-video me-1"></i>Qoşul
-                                    </a>
-                                {% else %}
-                                    <span class="text-muted small">Gözləyir...</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <div class="text-center py-4 text-muted">
-                <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
-                Yaxınlaşan dərs yoxdur
-            </div>
-        {% endif %}
+    {% if upcoming_bookings %}
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead>
+                <tr class="border-b border-slate-100 bg-slate-50/60">
+                    <th class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Tələbə</th>
+                    <th class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Tarix</th>
+                    <th class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Mövzu</th>
+                    <th class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for booking in upcoming_bookings %}
+                <tr class="transition hover:bg-slate-50/60">
+                    <td class="whitespace-nowrap px-6 py-3.5">
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center justify-center rounded-full text-xs font-bold text-white" style="width:32px;height:32px;background:linear-gradient(135deg,#6366f1,#4f46e5)">
+                                {{ booking.student.first_name|first|upper }}
+                            </div>
+                            <span class="text-sm font-medium text-slate-700">{{ booking.student.get_full_name }}</span>
+                        </div>
+                    </td>
+                    <td class="whitespace-nowrap px-6 py-3.5">
+                        <span class="text-sm text-slate-600">{{ booking.slot.start_time|date:"d.m.Y" }}</span>
+                        <span class="ml-1.5 inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-semibold text-slate-600">{{ booking.slot.start_time|date:"H:i" }}</span>
+                    </td>
+                    <td class="px-6 py-3.5 text-sm text-slate-500">{{ booking.topic|default:"—" }}</td>
+                    <td class="px-6 py-3.5">
+                        {% if booking.meet_link %}
+                        <a href="{{ booking.meet_link }}" target="_blank" rel="noopener"
+                           class="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-[11px] font-semibold text-emerald-700 transition hover:bg-emerald-100">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+                            Qoşul
+                        </a>
+                        {% else %}
+                        <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-500">
+                            <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>Gözlənilir
+                        </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+    {% else %}
+    <div class="px-6 py-16 text-center">
+        <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+        </div>
+        <p class="mt-3 text-sm font-medium text-slate-500">Yaxınlaşan dərs yoxdur</p>
+        <p class="mt-1 text-xs text-slate-400">Dərslər bölməsindən yeni dərs planlaşdırın</p>
+    </div>
+    {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function liveClock() {
+    const m = ['Yan','Fev','Mar','Apr','May','İyn','İyl','Avq','Sen','Okt','Noy','Dek'];
+    return {
+        time: '', date: '',
+        start() { this.tick(); setInterval(() => this.tick(), 1000); },
+        tick() {
+            const n = new Date();
+            this.time = n.toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+            this.date = n.getDate()+' '+m[n.getMonth()]+' '+n.getFullYear();
+        }
+    };
+}
+function counter(target) {
+    return {
+        display: '0',
+        init() {
+            const t = parseInt(target)||0;
+            if(!t){this.display='0';return;}
+            const dur=500, st=performance.now();
+            const go=(ts)=>{const p=Math.min((ts-st)/dur,1);this.display=Math.round((1-Math.pow(1-p,3))*t).toLocaleString('az-AZ');if(p<1)requestAnimationFrame(go);};
+            requestAnimationFrame(go);
+        }
+    };
+}
+document.addEventListener('DOMContentLoaded', function() {
+    var el = document.querySelector("#revenue-chart");
+    if (!el) return;
+    new ApexCharts(el, {
+        chart: { type:'area', height:300, toolbar:{show:false}, fontFamily:'Inter,sans-serif', zoom:{enabled:false} },
+        series: [
+            { name:'Gəlir (AZN)', data: {{ monthly_revenue_data|default:"[0,0,0,0,0,0]" }} },
+            { name:'Dərslər', data: {{ monthly_bookings_data|default:"[0,0,0,0,0,0]" }} }
+        ],
+        colors: ['#6366f1','#10b981'],
+        stroke: { width:[2.5,2], curve:'smooth' },
+        fill: { type:'gradient', gradient:{shadeIntensity:1,opacityFrom:0.15,opacityTo:0.01,stops:[0,90,100]} },
+        xaxis: {
+            categories: {{ month_labels|default:"['Yan','Fev','Mar','Apr','May','İyn']" }},
+            labels:{style:{fontSize:'11px',colors:'#94a3b8',fontWeight:500}},
+            axisBorder:{show:false}, axisTicks:{show:false}
+        },
+        yaxis: { labels:{style:{fontSize:'11px',colors:'#94a3b8'}}, min:0, forceNiceScale:true },
+        grid: { borderColor:'#f1f5f9', strokeDashArray:4, xaxis:{lines:{show:false}}, padding:{left:8,right:8} },
+        legend:{show:false}, dataLabels:{enabled:false},
+        tooltip: { theme:'light', style:{fontSize:'12px'}, y:{formatter:function(v,o){return o.seriesIndex===0?v+' AZN':v+' dərs'}} },
+        markers: { size:0, hover:{size:5} },
+        noData: { text:'Hələ məlumat yoxdur', style:{fontSize:'14px',color:'#94a3b8'} }
+    }).render();
+});
+</script>
 {% endblock %}

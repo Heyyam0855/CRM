@@ -1,104 +1,264 @@
-<div class="sidebar bg-dark text-white d-flex flex-column"
-     style="width:250px;min-height:calc(100vh - 56px);position:sticky;top:56px">
-    <div class="p-3">
-        <ul class="nav flex-column gap-1">
+﻿{# ── Desktop Sidebar ── #}
+<aside class="hidden lg:flex flex-col sidebar-transition relative"
+       :class="sidebarOpen ? 'w-[260px]' : 'w-[72px]'"
+       style="background:linear-gradient(180deg,#0f172a 0%,#1e293b 100%)">
 
+    {# ── Header ── #}
+    <div class="flex items-center border-b border-white/[.06]"
+         :class="sidebarOpen ? 'h-[64px] justify-between px-5' : 'h-[64px] justify-center px-0'">
+        <a href="/" class="flex items-center gap-3 overflow-hidden">
+            <div class="flex shrink-0 items-center justify-center rounded-xl text-white"
+                 style="width:38px;height:38px;background:linear-gradient(135deg,#6366f1,#4f46e5)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422A12.083 12.083 0 0121 12.76V17l-9 5-9-5v-4.24c0-.97.44-1.89 1.19-2.49L12 14z"/></svg>
+            </div>
+            <span class="text-[15px] font-bold text-white whitespace-nowrap tracking-tight" x-show="sidebarOpen" x-transition.opacity>LMS Platform</span>
+        </a>
+        <button @click="sidebarOpen = !sidebarOpen"
+                class="flex shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-white/[.06] hover:text-slate-300"
+                style="width:30px;height:30px"
+                x-show="sidebarOpen" x-transition>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5"/></svg>
+        </button>
+    </div>
+
+    {# ── Navigation ── #}
+    <nav class="flex-1 overflow-y-auto py-5" :class="sidebarOpen ? 'px-3' : 'px-2'" style="color:#94a3b8">
+
+        {% if request.user.is_teacher %}
+        <div class="mb-2 px-3" x-show="sidebarOpen" x-transition.opacity>
+            <span class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-600">Müəllim</span>
+        </div>
+        {% endif %}
+
+        <ul class="space-y-0.5">
             {% if request.user.is_teacher %}
-            <!-- Müəllim menyusu -->
-            <li class="nav-item">
-                <a class="nav-link text-white-50 fw-semibold small text-uppercase px-2 py-1"
-                   style="pointer-events:none">Müəllim</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {% if request.resolver_match.app_name == 'analytics' %}active bg-primary rounded{% endif %}"
-                   href="{% url 'analytics:dashboard' %}">
-                    <i class="bi bi-speedometer2 me-2"></i>Panel
+            <li>
+                <a href="{% url 'analytics:dashboard' %}"
+                   class="sidebar-link {% if request.resolver_match.app_name == 'analytics' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Panel</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {% if request.resolver_match.app_name == 'users' %}active bg-primary rounded{% endif %}"
-                   href="{% url 'users:profile' %}">
-                    <i class="bi bi-people me-2"></i>Tələbələr
+            <li>
+                <a href="{% url 'users:student-list' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'student-list' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Tələbələr</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {% if request.resolver_match.app_name == 'bookings' %}active bg-primary rounded{% endif %}"
-                   href="{% url 'bookings:list' %}">
-                    <i class="bi bi-calendar-check me-2"></i>Dərslər
+            <li>
+                <a href="{% url 'users:registration-requests' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'registration-requests' or request.resolver_match.url_name == 'registration-request-detail' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Müraciətlər</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {% if request.resolver_match.app_name == 'payments' %}active bg-primary rounded{% endif %}"
-                   href="{% url 'payments:list' %}">
-                    <i class="bi bi-credit-card me-2"></i>Ödənişlər
+            <li>
+                <a href="{% url 'bookings:list' %}"
+                   class="sidebar-link {% if request.resolver_match.app_name == 'bookings' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Dərslər</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {% if request.resolver_match.app_name == 'assessments' %}active bg-primary rounded{% endif %}"
-                   href="{% url 'assessments:list' %}">
-                    <i class="bi bi-clipboard-check me-2"></i>Qiymətlər
+            <li>
+                <a href="{% url 'payments:list' %}"
+                   class="sidebar-link {% if request.resolver_match.app_name == 'payments' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Ödənişlər</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {% if request.resolver_match.app_name == 'courses' %}active bg-primary rounded{% endif %}"
-                   href="{% url 'courses:list' %}">
-                    <i class="bi bi-book me-2"></i>Kurslar
+            <li>
+                <a href="{% url 'assessments:list' %}"
+                   class="sidebar-link {% if request.resolver_match.app_name == 'assessments' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Qiymətlər</span>
                 </a>
             </li>
-
+            <li>
+                <a href="{% url 'courses:list' %}"
+                   class="sidebar-link {% if request.resolver_match.app_name == 'courses' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Kurslar</span>
+                </a>
+            </li>
             {% else %}
-            <!-- Tələbə menyusu -->
-            <li class="nav-item">
-                <a class="nav-link text-white {% if request.resolver_match.view_name == 'analytics:student-dashboard' %}active bg-primary rounded{% endif %}"
-                   href="{% url 'analytics:student-dashboard' %}">
-                    <i class="bi bi-house me-2"></i>Əsas Səhifə
+            {# ── Student ── #}
+            <li>
+                <a href="{% url 'analytics:student-dashboard' %}"
+                   class="sidebar-link {% if request.resolver_match.view_name == 'analytics:student-dashboard' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Əsas Səhifə</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {% if request.resolver_match.app_name == 'bookings' %}active bg-primary rounded{% endif %}"
-                   href="{% url 'bookings:list' %}">
-                    <i class="bi bi-calendar me-2"></i>Dərslərim
+            <li>
+                <a href="{% url 'bookings:list' %}"
+                   class="sidebar-link {% if request.resolver_match.app_name == 'bookings' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Dərslərim</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {% if request.resolver_match.app_name == 'payments' %}active bg-primary rounded{% endif %}"
-                   href="{% url 'payments:list' %}">
-                    <i class="bi bi-receipt me-2"></i>Ödənişlər
+            <li>
+                <a href="{% url 'payments:list' %}"
+                   class="sidebar-link {% if request.resolver_match.app_name == 'payments' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Ödənişlər</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {% if request.resolver_match.app_name == 'assessments' %}active bg-primary rounded{% endif %}"
-                   href="{% url 'assessments:list' %}">
-                    <i class="bi bi-clipboard2-check me-2"></i>Tapşırıqlar
+            <li>
+                <a href="{% url 'assessments:list' %}"
+                   class="sidebar-link {% if request.resolver_match.app_name == 'assessments' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Tapşırıqlar</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {% if request.resolver_match.app_name == 'courses' %}active bg-primary rounded{% endif %}"
-                   href="{% url 'courses:list' %}">
-                    <i class="bi bi-play-circle me-2"></i>Kurs Materialları
+            <li>
+                <a href="{% url 'courses:list' %}"
+                   class="sidebar-link {% if request.resolver_match.app_name == 'courses' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Kurs Materialları</span>
                 </a>
             </li>
             {% endif %}
+        </ul>
 
-            <li class="nav-item mt-2">
-                <hr class="border-secondary">
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {% if request.resolver_match.app_name == 'support' %}active bg-primary rounded{% endif %}"
-                   href="{% url 'support:list' %}">
-                    <i class="bi bi-headset me-2"></i>Dəstək
+        {# ── Divider ── #}
+        <div class="my-4 mx-2 border-t border-white/[.06]"></div>
+
+        <div class="mb-2 px-3" x-show="sidebarOpen" x-transition.opacity>
+            <span class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-600">Ümumi</span>
+        </div>
+
+        <ul class="space-y-0.5">
+            <li>
+                <a href="{% url 'support:list' %}"
+                   class="sidebar-link {% if request.resolver_match.app_name == 'support' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Dəstək</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {% if request.resolver_match.app_name == 'notifications' %}active bg-primary rounded{% endif %}"
-                   href="{% url 'notifications:list' %}">
-                    <i class="bi bi-bell me-2"></i>Bildirişlər
+            <li>
+                <a href="{% url 'notifications:list' %}"
+                   class="sidebar-link {% if request.resolver_match.app_name == 'notifications' %}active{% endif %}"
+                   :class="sidebarOpen ? 'px-3' : 'justify-center px-0'">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+                    <span x-show="sidebarOpen" x-transition.opacity class="truncate">Bildirişlər</span>
                 </a>
             </li>
         </ul>
+    </nav>
+
+    {# ── User Profile ── #}
+    <div class="border-t border-white/[.06]" x-show="sidebarOpen" x-transition.opacity>
+        <a href="{% url 'users:profile' %}" class="flex items-center gap-3 px-4 py-3.5 transition hover:bg-white/[.04]">
+            {% if request.user.avatar %}
+                <img src="{{ request.user.avatar.url }}" class="h-9 w-9 rounded-full object-cover ring-2 ring-white/10" alt="">
+            {% else %}
+                <div class="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white ring-2 ring-white/10"
+                     style="background:linear-gradient(135deg,#6366f1,#4f46e5)">
+                    {{ request.user.first_name|first|upper }}
+                </div>
+            {% endif %}
+            <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-semibold text-slate-200 leading-tight">{{ request.user.get_full_name }}</p>
+                <p class="truncate text-[11px] text-slate-500 leading-tight mt-0.5">{% if request.user.is_teacher %}Müəllim{% else %}Tələbə{% endif %}</p>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0 text-slate-600"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+        </a>
     </div>
 
-    <div class="mt-auto p-3 border-top border-secondary">
-        <small class="text-white-50">Dərs qiyməti: <strong class="text-white">25 AZN</strong></small>
+    {# ── Collapsed expand ── #}
+    <div class="border-t border-white/[.06] p-2" x-show="!sidebarOpen" x-transition>
+        <button @click="sidebarOpen = true"
+                class="flex w-full items-center justify-center rounded-lg p-2.5 text-slate-500 transition hover:bg-white/[.06] hover:text-slate-300">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 4.5l7.5 7.5-7.5 7.5m-6-15l7.5 7.5-7.5 7.5"/></svg>
+        </button>
     </div>
-</div>
+</aside>
+
+{# ── Mobile Sidebar ── #}
+<aside x-show="mobileSidebar"
+       x-transition:enter="transition ease-out duration-250"
+       x-transition:enter-start="-translate-x-full"
+       x-transition:enter-end="translate-x-0"
+       x-transition:leave="transition ease-in duration-200"
+       x-transition:leave-start="translate-x-0"
+       x-transition:leave-end="-translate-x-full"
+       class="fixed inset-y-0 left-0 z-40 flex w-[260px] flex-col lg:hidden"
+       style="background:linear-gradient(180deg,#0f172a 0%,#1e293b 100%)">
+
+    <div class="flex h-[64px] items-center justify-between border-b border-white/[.06] px-5">
+        <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center rounded-xl text-white" style="width:38px;height:38px;background:linear-gradient(135deg,#6366f1,#4f46e5)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422A12.083 12.083 0 0121 12.76V17l-9 5-9-5v-4.24c0-.97.44-1.89 1.19-2.49L12 14z"/></svg>
+            </div>
+            <span class="text-[15px] font-bold text-white tracking-tight">LMS Platform</span>
+        </div>
+        <button @click="mobileSidebar = false" class="rounded-lg p-1.5 text-slate-500 transition hover:bg-white/[.06] hover:text-slate-300">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto px-3 py-5" style="color:#94a3b8">
+        {% if request.user.is_teacher %}
+        <div class="mb-2 px-3">
+            <span class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-600">Müəllim</span>
+        </div>
+        <ul class="space-y-0.5">
+            <li><a href="{% url 'analytics:dashboard' %}" class="sidebar-link {% if request.resolver_match.app_name == 'analytics' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg><span class="truncate">Panel</span></a></li>
+            <li><a href="{% url 'users:student-list' %}" class="sidebar-link {% if request.resolver_match.url_name == 'student-list' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg><span class="truncate">Tələbələr</span></a></li>
+            <li><a href="{% url 'users:registration-requests' %}" class="sidebar-link {% if request.resolver_match.url_name == 'registration-requests' or request.resolver_match.url_name == 'registration-request-detail' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"/></svg><span class="truncate">Müraciətlər</span></a></li>
+            <li><a href="{% url 'bookings:list' %}" class="sidebar-link {% if request.resolver_match.app_name == 'bookings' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg><span class="truncate">Dərslər</span></a></li>
+            <li><a href="{% url 'payments:list' %}" class="sidebar-link {% if request.resolver_match.app_name == 'payments' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg><span class="truncate">Ödənişlər</span></a></li>
+            <li><a href="{% url 'assessments:list' %}" class="sidebar-link {% if request.resolver_match.app_name == 'assessments' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg><span class="truncate">Qiymətlər</span></a></li>
+            <li><a href="{% url 'courses:list' %}" class="sidebar-link {% if request.resolver_match.app_name == 'courses' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg><span class="truncate">Kurslar</span></a></li>
+        </ul>
+        {% else %}
+        <ul class="space-y-0.5">
+            <li><a href="{% url 'analytics:student-dashboard' %}" class="sidebar-link {% if request.resolver_match.view_name == 'analytics:student-dashboard' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg><span class="truncate">Əsas Səhifə</span></a></li>
+            <li><a href="{% url 'bookings:list' %}" class="sidebar-link {% if request.resolver_match.app_name == 'bookings' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg><span class="truncate">Dərslərim</span></a></li>
+            <li><a href="{% url 'payments:list' %}" class="sidebar-link {% if request.resolver_match.app_name == 'payments' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg><span class="truncate">Ödənişlər</span></a></li>
+            <li><a href="{% url 'assessments:list' %}" class="sidebar-link {% if request.resolver_match.app_name == 'assessments' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg><span class="truncate">Tapşırıqlar</span></a></li>
+            <li><a href="{% url 'courses:list' %}" class="sidebar-link {% if request.resolver_match.app_name == 'courses' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg><span class="truncate">Kurs Materialları</span></a></li>
+        </ul>
+        {% endif %}
+
+        <div class="my-4 mx-2 border-t border-white/[.06]"></div>
+        <div class="mb-2 px-3">
+            <span class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-600">Ümumi</span>
+        </div>
+        <ul class="space-y-0.5">
+            <li><a href="{% url 'support:list' %}" class="sidebar-link {% if request.resolver_match.app_name == 'support' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg><span class="truncate">Dəstək</span></a></li>
+            <li><a href="{% url 'notifications:list' %}" class="sidebar-link {% if request.resolver_match.app_name == 'notifications' %}active{% endif %} px-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg><span class="truncate">Bildirişlər</span></a></li>
+        </ul>
+    </nav>
+
+    <div class="border-t border-white/[.06]">
+        <a href="{% url 'users:profile' %}" class="flex items-center gap-3 px-4 py-3.5 transition hover:bg-white/[.04]">
+            {% if request.user.avatar %}
+                <img src="{{ request.user.avatar.url }}" class="h-9 w-9 rounded-full object-cover ring-2 ring-white/10" alt="">
+            {% else %}
+                <div class="flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold text-white ring-2 ring-white/10"
+                     style="background:linear-gradient(135deg,#6366f1,#4f46e5)">
+                    {{ request.user.first_name|first|upper }}
+                </div>
+            {% endif %}
+            <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-semibold text-slate-200 leading-tight">{{ request.user.get_full_name }}</p>
+                <p class="truncate text-[11px] text-slate-500 leading-tight mt-0.5">{% if request.user.is_teacher %}Müəllim{% else %}Tələbə{% endif %}</p>
+            </div>
+        </a>
+    </div>
+</aside>
