@@ -1,6 +1,7 @@
 """Bookings App — Services"""
-from typing import Optional
 import logging
+import sys
+from typing import Optional
 
 from django.db import transaction
 from django.utils import timezone
@@ -12,6 +13,47 @@ logger = logging.getLogger(__name__)
 
 class BookingService:
     """Dərs rezervasiyası business logic."""
+
+    @staticmethod
+    def _should_skip_async_tasks() -> bool:
+        """Pytest zamanı broker bağlantısından qaçmaq üçün async taskları burax."""
+        return 'pytest' in sys.modules
+
+    def _enqueue_booking_tasks(self, booking_id: str) -> None:
+        """Booking üçün asinxron əməliyyatları etibarlı şəkildə növbəyə əlavə et."""
+        if self._should_skip_async_tasks():
+            return
+
+        try:
+            # Google Meet linki yarat (async)
+            from apps.video_conferencing.tasks import create_meet_link_task
+            create_meet_link_task.delay(booking_id)
+
+            # 24 saat + 1 saat əvvəl xatırlatmalar
+            from apps.notifications.tasks import schedule_lesson_reminders
+            schedule_lesson_reminders.delay(booking_id)
+
+            # Confirmation email
+            from apps.notifications.tasks import send_booking_confirmation
+            send_booking_confirmation.delay(booking_id)
+        except Exception as exc:
+            # Əsas booking axını external broker xətasına görə qırılmamalıdır.
+            logger.warning("Async task enqueue alınmadı: %s", exc, exc_info=True)
+
+    def _enqueue_cancellation_task(self, booking_id: str) -> None:
+        """Ləğv bildirişini təhlükəsiz şəkildə növbəyə əlavə et."""
+        if self._should_skip_async_tasks():
+            return
+
+        try:
+            from apps.notifications.tasks import send_cancellation_notification
+            send_cancellation_notification.delay(booking_id)
+        except Exception as exc:
+            logger.warning(
+                "Ləğv bildirişi enqueue alınmadı: %s",
+                exc,
+                exc_info=True,
+            )
 
     @transaction.atomic
     def create_booking(
@@ -81,17 +123,7 @@ class BookingService:
             slot.is_reserved = True
             slot.save(update_fields=['is_reserved'])
 
-            # Google Meet linki yarat (async)
-            from apps.video_conferencing.tasks import create_meet_link_task
-            create_meet_link_task.delay(str(booking.id))
-
-            # 24 saat + 1 saat əvvəl xatırlatmalar
-            from apps.notifications.tasks import schedule_lesson_reminders
-            schedule_lesson_reminders.delay(str(booking.id))
-
-            # Confirmation email
-            from apps.notifications.tasks import send_booking_confirmation
-            send_booking_confirmation.delay(str(booking.id))
+            self._enqueue_booking_tasks(str(booking.id))
 
             logger.info(f"Rezervasiya yaradıldı: {booking.id} (tələbə: {student.email})")
             return booking
@@ -127,8 +159,7 @@ class BookingService:
             booking.slot.is_reserved = False
             booking.slot.save(update_fields=['is_reserved'])
 
-            from apps.notifications.tasks import send_cancellation_notification
-            send_cancellation_notification.delay(str(booking.id))
+            self._enqueue_cancellation_task(str(booking.id))
 
             logger.info(f"Rezervasiya ləğv edildi: {booking_id}")
             return True
