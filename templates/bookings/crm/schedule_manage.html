@@ -3,10 +3,10 @@
 {% block title %}Cədvəl İdarəetməsi — LMS{% endblock %}
 
 {% block breadcrumb %}
-<div class="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+<div class="page-header">
     <div>
-        <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Cədvəl İdarəetməsi</h1>
-        <p class="mt-1.5 text-sm text-slate-500">Həftəlik boş vaxtlarınızı təyin edin, tələbələr buradan dərs seçəcək</p>
+        <h1 class="page-title">Cədvəl İdarəetməsi</h1>
+        <p class="page-subtitle">Həftəlik boş vaxtlarınızı təyin edin, tələbələr buradan dərs seçəcək</p>
     </div>
 </div>
 {% endblock %}
@@ -18,9 +18,9 @@
     <div class="xl:col-span-2 space-y-6">
 
         {# Mövcud həftəlik cədvəl #}
-        <div class="card">
-            <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-                <h3 class="text-sm font-semibold text-slate-900">Həftəlik Cədvəl</h3>
+        <div class="card-hover">
+            <div class="card-section">
+                <h3 class="card-section-title">Həftəlik Cədvəl</h3>
                 <span class="text-xs text-slate-400">{{ schedules|length }} aktiv vaxt aralığı</span>
             </div>
 
@@ -49,28 +49,28 @@
             </div>
             {% else %}
             <div class="px-6 py-12 text-center">
-                <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <div class="empty-state-icon mx-auto">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
-                <p class="mt-3 text-sm font-medium text-slate-500">Hələ cədvəl əlavə edilməyib</p>
-                <p class="mt-1 text-xs text-slate-400">Sağdakı formdan yeni vaxt aralığı əlavə edin</p>
+                <p class="empty-state-title">Hələ cədvəl əlavə edilməyib</p>
+                <p class="empty-state-text">Sağdakı formdan yeni vaxt aralığı əlavə edin</p>
             </div>
             {% endif %}
         </div>
 
         {# Yaxınlaşan slotlar #}
-        <div class="card">
-            <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-                <h3 class="text-sm font-semibold text-slate-900">Yaradılmış Slotlar</h3>
+        <div class="card-hover">
+            <div class="card-section">
+                <h3 class="card-section-title">Yaradılmış Slotlar</h3>
                 <form method="post" action="{% url 'bookings:generate-slots' %}" class="flex items-center gap-2">
                     {% csrf_token %}
-                    <select name="weeks" class="rounded-lg border border-slate-200 px-2 py-1.5 text-xs text-slate-600 focus:ring-2 focus:ring-primary-500">
+                    <select name="weeks" class="form-input py-1.5 px-2 text-xs">
                         <option value="2">2 həftə</option>
                         <option value="4" selected>4 həftə</option>
                         <option value="6">6 həftə</option>
                         <option value="8">8 həftə</option>
                     </select>
-                    <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-white transition hover:opacity-90" style="background:linear-gradient(135deg,#6366f1,#4f46e5)">
+                    <button type="submit" class="btn btn-primary text-xs px-3 py-1.5">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>
                         Slot yarat
                     </button>
@@ -79,30 +79,30 @@
 
             {% if upcoming_slots %}
             <div class="overflow-x-auto">
-                <table class="w-full text-sm">
+                <table class="data-table">
                     <thead>
-                        <tr class="bg-slate-50/60">
-                            <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Tarix</th>
-                            <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Vaxt</th>
-                            <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Vəziyyət</th>
+                        <tr>
+                            <th>Tarix</th>
+                            <th>Vaxt</th>
+                            <th>Vəziyyət</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
+                    <tbody>
                         {% for slot in upcoming_slots %}
-                        <tr class="transition hover:bg-slate-50/60">
-                            <td class="px-5 py-3 text-slate-700 whitespace-nowrap">{{ slot.start_time|date:"d.m.Y — l" }}</td>
-                            <td class="px-5 py-3 text-slate-700 whitespace-nowrap">
+                        <tr>
+                            <td class="whitespace-nowrap">{{ slot.start_time|date:"d.m.Y — l" }}</td>
+                            <td class="whitespace-nowrap">
                                 <span class="font-medium">{{ slot.start_time|time:"H:i" }}</span>
                                 <span class="text-slate-400">—</span>
                                 <span class="font-medium">{{ slot.end_time|time:"H:i" }}</span>
                             </td>
-                            <td class="px-5 py-3">
+                            <td>
                                 {% if slot.is_reserved %}
-                                <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800">
+                                <span class="badge-warning">
                                     <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>Rezerv
                                 </span>
                                 {% else %}
-                                <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800">
+                                <span class="badge-success">
                                     <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>Boş
                                 </span>
                                 {% endif %}
@@ -122,14 +122,14 @@
 
     {# ── Sağ: Yeni cədvəl formu ── #}
     <div class="space-y-6">
-        <div class="card p-6">
+        <div class="card-hover p-6">
             <h3 class="text-sm font-bold text-slate-900 mb-4">Yeni Vaxt Aralığı</h3>
             <form method="post" action="{% url 'bookings:schedule-create' %}" class="space-y-4">
                 {% csrf_token %}
 
                 <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1.5">Gün</label>
-                    <select name="day_of_week" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <label class="form-label">Gün</label>
+                    <select name="day_of_week" class="form-input">
                         <option value="0">Bazar ertəsi</option>
                         <option value="1">Çərşənbə axşamı</option>
                         <option value="2">Çərşənbə</option>
@@ -142,18 +142,18 @@
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1.5">Başlama</label>
-                        <input type="time" name="start_time" value="09:00" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                        <label class="form-label">Başlama</label>
+                        <input type="time" name="start_time" value="09:00" class="form-input">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1.5">Bitmə</label>
-                        <input type="time" name="end_time" value="18:00" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                        <label class="form-label">Bitmə</label>
+                        <input type="time" name="end_time" value="18:00" class="form-input">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1.5">Slot müddəti (dəqiqə)</label>
-                    <select name="slot_duration" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                    <label class="form-label">Slot müddəti (dəqiqə)</label>
+                    <select name="slot_duration" class="form-input">
                         <option value="30">30 dəqiqə</option>
                         <option value="60" selected>60 dəqiqə</option>
                         <option value="90">90 dəqiqə</option>
@@ -161,7 +161,7 @@
                     </select>
                 </div>
 
-                <button type="submit" class="w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90" style="background:linear-gradient(135deg,#6366f1,#4f46e5)">
+                <button type="submit" class="btn btn-primary w-full justify-center">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                     Əlavə et
                 </button>

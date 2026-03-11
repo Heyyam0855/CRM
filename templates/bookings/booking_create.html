@@ -20,8 +20,8 @@
     <!-- Sol: Mövcud slotlar -->
     <div class="lg:col-span-7">
         <div class="card-hover">
-            <div class="px-6 py-4 border-b border-slate-100/80">
-                <h3 class="text-sm font-semibold text-slate-800">Əlçatan Vaxtlar</h3>
+            <div class="card-section">
+                <h3 class="card-section-title">Əlçatan Vaxtlar</h3>
             </div>
             <div hx-get="{% url 'bookings:slots' %}"
                  hx-trigger="load"
@@ -37,8 +37,8 @@
     <!-- Sağ: Rezervasiya formu -->
     <div class="lg:col-span-5">
         <div class="card-hover">
-            <div class="px-6 py-4 border-b border-slate-100/80">
-                <h3 class="text-sm font-semibold text-slate-800">Dərs Məlumatları</h3>
+            <div class="card-section">
+                <h3 class="card-section-title">Dərs Məlumatları</h3>
             </div>
             <div class="p-6">
                 <form method="post"

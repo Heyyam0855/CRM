@@ -79,8 +79,8 @@
 {# ── Chart + Summary Panel ── #}
 <div class="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-8">
     <div class="xl:col-span-2 card-hover">
-        <div class="flex items-center justify-between border-b border-slate-100/80 px-6 py-4">
-            <h3 class="text-sm font-semibold text-slate-800">Aylıq Statistika</h3>
+        <div class="card-section">
+            <h3 class="card-section-title">Aylıq Statistika</h3>
             <div class="flex items-center gap-4 text-[11px] font-semibold text-slate-400">
                 <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-primary-500"></span>Gəlir</span>
                 <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>Dərslər</span>
@@ -92,8 +92,8 @@
     </div>
 
     <div class="card-hover">
-        <div class="border-b border-slate-100/80 px-6 py-4">
-            <h3 class="text-sm font-semibold text-slate-800">Ümumi Baxış</h3>
+        <div class="card-section">
+            <h3 class="card-section-title">Ümumi Baxış</h3>
         </div>
         <div class="divide-y divide-slate-100/80">
             <a href="{% url 'users:student-list' %}" class="flex items-center gap-4 px-6 py-4 transition hover:bg-primary-50/30 group">
@@ -141,8 +141,8 @@
 
 {# ── Upcoming Lessons Table ── #}
 <div class="card-hover">
-    <div class="flex items-center justify-between border-b border-slate-100/80 px-6 py-4">
-        <h3 class="text-sm font-semibold text-slate-800">Yaxınlaşan Dərslər</h3>
+    <div class="card-section">
+        <h3 class="card-section-title">Yaxınlaşan Dərslər</h3>
         <a href="{% url 'bookings:list' %}" class="text-xs font-semibold text-primary-600 hover:text-primary-700 transition">Hamısına bax →</a>
     </div>
     {% if upcoming_bookings %}
@@ -161,7 +161,7 @@
                 <tr>
                     <td class="whitespace-nowrap px-6 py-3.5">
                         <div class="flex items-center gap-3">
-                            <div class="flex items-center justify-center rounded-full text-[10px] font-bold text-white shadow-sm shadow-primary-500/20" style="width:32px;height:32px;background:linear-gradient(135deg,#6366f1,#4f46e5)">
+                            <div class="avatar avatar-sm shadow-md shadow-primary-500/15">
                                 {{ booking.student.first_name|first|upper }}
                             </div>
                             <span class="text-sm font-medium text-slate-700">{{ booking.student.get_full_name }}</span>
