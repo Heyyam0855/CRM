@@ -267,6 +267,8 @@ class StudentRegisterView(TemplateView):
         form = CourseRegistrationForm(request.POST)
         if form.is_valid():
             reg_request = form.save()
+            payment_method = form.cleaned_data.get('payment_method', 'epoint')
+
             # Aylıq ödəniş hesabla
             from core.utils import calculate_monthly_price
             monthly = calculate_monthly_price(reg_request.lessons_per_week)
@@ -284,6 +286,22 @@ class StudentRegisterView(TemplateView):
             request.session['reg_request_id'] = str(reg_request.id)
             if payment:
                 request.session['reg_payment_id'] = str(payment.id)
+
+            # ePoint seçilibsə birbaşa ödəniş səhifəsinə yönləndir
+            if payment_method == 'epoint' and payment:
+                from django.conf import settings as conf_settings
+                site_url = getattr(conf_settings, 'SITE_URL', 'http://localhost:8000')
+                redirect_url = payment_service.initiate_registration_payment(
+                    payment_id=str(payment.id),
+                    success_url=f'{site_url}/auth/register/success/?payment=success',
+                    error_url=f'{site_url}/auth/register/success/?payment=failed',
+                )
+                if redirect_url:
+                    messages.success(
+                        request,
+                        'Qeydiyyatınız qəbul edildi! Ödəniş səhifəsinə yönləndirilirsiniz...'
+                    )
+                    return redirect(redirect_url)
 
             messages.success(
                 request,

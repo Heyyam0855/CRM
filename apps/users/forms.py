@@ -24,6 +24,18 @@ class CourseRegistrationForm(forms.ModelForm):
         label='Həftəlik dərs sayı',
     )
 
+    PAYMENT_METHOD_CHOICES = [
+        ('epoint', 'Online ödəniş (kart ilə)'),
+        ('bank_transfer', 'Bank köçürməsi'),
+    ]
+
+    payment_method = forms.ChoiceField(
+        choices=PAYMENT_METHOD_CHOICES,
+        initial='epoint',
+        widget=forms.RadioSelect(),
+        label='Ödəniş üsulu',
+    )
+
     class Meta:
         model = RegistrationRequest
         fields = [
