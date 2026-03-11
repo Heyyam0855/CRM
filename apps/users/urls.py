@@ -14,6 +14,11 @@ urlpatterns = [
         views.RegisterSuccessView.as_view(),
         name='register-success',
     ),
+    path(
+        'register/pay/',
+        views.RegisterPaymentView.as_view(),
+        name='register-pay',
+    ),
 
     # CRM — Tələbələr (müəllim)
     path('students/', views.StudentListView.as_view(), name='student-list'),

@@ -27,8 +27,18 @@ class Payment(BaseModel):
     student = models.ForeignKey(
         'users.User',
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name='payments',
         verbose_name='Tələbə'
+    )
+    registration_request = models.ForeignKey(
+        'users.RegistrationRequest',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='payments',
+        verbose_name='Qeydiyyat müraciəti'
     )
     booking = models.ForeignKey(
         'bookings.Booking',
@@ -98,7 +108,8 @@ class Payment(BaseModel):
         ]
 
     def __str__(self) -> str:
-        return f"{self.student.get_full_name()} — {self.amount} AZN ({self.get_status_display()})"
+        name = self.student.get_full_name() if self.student else 'Qeydiyyat'
+        return f"{name} — {self.amount} AZN ({self.get_status_display()})"
 
     def save(self, *args, **kwargs):
         if not self.invoice_number:

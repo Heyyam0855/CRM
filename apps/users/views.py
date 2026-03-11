@@ -193,6 +193,14 @@ class RegistrationRequestDetailView(TeacherRequiredMixin, DetailView):
         context['monthly_price'] = calculate_monthly_price(
             self.object.lessons_per_week
         )
+        # ePoint ödəniş statusu
+        from apps.payments.models import Payment
+        context['reg_payment'] = (
+            Payment.objects
+            .filter(registration_request=self.object)
+            .order_by('-created_at')
+            .first()
+        )
         return context
 
 
@@ -259,15 +267,27 @@ class StudentRegisterView(TemplateView):
         form = CourseRegistrationForm(request.POST)
         if form.is_valid():
             reg_request = form.save()
-            # Aylıq ödəniş hesablanıb success səhifəsinə göndər
+            # Aylıq ödəniş hesabla
             from core.utils import calculate_monthly_price
             monthly = calculate_monthly_price(reg_request.lessons_per_week)
+
+            # ePoint ödəniş yarat
+            from apps.payments.services import PaymentService
+            payment_service = PaymentService()
+            payment = payment_service.create_registration_payment(
+                registration_request_id=str(reg_request.id),
+                amount=monthly,
+            )
+
             request.session['reg_monthly_price'] = str(monthly)
             request.session['reg_lessons_per_week'] = reg_request.lessons_per_week
             request.session['reg_request_id'] = str(reg_request.id)
+            if payment:
+                request.session['reg_payment_id'] = str(payment.id)
+
             messages.success(
                 request,
-                'Qeydiyyatınız uğurla qəbul edildi! Sizinlə əlaqə saxlanılacaq.'
+                'Qeydiyyatınız uğurla qəbul edildi!'
             )
             return redirect('users:register-success')
         return self.render_to_response({
@@ -285,7 +305,40 @@ class RegisterSuccessView(TemplateView):
         context['monthly_price'] = self.request.session.get('reg_monthly_price', '0')
         context['lessons_per_week'] = self.request.session.get('reg_lessons_per_week', 2)
         context['reg_request_id'] = self.request.session.get('reg_request_id', '')
+        context['payment_id'] = self.request.session.get('reg_payment_id', '')
+        # ePoint-dən qayıdış statusu
+        context['payment_status'] = self.request.GET.get('payment', '')
         return context
+
+
+class RegisterPaymentView(View):
+    """Qeydiyyat ödənişi üçün ePoint-ə yönləndir (login tələb olunmur)."""
+
+    def post(self, request):
+        payment_id = request.session.get('reg_payment_id', '')
+        if not payment_id:
+            messages.error(request, 'Ödəniş tapılmadı.')
+            return redirect('users:register')
+
+        from apps.payments.services import PaymentService
+        from django.conf import settings
+
+        service = PaymentService()
+        site_url = getattr(settings, 'SITE_URL', 'http://localhost:8000')
+        redirect_url = service.initiate_registration_payment(
+            payment_id=payment_id,
+            success_url=f'{site_url}/auth/register/success/?payment=success',
+            error_url=f'{site_url}/auth/register/success/?payment=failed',
+        )
+
+        if redirect_url:
+            return redirect(redirect_url)
+
+        messages.error(
+            request,
+            'Ödəniş sisteminə bağlanılmadı. Zəhmət olmasa yenidən cəhd edin.'
+        )
+        return redirect('users:register-success')
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):

@@ -66,6 +66,21 @@
                         <dd class="text-sm text-slate-900">{{ reg_request.payment_receipt }}</dd>
                     </div>
                     {% endif %}
+                    {% if reg_payment %}
+                    <div class="sm:col-span-2">
+                        <dt class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400 mb-1">ePoint ödəniş</dt>
+                        <dd class="text-sm flex items-center gap-2">
+                            <span class="{% if reg_payment.status == 'completed' %}badge-success{% elif reg_payment.status == 'pending' %}badge-warning{% else %}badge-danger{% endif %}">
+                                {{ reg_payment.get_status_display }}
+                            </span>
+                            <span class="text-slate-700 font-semibold">{{ reg_payment.amount }} AZN</span>
+                            <span class="text-slate-400 text-xs">({{ reg_payment.invoice_number }})</span>
+                            {% if reg_payment.paid_at %}
+                            <span class="text-slate-400 text-xs">— {{ reg_payment.paid_at|date:"d.m.Y H:i" }}</span>
+                            {% endif %}
+                        </dd>
+                    </div>
+                    {% endif %}
                     {% if reg_request.github_profile_url %}
                     <div class="sm:col-span-2">
                         <dt class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400 mb-1">GitHub profili</dt>

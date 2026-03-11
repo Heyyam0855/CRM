@@ -8,6 +8,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <style>
+        .bank-card {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #3730a3 100%);
+            border-radius: 12px; padding: 20px 24px;
+            color: #fff; position: relative; overflow: hidden;
+        }
+        .bank-card::before {
+            content: ""; position: absolute; top: -30%; right: -10%;
+            width: 180px; height: 180px; border-radius: 50%;
+            background: rgba(255,255,255,.04);
+        }
+    </style>
 </head>
 <body class="min-h-screen relative">
 <div class="absolute inset-0 bg-gradient-to-br from-slate-50 via-primary-50/40 to-slate-50"></div>
@@ -15,17 +27,89 @@
 <div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-primary-200/30 blur-3xl"></div>
 
 <div class="relative z-10 max-w-xl mx-auto px-4 py-16">
-    <div class="bg-white/95 backdrop-blur-xl rounded-lg shadow-lg shadow-slate-900/[.04] ring-1 ring-slate-200/60 p-10 text-center">
-        <div class="kpi-icon bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/25 mx-auto mb-6">
-            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+    <div class="bg-white/95 backdrop-blur-xl rounded-lg shadow-lg shadow-slate-900/[.04] ring-1 ring-slate-200/60 p-10">
+
+        {% if payment_status == 'success' %}
+        {# ━━ Ödəniş uğurlu ━━ #}
+        <div class="text-center">
+            <div class="kpi-icon bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/25 mx-auto mb-6">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-900 mb-3">Ödəniş uğurla tamamlandı!</h1>
+            <p class="text-slate-400 mb-6">
+                Qeydiyyatınız və ödənişiniz qəbul edildi. Müəllim tərəfindən təsdiqlənəndən sonra giriş məlumatlarınız emailinizə göndəriləcək.
+            </p>
+            {% if monthly_price %}
+            <div class="bg-emerald-50/80 rounded-md p-4 mb-6 ring-1 ring-emerald-200/60">
+                <div class="flex justify-between text-sm">
+                    <span class="text-emerald-600 font-medium">Ödənilən məbləğ</span>
+                    <span class="text-lg font-bold text-emerald-700">{{ monthly_price }} AZN</span>
+                </div>
+            </div>
+            {% endif %}
         </div>
-        <h1 class="text-2xl font-bold text-slate-900 mb-3">Qeydiyyatınız qəbul edildi!</h1>
-        <p class="text-slate-400 mb-6">
-            Müraciətiniz uğurla göndərildi. Müəllim tərəfindən təsdiqlənəndən sonra giriş məlumatlarınız emailinizə göndəriləcək.
-        </p>
+
+        {% elif payment_status == 'failed' %}
+        {# ━━ Ödəniş uğursuz ━━ #}
+        <div class="text-center mb-8">
+            <div class="kpi-icon bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg shadow-amber-500/25 mx-auto mb-6">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-900 mb-3">Ödəniş tamamlanmadı</h1>
+            <p class="text-slate-400 mb-6">
+                Qeydiyyatınız qəbul edildi, lakin ödəniş tamamlanmadı. Aşağıdakı düymə ilə yenidən cəhd edə bilərsiniz.
+            </p>
+        </div>
+
+        {# Yenidən ödə düyməsi #}
+        {% if payment_id %}
+        <form method="post" action="{% url 'users:register-pay' %}" class="mb-6">
+            {% csrf_token %}
+            <button type="submit"
+                    class="w-full inline-flex items-center justify-center gap-2.5 rounded-xl text-sm font-bold text-white px-7 py-3.5 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                    style="background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%); box-shadow: 0 4px 14px -2px rgba(99,102,241,.4);">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                Yenidən ödə — {{ monthly_price }} AZN
+            </button>
+        </form>
+        {% endif %}
+
+        {# Bank köçürməsi alternativi #}
+        <div class="border-t border-slate-200/60 pt-6">
+            <p class="text-xs text-slate-400 text-center mb-4">və ya bank köçürməsi ilə ödəyin</p>
+            <div class="bank-card mb-4">
+                <div class="relative z-10 space-y-1.5">
+                    <div class="flex items-center gap-2 mb-3">
+                        <svg class="w-5 h-5 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                        <span class="text-xs font-bold uppercase tracking-widest text-primary-300">Bank məlumatları</span>
+                    </div>
+                    <p class="text-sm"><span class="text-primary-200/70">Bank:</span> <strong>ABB</strong></p>
+                    <p class="text-sm"><span class="text-primary-200/70">Hesab No:</span> <strong class="tracking-wider">4127 2093 0136 9358</strong></p>
+                    <p class="text-sm"><span class="text-primary-200/70">Hesab sahibi:</span> <strong>Samir Kərimov</strong></p>
+                    <p class="text-sm"><span class="text-primary-200/70">Məbləğ:</span> <strong>{{ monthly_price }} AZN</strong></p>
+                </div>
+            </div>
+            <p class="text-xs text-slate-400 text-center">
+                Ödəmə etdikdən sonra şəkli
+                <a href="https://wa.me/994502360901" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">WhatsApp</a>
+                ilə göndərin.
+            </p>
+        </div>
+
+        {% else %}
+        {# ━━ İlk dəfə — qeydiyyat uğurlu, ödəniş gözlənilir ━━ #}
+        <div class="text-center mb-8">
+            <div class="kpi-icon bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/25 mx-auto mb-6">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-900 mb-3">Qeydiyyatınız qəbul edildi!</h1>
+            <p class="text-slate-400 mb-1">
+                Müəllim tərəfindən təsdiqlənəndən sonra giriş məlumatlarınız emailinizə göndəriləcək.
+            </p>
+        </div>
 
         {% if monthly_price %}
-        <div class="bg-slate-50/80 rounded-md p-5 mb-6 text-left ring-1 ring-slate-200/60">
+        <div class="bg-slate-50/80 rounded-md p-5 mb-6 ring-1 ring-slate-200/60">
             <h3 class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400 mb-3">Ödəniş xülasəsi</h3>
             <div class="space-y-2">
                 <div class="flex justify-between text-sm">
@@ -44,15 +128,59 @@
         </div>
         {% endif %}
 
-        <p class="text-xs text-slate-400 mb-6">
-            Əlavə sualınız varsa
-            <a href="https://wa.me/994502360901" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">Whatsapp</a>
-            üzərindən yaza bilərsiniz.
-        </p>
-        <a href="{% url 'users:register' %}" class="btn btn-secondary inline-flex">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
-            Əsas səhifəyə qayıt
-        </a>
+        {# ePoint ilə ödə düyməsi #}
+        {% if payment_id %}
+        <form method="post" action="{% url 'users:register-pay' %}" class="mb-6">
+            {% csrf_token %}
+            <button type="submit"
+                    class="w-full inline-flex items-center justify-center gap-2.5 rounded-xl text-sm font-bold text-white px-7 py-3.5 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                    style="background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%); box-shadow: 0 4px 14px -2px rgba(99,102,241,.4);">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                Online ödə — {{ monthly_price }} AZN
+            </button>
+        </form>
+        <div class="relative my-6">
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200/60"></div></div>
+            <div class="relative flex justify-center"><span class="bg-white px-4 text-xs text-slate-400">və ya</span></div>
+        </div>
+        {% endif %}
+
+        {# Bank köçürməsi #}
+        <div>
+            <p class="text-xs text-slate-400 text-center mb-4">Bank köçürməsi ilə ödəyin</p>
+            <div class="bank-card mb-4">
+                <div class="relative z-10 space-y-1.5">
+                    <div class="flex items-center gap-2 mb-3">
+                        <svg class="w-5 h-5 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                        <span class="text-xs font-bold uppercase tracking-widest text-primary-300">Bank məlumatları</span>
+                    </div>
+                    <p class="text-sm"><span class="text-primary-200/70">Bank:</span> <strong>ABB</strong></p>
+                    <p class="text-sm"><span class="text-primary-200/70">Hesab No:</span> <strong class="tracking-wider">4127 2093 0136 9358</strong></p>
+                    <p class="text-sm"><span class="text-primary-200/70">Hesab sahibi:</span> <strong>Samir Kərimov</strong></p>
+                    <p class="text-sm"><span class="text-primary-200/70">Məbləğ:</span> <strong>{{ monthly_price }} AZN</strong></p>
+                </div>
+            </div>
+            <p class="text-xs text-slate-400 text-center">
+                Ödəmə etdikdən sonra şəkli
+                <a href="https://wa.me/994502360901" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">WhatsApp</a>
+                ilə göndərin.
+            </p>
+        </div>
+        {% endif %}
+
+        {# Footer link #}
+        <div class="text-center mt-8 pt-6 border-t border-slate-200/60">
+            <p class="text-xs text-slate-400 mb-4">
+                Əlavə sualınız varsa
+                <a href="https://wa.me/994502360901" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">WhatsApp</a>
+                üzərindən yaza bilərsiniz.
+            </p>
+            <a href="{% url 'users:register' %}" class="btn btn-secondary inline-flex">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
+                Əsas səhifəyə qayıt
+            </a>
+        </div>
+
     </div>
 </div>
 </body>

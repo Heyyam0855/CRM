@@ -39,6 +39,8 @@ class EPointService:
         order_id: str,
         amount: Decimal,
         description: str = 'LMS Platform ödənişi',
+        success_redirect_url: str = '',
+        error_redirect_url: str = '',
     ) -> Optional[dict]:
         """
         ePoint ödəniş prosesini başladır.
@@ -47,6 +49,8 @@ class EPointService:
             order_id: Unikal sipariş ID-si (Payment UUID)
             amount: Ödəniş məbləği (AZN)
             description: Ödəniş açıqlaması
+            success_redirect_url: Xüsusi uğurlu yönləndirmə URL-i
+            error_redirect_url: Xüsusi uğursuz yönləndirmə URL-i
 
         Returns:
             dict: {'redirect_url': '...', 'transaction_id': '...'}
@@ -60,8 +64,8 @@ class EPointService:
                 'language': 'az',
                 'order_id': order_id,
                 'description': description,
-                'success_redirect_url': f'{self.site_url}/payments/epoint/success/',
-                'error_redirect_url': f'{self.site_url}/payments/epoint/error/',
+                'success_redirect_url': success_redirect_url or f'{self.site_url}/payments/epoint/success/',
+                'error_redirect_url': error_redirect_url or f'{self.site_url}/payments/epoint/error/',
                 'callback_url': f'{self.site_url}/payments/epoint/callback/',
             }
 

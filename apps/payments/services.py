@@ -129,6 +129,7 @@ class PaymentService:
             reg = RegistrationRequest.objects.get(id=registration_request_id)
 
             payment = Payment.objects.create(
+                registration_request=reg,
                 amount=amount,
                 due_date=timezone.now() + timezone.timedelta(days=7),
                 description=(
@@ -152,6 +153,53 @@ class PaymentService:
             logger.error(
                 f"Qeydiyyat ödəniş xətası: {e}", exc_info=True
             )
+            return None
+
+    def initiate_registration_payment(
+        self,
+        payment_id: str,
+        success_url: str = '',
+        error_url: str = '',
+    ) -> Optional[str]:
+        """
+        Qeydiyyat ödənişi üçün ePoint səhifəsinə yönləndirmə URL-i alır.
+
+        Args:
+            payment_id: Payment UUID-si
+            success_url: Uğurlu ödəniş redirect URL-i
+            error_url: Uğursuz ödəniş redirect URL-i
+
+        Returns:
+            Optional[str]: ePoint redirect URL
+        """
+        try:
+            payment = Payment.objects.get(id=payment_id)
+            from .epoint_service import EPointService
+
+            epoint = EPointService()
+            result = epoint.initiate_payment(
+                order_id=str(payment.id),
+                amount=payment.amount,
+                description=payment.description or 'LMS Platform qeydiyyat ödənişi',
+                success_redirect_url=success_url,
+                error_redirect_url=error_url,
+            )
+
+            if result:
+                payment.epoint_order_id = str(payment.id)
+                payment.epoint_transaction_id = result.get('transaction_id', '')
+                payment.save(update_fields=[
+                    'epoint_order_id', 'epoint_transaction_id',
+                ])
+                return result.get('redirect_url')
+
+            return None
+
+        except Payment.DoesNotExist:
+            logger.warning(f"Ödəniş tapılmadı: {payment_id}")
+            return None
+        except Exception as e:
+            logger.error(f"ePoint qeydiyyat başlatma xətası: {e}", exc_info=True)
             return None
 
     def initiate_epoint_payment(self, payment_id: str) -> Optional[str]:
@@ -222,6 +270,15 @@ class PaymentService:
                 if payment.booking:
                     payment.booking.is_paid = True
                     payment.booking.save(update_fields=['is_paid'])
+
+                # Qeydiyyat ödənişi — RegistrationRequest yenilə
+                if payment.registration_request:
+                    reg = payment.registration_request
+                    reg.payment_receipt = (
+                        f"ePoint ödəniş #{payment.invoice_number} — "
+                        f"{payment.amount} AZN (tamamlandı)"
+                    )
+                    reg.save(update_fields=['payment_receipt', 'updated_at'])
 
                 # Ödəniş qəbzi göndər
                 from apps.notifications.tasks import send_payment_receipt
