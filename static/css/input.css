@@ -52,9 +52,9 @@
 }
 
 .sidebar-link {
-  @apply flex items-center gap-3 rounded-xl text-[13px] font-medium;
+  @apply flex items-center gap-3 rounded-md text-[13px] font-medium;
   color: rgba(148,163,184,.8);
-  padding: 10px 14px;
+  padding: 8px 12px;
   transition: all 180ms cubic-bezier(.4,0,.2,1);
   position: relative;
 }
@@ -85,7 +85,7 @@
 
 /* ── Card ── */
 .card, .card-hover {
-  @apply bg-white rounded-2xl;
+  @apply bg-white rounded-lg;
   border: 1px solid rgba(226,232,240,.6);
   box-shadow:
     0 1px 3px 0 rgba(0,0,0,.02),
@@ -100,7 +100,7 @@
 }
 
 .card-section {
-  @apply flex items-center justify-between px-6 py-4;
+  @apply flex items-center justify-between px-4 py-3;
   border-bottom: 1px solid rgba(241,245,249,.9);
 }
 .card-section-title {
@@ -109,8 +109,8 @@
 
 /* ── Badges ── */
 .badge, .badge-success, .badge-warning, .badge-danger, .badge-info, .badge-neutral, .badge-primary {
-  @apply inline-flex items-center gap-1.5 rounded-full text-[11px] font-semibold;
-  padding: 3px 10px;
+  @apply inline-flex items-center gap-1 rounded text-[11px] font-semibold;
+  padding: 2px 8px;
 }
 .badge-success { @apply bg-emerald-50 text-emerald-700; border: 1px solid rgba(16,185,129,.2); }
 .badge-warning { @apply bg-amber-50 text-amber-700; border: 1px solid rgba(245,158,11,.2); }
@@ -121,8 +121,8 @@
 
 /* ── Filter pills ── */
 .filter-pill {
-  @apply inline-flex items-center gap-1.5 rounded-full text-xs font-semibold transition-all duration-200;
-  padding: 7px 14px;
+  @apply inline-flex items-center gap-1.5 rounded-md text-xs font-semibold transition-all duration-200;
+  padding: 5px 12px;
 }
 .filter-pill-default {
   @apply bg-white text-slate-500;
@@ -165,8 +165,8 @@
 
 /* ── Buttons ── */
 .btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl text-[13px] font-semibold;
-  padding: 9px 18px;
+  @apply inline-flex items-center justify-center gap-2 rounded-md text-[13px] font-semibold;
+  padding: 7px 14px;
   transition: all .15s cubic-bezier(.4,0,.2,1);
   cursor: pointer;
   outline: none;
@@ -199,14 +199,14 @@
 }
 .btn-danger:hover { @apply bg-red-600; box-shadow: 0 4px 12px -2px rgba(239,68,68,.4); }
 .btn-icon {
-  @apply inline-flex items-center justify-center rounded-xl text-slate-400 transition;
-  width: 36px; height: 36px;
+  @apply inline-flex items-center justify-center rounded-md text-slate-400 transition;
+  width: 32px; height: 32px;
 }
 .btn-icon:hover { @apply bg-slate-100/80 text-slate-600; }
 
 /* ── Avatar ── */
 .avatar {
-  @apply flex items-center justify-center rounded-full font-bold text-white shrink-0;
+  @apply flex items-center justify-center rounded-md font-bold text-white shrink-0;
   background: linear-gradient(135deg, #6366f1, #4f46e5);
 }
 .avatar-xs { width: 28px; height: 28px; @apply text-[10px]; }
@@ -218,16 +218,16 @@
 
 /* ── KPI icon container ── */
 .kpi-icon {
-  @apply flex items-center justify-center shrink-0 rounded-xl;
-  width: 46px;
-  height: 46px;
+  @apply flex items-center justify-center shrink-0 rounded-lg;
+  width: 42px;
+  height: 42px;
 }
 
 /* ── Form ── */
 .form-input {
-  @apply w-full rounded-xl text-sm text-slate-800 bg-white;
+  @apply w-full rounded-md text-sm text-slate-800 bg-white;
   border: 1px solid rgba(226,232,240,.8);
-  padding: 10px 14px;
+  padding: 8px 12px;
   outline: none;
   transition: all .15s ease;
 }
@@ -243,12 +243,12 @@
 /* ── Table ── */
 .data-table { @apply w-full; border-collapse: collapse; }
 .data-table thead th {
-  @apply px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400 whitespace-nowrap;
+  @apply px-4 py-2.5 text-left text-[11px] font-bold uppercase tracking-wider text-slate-400 whitespace-nowrap;
   background: rgba(248,250,252,.8);
   border-bottom: 1px solid rgba(226,232,240,.5);
 }
 .data-table tbody td {
-  @apply px-5 py-3.5 text-sm text-slate-600;
+  @apply px-4 py-2.5 text-sm text-slate-600;
   border-bottom: 1px solid rgba(241,245,249,.8);
 }
 .data-table tbody tr {
@@ -263,13 +263,13 @@
 
 /* ── Page layout ── */
 .page-header {
-  @apply flex items-start justify-between gap-4 mb-7;
+  @apply flex items-start justify-between gap-3 mb-4;
 }
 .page-title {
-  @apply text-2xl font-extrabold text-slate-900;
+  @apply text-xl font-extrabold text-slate-900;
   letter-spacing: -0.025em;
 }
-.page-subtitle { @apply mt-1 text-sm text-slate-500; }
+.page-subtitle { @apply mt-0.5 text-[13px] text-slate-500; }
 
 /* ── Section divider ── */
 .section-divider {
@@ -277,12 +277,12 @@
 }
 
 /* ── Empty state ── */
-.empty-state { @apply py-16 text-center; }
+.empty-state { @apply py-10 text-center; }
 .empty-state-icon {
-  @apply flex items-center justify-center w-14 h-14 mx-auto rounded-2xl;
+  @apply flex items-center justify-center w-12 h-12 mx-auto rounded-lg;
   background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
 }
-.empty-state-title { @apply mt-4 text-sm font-semibold text-slate-600; }
+.empty-state-title { @apply mt-3 text-sm font-semibold text-slate-600; }
 .empty-state-text { @apply mt-1 text-[13px] text-slate-400; }
 
 /* ── Gradient text ── */
@@ -295,7 +295,7 @@
 
 /* ── Stat item (inline in cards) ── */
 .stat-item {
-  @apply flex flex-col items-center px-4 py-3.5 text-center;
+  @apply flex flex-col items-center px-3 py-2.5 text-center;
 }
 .stat-value {
   @apply text-lg font-bold text-slate-900 tracking-tight;

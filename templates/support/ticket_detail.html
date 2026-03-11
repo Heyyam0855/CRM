@@ -49,7 +49,7 @@
         <div class="space-y-3" id="chat-messages">
             {% for msg in messages_list %}
             <div class="flex {% if msg.is_from_teacher %}justify-end{% endif %}">
-                <div class="max-w-[80%] rounded-2xl px-5 py-3.5 {% if msg.is_from_teacher %}bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/20{% else %}bg-white/95 backdrop-blur-sm ring-1 ring-slate-200/60 text-slate-800 shadow-sm{% endif %}">
+                <div class="max-w-[80%] rounded-lg px-5 py-3.5 {% if msg.is_from_teacher %}bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/20{% else %}bg-white/95 backdrop-blur-sm ring-1 ring-slate-200/60 text-slate-800 shadow-sm{% endif %}">
                     <p class="text-sm mb-1.5 leading-relaxed">{{ msg.body }}</p>
                     <p class="text-[11px] {% if msg.is_from_teacher %}text-primary-200{% else %}text-slate-400{% endif %}">
                         {{ msg.sender.get_full_name }} — {{ msg.created_at|date:"d M, H:i" }}

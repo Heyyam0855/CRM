@@ -15,23 +15,23 @@
 {# Status filter tabs #}
 <div class="flex flex-wrap gap-2 mb-6">
     <a href="{% url 'users:registration-requests' %}"
-       class="px-4 py-2 rounded-xl text-sm font-medium transition-all
+       class="px-4 py-2 rounded-md text-sm font-medium transition-all
        {% if not current_status %}btn btn-primary{% else %}bg-white/80 text-slate-500 hover:text-slate-700 hover:bg-white ring-1 ring-slate-200/60 shadow-sm{% endif %}">
         Hamısı
     </a>
     <a href="{% url 'users:registration-requests' %}?status=pending"
-       class="px-4 py-2 rounded-xl text-sm font-medium transition-all inline-flex items-center gap-1.5
+       class="px-4 py-2 rounded-md text-sm font-medium transition-all inline-flex items-center gap-1.5
        {% if current_status == 'pending' %}bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/25{% else %}bg-white/80 text-slate-500 hover:text-slate-700 hover:bg-white ring-1 ring-slate-200/60 shadow-sm{% endif %}">
         Gözləyən
         {% if pending_count %}<span class="inline-flex items-center justify-center px-1.5 py-0.5 rounded-full text-[10px] font-bold {% if current_status == 'pending' %}bg-white/20 text-white{% else %}bg-amber-100 text-amber-700{% endif %}">{{ pending_count }}</span>{% endif %}
     </a>
     <a href="{% url 'users:registration-requests' %}?status=approved"
-       class="px-4 py-2 rounded-xl text-sm font-medium transition-all
+       class="px-4 py-2 rounded-md text-sm font-medium transition-all
        {% if current_status == 'approved' %}bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/25{% else %}bg-white/80 text-slate-500 hover:text-slate-700 hover:bg-white ring-1 ring-slate-200/60 shadow-sm{% endif %}">
         Təsdiqlənən
     </a>
     <a href="{% url 'users:registration-requests' %}?status=rejected"
-       class="px-4 py-2 rounded-xl text-sm font-medium transition-all
+       class="px-4 py-2 rounded-md text-sm font-medium transition-all
        {% if current_status == 'rejected' %}bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg shadow-red-500/25{% else %}bg-white/80 text-slate-500 hover:text-slate-700 hover:bg-white ring-1 ring-slate-200/60 shadow-sm{% endif %}">
         Rədd edilən
     </a>
@@ -105,7 +105,7 @@
 
 {% if is_paginated %}
 <div class="mt-6 flex justify-center">
-    <nav class="inline-flex items-center rounded-xl overflow-hidden shadow-sm ring-1 ring-slate-200/60">
+    <nav class="inline-flex items-center rounded-md overflow-hidden shadow-sm ring-1 ring-slate-200/60">
         {% if page_obj.has_previous %}
         <a href="?page={{ page_obj.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}"
            class="px-3.5 py-2 text-sm font-medium text-slate-600 bg-white hover:bg-slate-50 transition border-r border-slate-200/60">Əvvəlki</a>

@@ -17,7 +17,7 @@
 <div class="relative z-10 max-w-2xl mx-auto px-4 py-8">
 
     {# Başlıq kartı #}
-    <div class="bg-white/95 backdrop-blur-xl rounded-2xl shadow-lg shadow-slate-900/[.04] ring-1 ring-slate-200/60 overflow-hidden p-6 mb-4">
+    <div class="bg-white/95 backdrop-blur-xl rounded-lg shadow-lg shadow-slate-900/[.04] ring-1 ring-slate-200/60 overflow-hidden p-6 mb-4">
         <div class="flex items-start gap-4">
             <div class="kpi-icon bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg shadow-primary-500/25 shrink-0">
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342"/></svg>
@@ -37,7 +37,7 @@
     {% if messages %}
     <div class="space-y-2 mb-4">
         {% for message in messages %}
-        <div class="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium
+        <div class="flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium
             {% if message.tags == 'success' %}bg-emerald-50/80 text-emerald-800 border border-emerald-100 ring-1 ring-emerald-500/10
             {% elif message.tags == 'error' %}bg-red-50/80 text-red-800 border border-red-100 ring-1 ring-red-500/10
             {% else %}bg-amber-50/80 text-amber-800 border border-amber-100 ring-1 ring-amber-500/10{% endif %}">
@@ -48,7 +48,7 @@
     {% endif %}
 
     {% if form.non_field_errors %}
-    <div class="bg-red-50/80 border border-red-100 text-red-700 text-sm rounded-xl px-4 py-3 mb-4 ring-1 ring-red-500/10">
+    <div class="bg-red-50/80 border border-red-100 text-red-700 text-sm rounded-md px-4 py-3 mb-4 ring-1 ring-red-500/10">
         {% for error in form.non_field_errors %}
         <p>{{ error }}</p>
         {% endfor %}
@@ -59,7 +59,7 @@
         {% csrf_token %}
 
         {# Ad Soyad #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-xl ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
+        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
             <label class="form-label" for="{{ form.full_name.id_for_label }}">
                 Ad Soyad <span class="text-red-500">*</span>
             </label>
@@ -70,7 +70,7 @@
         </div>
 
         {# Email #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-xl ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
+        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
             <label class="form-label" for="{{ form.email.id_for_label }}">
                 Email <span class="text-red-500">*</span>
             </label>
@@ -81,7 +81,7 @@
         </div>
 
         {# Telefon #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-xl ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
+        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
             <label class="form-label" for="{{ form.phone.id_for_label }}">
                 Telefon (Whatsapp) <span class="text-red-500">*</span>
             </label>
@@ -92,13 +92,13 @@
         </div>
 
         {# Dərs paketi #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-xl ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3" x-data="{ selected: '' }">
+        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3" x-data="{ selected: '' }">
             <label class="form-label mb-2">
                 Hansı dərs paketi üzrə dərs almaq istəyirsiniz? <span class="text-red-500">*</span>
             </label>
             <div class="flex flex-col gap-2 mt-2">
                 {% for widget in form.course_package %}
-                <label class="flex items-center gap-3 border border-slate-200/60 rounded-xl px-4 py-3.5 cursor-pointer
+                <label class="flex items-center gap-3 border border-slate-200/60 rounded-md px-4 py-3.5 cursor-pointer
                              hover:border-primary-300 hover:bg-primary-50/30 transition-all
                              has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50/50 has-[:checked]:ring-1 has-[:checked]:ring-primary-500/20"
                        @click="selected = '{{ widget.data.value }}'">
@@ -124,7 +124,7 @@
         </div>
 
         {# Bank məlumatı + Ödəmə #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-xl ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
+        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
 
             {# Həftəlik dərs sayı seçimi #}
             <div class="mb-5" x-data="pricingCalc()">
@@ -133,7 +133,7 @@
                 </label>
                 <div class="grid grid-cols-5 gap-2 mt-2">
                     {% for widget in form.lessons_per_week %}
-                    <label class="relative flex flex-col items-center justify-center border-2 border-slate-200/60 rounded-xl px-2 py-4 cursor-pointer
+                    <label class="relative flex flex-col items-center justify-center border-2 border-slate-200/60 rounded-md px-2 py-4 cursor-pointer
                                   hover:border-primary-300 hover:bg-primary-50/30 transition-all text-center
                                   has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50/50 has-[:checked]:shadow-md has-[:checked]:shadow-primary-500/10 has-[:checked]:ring-1 has-[:checked]:ring-primary-500/20"
                            @click="setLessons({{ widget.data.value }})">
@@ -148,7 +148,7 @@
                 {% endif %}
 
                 {# Qiymət hesablama paneli #}
-                <div class="mt-4 bg-gradient-to-br from-primary-50/60 to-primary-100/60 rounded-xl p-5 ring-1 ring-primary-200/40">
+                <div class="mt-4 bg-gradient-to-br from-primary-50/60 to-primary-100/60 rounded-md p-5 ring-1 ring-primary-200/40">
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-sm text-slate-500">1 dərs qiyməti</span>
                         <span class="text-sm font-semibold text-slate-800">25 AZN</span>
@@ -178,7 +178,7 @@
                     Ödəmə etdikdən sonra ödəmə şəklini
                     <strong class="text-slate-600">+994502360901</strong> / Whatsapp nömrəsinə göndərin
                 </p>
-                <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-xl px-6 py-5 mb-4 ring-1 ring-white/10">
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-md px-6 py-5 mb-4 ring-1 ring-white/10">
                     <p class="font-bold text-sm">Bank : ABB</p>
                     <p class="font-bold text-sm">Hesab No : 4127 2093 0136 9358</p>
                     <p class="font-bold text-sm">Hesab Sahibi : Samir Kərimov</p>
@@ -194,7 +194,7 @@
         </div>
 
         {# Başlama tarixi #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-xl ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
+        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
             <label class="form-label" for="{{ form.preferred_start_date.id_for_label }}">
                 Dərslərə hansı tarixdən etibarən başlamaq istədiyinizi qeyd edin <span class="text-red-500">*</span>
             </label>
@@ -205,7 +205,7 @@
         </div>
 
         {# GitHub profil linki #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-xl ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
+        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
             <label class="form-label" for="{{ form.github_profile_url.id_for_label }}">
                 <a href="https://github.com" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">GitHub</a>
                 platformasında qeydiyyatdan keç. Profil linkini yaz

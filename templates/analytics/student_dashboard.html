@@ -9,7 +9,7 @@
         <p class="page-subtitle">Tədris panelinə xoş gəldiniz</p>
     </div>
     <div class="flex items-center gap-3">
-        <div class="hidden sm:flex items-center gap-2.5 rounded-2xl border border-slate-200/40 bg-white/80 backdrop-blur-sm px-4 py-2.5 text-xs text-slate-500 shadow-sm"
+        <div class="hidden sm:flex items-center gap-2.5 rounded-md border border-slate-200/40 bg-white/80 backdrop-blur-sm px-4 py-2.5 text-xs text-slate-500 shadow-sm"
              x-data="liveClock()" x-init="start()">
             <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse-dot"></span>
             <span x-text="date"></span>
@@ -101,7 +101,7 @@
         <div class="divide-y divide-slate-100/80">
             {% for booking in upcoming_lessons %}
             <div class="flex items-center gap-4 px-6 py-4 transition hover:bg-primary-50/30">
-                <div class="flex shrink-0 flex-col items-center justify-center rounded-xl border border-primary-100 bg-primary-50/80" style="width:48px;height:48px">
+                <div class="flex shrink-0 flex-col items-center justify-center rounded-md border border-primary-100 bg-primary-50/80" style="width:48px;height:48px">
                     <span class="text-sm font-bold leading-none text-primary-700">{{ booking.slot.start_time|date:"d" }}</span>
                     <span class="mt-0.5 text-[9px] font-semibold uppercase text-primary-500">{{ booking.slot.start_time|date:"M" }}</span>
                 </div>
@@ -145,7 +145,7 @@
         <div class="divide-y divide-slate-100/80">
             {% for payment in recent_payments %}
             <div class="flex items-center gap-4 px-6 py-4 transition hover:bg-slate-50/60">
-                <div class="flex shrink-0 items-center justify-center rounded-xl
+                <div class="flex shrink-0 items-center justify-center rounded-md
                     {% if payment.status == 'completed' %}bg-emerald-50 text-emerald-600
                     {% elif payment.status == 'overdue' %}bg-red-50 text-red-600
                     {% else %}bg-amber-50 text-amber-600{% endif %}" style="width:40px;height:40px">
