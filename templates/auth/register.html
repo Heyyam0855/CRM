@@ -4,43 +4,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dərs qeydiyyat formu — LMS Platform</title>
+    <title>Dərs qeydiyyat formu — PragmaLife</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <style>
+        .reg-hero { background: linear-gradient(135deg, #312e81 0%, #4338ca 40%, #6366f1 100%); }
+        .reg-card {
+            background: rgba(255,255,255,.97);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(226,232,240,.5);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.04), 0 4px 24px -8px rgba(99,102,241,.06);
+        }
+        .reg-section-num {
+            width: 28px; height: 28px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 8px;
+            font-size: 13px; font-weight: 700;
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            color: #4f46e5;
+            flex-shrink: 0;
+        }
+        .reg-field-group { padding: 20px 24px; }
+        .reg-field-group + .reg-field-group { border-top: 1px solid rgba(241,245,249,.9); }
+        .course-option {
+            display: flex; align-items: center; gap: 12px;
+            border: 1.5px solid rgba(226,232,240,.6);
+            border-radius: 10px; padding: 12px 16px;
+            cursor: pointer; transition: all .2s ease;
+        }
+        .course-option:hover { border-color: rgba(165,180,252,.6); background: rgba(238,242,255,.3); }
+        .course-option:has(input:checked) {
+            border-color: #6366f1; background: rgba(238,242,255,.5);
+            box-shadow: 0 0 0 3px rgba(99,102,241,.08);
+        }
+        .lesson-chip {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 2px solid rgba(226,232,240,.6);
+            border-radius: 12px; padding: 12px 8px;
+            cursor: pointer; transition: all .2s ease; text-align: center;
+            position: relative;
+        }
+        .lesson-chip:hover { border-color: rgba(165,180,252,.6); background: rgba(238,242,255,.3); }
+        .lesson-chip:has(input:checked) {
+            border-color: #6366f1; background: linear-gradient(135deg, rgba(238,242,255,.7), rgba(224,231,255,.7));
+            box-shadow: 0 0 0 3px rgba(99,102,241,.1), 0 4px 16px -4px rgba(99,102,241,.15);
+        }
+        .pricing-summary {
+            background: linear-gradient(135deg, rgba(238,242,255,.7) 0%, rgba(224,231,255,.5) 100%);
+            border: 1px solid rgba(165,180,252,.3);
+            border-radius: 12px; padding: 20px;
+        }
+        .bank-card {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #3730a3 100%);
+            border-radius: 12px; padding: 20px 24px;
+            color: #fff; position: relative; overflow: hidden;
+        }
+        .bank-card::before {
+            content: ""; position: absolute; top: -30%; right: -10%;
+            width: 180px; height: 180px; border-radius: 50%;
+            background: rgba(255,255,255,.04);
+        }
+        .bank-card::after {
+            content: ""; position: absolute; bottom: -40%; left: -10%;
+            width: 200px; height: 200px; border-radius: 50%;
+            background: rgba(255,255,255,.03);
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-section { animation: fadeInUp .5s ease both; }
+        .animate-section:nth-child(2) { animation-delay: .05s; }
+        .animate-section:nth-child(3) { animation-delay: .1s; }
+        .animate-section:nth-child(4) { animation-delay: .15s; }
+        .animate-section:nth-child(5) { animation-delay: .2s; }
+    </style>
 </head>
 <body class="min-h-screen relative" x-data x-cloak>
-<div class="absolute inset-0 bg-gradient-to-br from-slate-50 via-primary-50/40 to-slate-50"></div>
-<div class="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full bg-primary-200/30 blur-3xl"></div>
-<div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-primary-200/30 blur-3xl"></div>
 
-<div class="relative z-10 max-w-2xl mx-auto px-4 py-8">
+{# Background #}
+<div class="absolute inset-0 bg-gradient-to-b from-slate-50 via-primary-50/30 to-white"></div>
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full bg-primary-100/40 blur-[120px] -mt-40"></div>
 
-    {# Başlıq kartı #}
-    <div class="bg-white/95 backdrop-blur-xl rounded-lg shadow-lg shadow-slate-900/[.04] ring-1 ring-slate-200/60 overflow-hidden p-6 mb-4">
-        <div class="flex items-start gap-4">
-            <div class="kpi-icon bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg shadow-primary-500/25 shrink-0">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342"/></svg>
+<div class="relative z-10 max-w-[640px] mx-auto px-4 pt-6 pb-12">
+
+    {# ━━ Hero Header ━━ #}
+    <div class="reg-hero rounded-2xl p-6 sm:p-8 mb-6 text-white relative overflow-hidden animate-section">
+        <div class="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 -mt-20 -mr-20"></div>
+        <div class="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-white/5 -mb-16 -ml-16"></div>
+        <div class="relative z-10">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-11 h-11 rounded-xl bg-white/15 backdrop-blur flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342"/></svg>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight">Dərs qeydiyyat formu</h1>
+                    <p class="text-primary-200 text-xs font-medium mt-0.5">PragmaLife — Fərdi online tədris</p>
+                </div>
             </div>
-            <div>
-                <h1 class="text-xl font-bold text-slate-900 mb-1">Dərs qeydiyyat formu</h1>
-                <p class="text-slate-400 text-sm leading-relaxed">
-                    Qeydiyyat formu doldurulduqdan sonra sizin üçün dərs sistemi yaradılacaq, məlumat veriləcək.
-                    Hər hansı şərtlə ya da problem olduğu zaman
-                    <a href="https://wa.me/994502360901" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">Whatsapp</a>
-                    üzərindən əlaqə saxlaya bilərsiniz.
-                </p>
-            </div>
+            <p class="text-primary-100/90 text-sm leading-relaxed max-w-lg">
+                Formu doldurun, sizin üçün dərs sistemi yaradılacaq və məlumat veriləcək.
+                Sualınız varsa
+                <a href="https://wa.me/994502360901" target="_blank" rel="noopener"
+                   class="inline-flex items-center gap-1 text-white font-semibold hover:underline underline-offset-2">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.79 23.492a.5.5 0 00.612.638l4.603-1.209A11.95 11.95 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.291 0-4.42-.696-6.188-1.888l-.244-.163-3.325.874.89-3.244-.178-.258A9.953 9.953 0 012 12C2 6.486 6.486 2 12 2s10 4.486 10 10-4.486 10-10 10z"/></svg>
+                    WhatsApp
+                </a>
+                ilə əlaqə saxlayın.
+            </p>
         </div>
     </div>
 
     {% if messages %}
-    <div class="space-y-2 mb-4">
+    <div class="space-y-2 mb-5 animate-section">
         {% for message in messages %}
-        <div class="flex items-center gap-2 px-4 py-3 rounded-md text-sm font-medium
-            {% if message.tags == 'success' %}bg-emerald-50/80 text-emerald-800 border border-emerald-100 ring-1 ring-emerald-500/10
-            {% elif message.tags == 'error' %}bg-red-50/80 text-red-800 border border-red-100 ring-1 ring-red-500/10
-            {% else %}bg-amber-50/80 text-amber-800 border border-amber-100 ring-1 ring-amber-500/10{% endif %}">
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium
+            {% if message.tags == 'success' %}bg-emerald-50 text-emerald-800 border border-emerald-200/60 ring-1 ring-emerald-500/10
+            {% elif message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200/60 ring-1 ring-red-500/10
+            {% else %}bg-amber-50 text-amber-800 border border-amber-200/60 ring-1 ring-amber-500/10{% endif %}">
+            {% if message.tags == 'success' %}
+            <svg class="w-5 h-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            {% endif %}
             {{ message }}
         </div>
         {% endfor %}
@@ -48,140 +134,186 @@
     {% endif %}
 
     {% if form.non_field_errors %}
-    <div class="bg-red-50/80 border border-red-100 text-red-700 text-sm rounded-md px-4 py-3 mb-4 ring-1 ring-red-500/10">
-        {% for error in form.non_field_errors %}
-        <p>{{ error }}</p>
-        {% endfor %}
+    <div class="bg-red-50 border border-red-200/60 text-red-700 text-sm rounded-xl px-4 py-3 mb-5 ring-1 ring-red-500/10">
+        {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
     </div>
     {% endif %}
 
     <form method="post" novalidate>
         {% csrf_token %}
 
-        {# Ad Soyad #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
-            <label class="form-label" for="{{ form.full_name.id_for_label }}">
-                Ad Soyad <span class="text-red-500">*</span>
-            </label>
-            {{ form.full_name }}
-            {% if form.full_name.errors %}
-            <p class="text-red-500 text-xs mt-1.5">{{ form.full_name.errors.0 }}</p>
-            {% endif %}
-        </div>
-
-        {# Email #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
-            <label class="form-label" for="{{ form.email.id_for_label }}">
-                Email <span class="text-red-500">*</span>
-            </label>
-            {{ form.email }}
-            {% if form.email.errors %}
-            <p class="text-red-500 text-xs mt-1.5">{{ form.email.errors.0 }}</p>
-            {% endif %}
-        </div>
-
-        {# Telefon #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
-            <label class="form-label" for="{{ form.phone.id_for_label }}">
-                Telefon (Whatsapp) <span class="text-red-500">*</span>
-            </label>
-            {{ form.phone }}
-            {% if form.phone.errors %}
-            <p class="text-red-500 text-xs mt-1.5">{{ form.phone.errors.0 }}</p>
-            {% endif %}
-        </div>
-
-        {# Dərs paketi #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3" x-data="{ selected: '' }">
-            <label class="form-label mb-2">
-                Hansı dərs paketi üzrə dərs almaq istəyirsiniz? <span class="text-red-500">*</span>
-            </label>
-            <div class="flex flex-col gap-2 mt-2">
-                {% for widget in form.course_package %}
-                <label class="flex items-center gap-3 border border-slate-200/60 rounded-md px-4 py-3.5 cursor-pointer
-                             hover:border-primary-300 hover:bg-primary-50/30 transition-all
-                             has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50/50 has-[:checked]:ring-1 has-[:checked]:ring-primary-500/20"
-                       @click="selected = '{{ widget.data.value }}'">
-                    {{ widget.tag }}
-                    <span class="text-sm text-slate-700">{{ widget.choice_label }}</span>
-                </label>
-                {% endfor %}
+        {# ━━ Bölmə 1: Şəxsi məlumatlar ━━ #}
+        <div class="reg-card mb-4 animate-section">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-slate-100/80">
+                <span class="reg-section-num">1</span>
+                <div>
+                    <h2 class="text-sm font-bold text-slate-900">Şəxsi məlumatlar</h2>
+                    <p class="text-xs text-slate-400">Əsas əlaqə məlumatlarınız</p>
+                </div>
             </div>
-            {% if form.course_package.errors %}
-            <p class="text-red-500 text-xs mt-1.5">{{ form.course_package.errors.0 }}</p>
-            {% endif %}
 
-            {# Digər input #}
-            <div class="mt-3" x-show="selected === 'other'" x-transition>
-                <label class="form-label" for="{{ form.other_course.id_for_label }}">
-                    Digər dərs paketi
+            {# Ad Soyad #}
+            <div class="reg-field-group">
+                <label class="form-label" for="{{ form.full_name.id_for_label }}">
+                    Ad Soyad <span class="text-red-400">*</span>
                 </label>
-                {{ form.other_course }}
-                {% if form.other_course.errors %}
-                <p class="text-red-500 text-xs mt-1.5">{{ form.other_course.errors.0 }}</p>
+                {{ form.full_name }}
+                {% if form.full_name.errors %}
+                <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                    {{ form.full_name.errors.0 }}
+                </p>
+                {% endif %}
+            </div>
+
+            {# Email #}
+            <div class="reg-field-group">
+                <label class="form-label" for="{{ form.email.id_for_label }}">
+                    Email <span class="text-red-400">*</span>
+                </label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                    {{ form.email.errors.0 }}
+                </p>
+                {% endif %}
+            </div>
+
+            {# Telefon #}
+            <div class="reg-field-group">
+                <label class="form-label" for="{{ form.phone.id_for_label }}">
+                    Telefon (WhatsApp) <span class="text-red-400">*</span>
+                </label>
+                {{ form.phone }}
+                {% if form.phone.errors %}
+                <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                    {{ form.phone.errors.0 }}
+                </p>
                 {% endif %}
             </div>
         </div>
 
-        {# Bank məlumatı + Ödəmə #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
+        {# ━━ Bölmə 2: Dərs paketi seçimi ━━ #}
+        <div class="reg-card mb-4 animate-section" x-data="{ selected: '' }">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-slate-100/80">
+                <span class="reg-section-num">2</span>
+                <div>
+                    <h2 class="text-sm font-bold text-slate-900">Dərs paketi</h2>
+                    <p class="text-xs text-slate-400">Hansı sahə üzrə dərs almaq istəyirsiniz?</p>
+                </div>
+            </div>
 
-            {# Həftəlik dərs sayı seçimi #}
-            <div class="mb-5" x-data="pricingCalc()">
-                <label class="form-label mb-2">
-                    Həftəlik neçə dərs almaq istəyirsiniz? <span class="text-red-500">*</span>
+            <div class="reg-field-group">
+                <label class="form-label mb-3">
+                    Dərs paketini seçin <span class="text-red-400">*</span>
                 </label>
-                <div class="grid grid-cols-5 gap-2 mt-2">
-                    {% for widget in form.lessons_per_week %}
-                    <label class="relative flex flex-col items-center justify-center border-2 border-slate-200/60 rounded-md px-2 py-4 cursor-pointer
-                                  hover:border-primary-300 hover:bg-primary-50/30 transition-all text-center
-                                  has-[:checked]:border-primary-500 has-[:checked]:bg-primary-50/50 has-[:checked]:shadow-md has-[:checked]:shadow-primary-500/10 has-[:checked]:ring-1 has-[:checked]:ring-primary-500/20"
-                           @click="setLessons({{ widget.data.value }})">
+                <div class="grid grid-cols-1 gap-2">
+                    {% for widget in form.course_package %}
+                    <label class="course-option"
+                           @click="selected = '{{ widget.data.value }}'">
                         {{ widget.tag }}
-                        <span class="text-2xl font-bold text-slate-900 mt-1">{{ widget.data.value }}</span>
-                        <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400">dərs/həftə</span>
+                        <span class="text-sm font-medium text-slate-700">{{ widget.choice_label }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+                {% if form.course_package.errors %}
+                <p class="text-red-500 text-xs mt-2 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                    {{ form.course_package.errors.0 }}
+                </p>
+                {% endif %}
+
+                {# Digər input #}
+                <div class="mt-3" x-show="selected === 'other'" x-transition.duration.200ms>
+                    <label class="form-label" for="{{ form.other_course.id_for_label }}">
+                        Digər dərs paketi
+                    </label>
+                    {{ form.other_course }}
+                    {% if form.other_course.errors %}
+                    <p class="text-red-500 text-xs mt-1.5">{{ form.other_course.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# ━━ Bölmə 3: Qiymət & Ödəniş ━━ #}
+        <div class="reg-card mb-4 animate-section" x-data="pricingCalc()">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-slate-100/80">
+                <span class="reg-section-num">3</span>
+                <div>
+                    <h2 class="text-sm font-bold text-slate-900">Dərs sayı & Ödəniş</h2>
+                    <p class="text-xs text-slate-400">Həftəlik intensivliyi və ödəniş planını seçin</p>
+                </div>
+            </div>
+
+            {# Həftəlik dərs sayı #}
+            <div class="reg-field-group">
+                <label class="form-label mb-3">
+                    Həftəlik neçə dərs almaq istəyirsiniz? <span class="text-red-400">*</span>
+                </label>
+                <div class="grid grid-cols-5 gap-2">
+                    {% for widget in form.lessons_per_week %}
+                    <label class="lesson-chip" @click="setLessons({{ widget.data.value }})">
+                        {{ widget.tag }}
+                        <span class="text-2xl font-extrabold text-slate-900 leading-none mt-1">{{ widget.data.value }}</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mt-1">dərs/həftə</span>
                     </label>
                     {% endfor %}
                 </div>
                 {% if form.lessons_per_week.errors %}
-                <p class="text-red-500 text-xs mt-1.5">{{ form.lessons_per_week.errors.0 }}</p>
+                <p class="text-red-500 text-xs mt-2">{{ form.lessons_per_week.errors.0 }}</p>
                 {% endif %}
 
-                {# Qiymət hesablama paneli #}
-                <div class="mt-4 bg-gradient-to-br from-primary-50/60 to-primary-100/60 rounded-md p-5 ring-1 ring-primary-200/40">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-sm text-slate-500">1 dərs qiyməti</span>
-                        <span class="text-sm font-semibold text-slate-800">25 AZN</span>
-                    </div>
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-sm text-slate-500">Həftəlik dərs sayı</span>
-                        <span class="text-sm font-semibold text-slate-800" x-text="lessons + ' dərs'">2 dərs</span>
-                    </div>
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-sm text-slate-500">Aylıq dərs sayı (×4 həftə)</span>
-                        <span class="text-sm font-semibold text-slate-800" x-text="(lessons * 4) + ' dərs'">8 dərs</span>
-                    </div>
-                    <div class="border-t border-primary-200/50 pt-3 mt-1">
+                {# Qiymət hesablama #}
+                <div class="pricing-summary mt-5">
+                    <div class="space-y-2.5">
                         <div class="flex items-center justify-between">
-                            <span class="text-base font-bold text-slate-900">Aylıq ödəniş</span>
+                            <span class="text-sm text-slate-500">1 dərs qiyməti</span>
+                            <span class="text-sm font-semibold text-slate-700">25 AZN</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-slate-500">Həftəlik dərs sayı</span>
+                            <span class="text-sm font-semibold text-slate-700" x-text="lessons + ' dərs'">2 dərs</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-slate-500">Aylıq dərs sayı (×4 həftə)</span>
+                            <span class="text-sm font-semibold text-slate-700" x-text="(lessons * 4) + ' dərs'">8 dərs</span>
+                        </div>
+                    </div>
+                    <div class="border-t border-primary-200/40 pt-4 mt-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-base font-bold text-slate-900">Aylıq ödəniş</span>
+                                <p class="text-[11px] text-slate-400 mt-0.5">Hər ay ödənilir</p>
+                            </div>
                             <div class="text-right">
-                                <span class="text-2xl font-extrabold text-primary-700" x-text="monthlyPrice + ' AZN'">200 AZN</span>
-                                <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mt-0.5">Hər ay ödənilir</p>
+                                <span class="text-3xl font-extrabold tracking-tight"
+                                      style="background: linear-gradient(135deg, #4338ca, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"
+                                      x-text="monthlyPrice + ' AZN'">200 AZN</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="border-t border-slate-100 pt-4">
-                <p class="text-slate-400 text-sm mb-3">
+            {# Bank məlumatı #}
+            <div class="reg-field-group">
+                <p class="text-slate-500 text-sm mb-3 leading-relaxed">
                     Ödəmə etdikdən sonra ödəmə şəklini
-                    <strong class="text-slate-600">+994502360901</strong> / Whatsapp nömrəsinə göndərin
+                    <strong class="text-slate-700">+994502360901</strong> / WhatsApp nömrəsinə göndərin.
                 </p>
-                <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-md px-6 py-5 mb-4 ring-1 ring-white/10">
-                    <p class="font-bold text-sm">Bank : ABB</p>
-                    <p class="font-bold text-sm">Hesab No : 4127 2093 0136 9358</p>
-                    <p class="font-bold text-sm">Hesab Sahibi : Samir Kərimov</p>
+                <div class="bank-card mb-4">
+                    <div class="relative z-10 space-y-1.5">
+                        <div class="flex items-center gap-2 mb-3">
+                            <svg class="w-5 h-5 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                            <span class="text-xs font-bold uppercase tracking-widest text-primary-300">Bank məlumatları</span>
+                        </div>
+                        <p class="text-sm"><span class="text-primary-200/70">Bank:</span> <strong>ABB</strong></p>
+                        <p class="text-sm"><span class="text-primary-200/70">Hesab No:</span> <strong class="tracking-wider">4127 2093 0136 9358</strong></p>
+                        <p class="text-sm"><span class="text-primary-200/70">Hesab sahibi:</span> <strong>Samir Kərimov</strong></p>
+                    </div>
                 </div>
                 <label class="form-label" for="{{ form.payment_receipt.id_for_label }}">
                     Ödəmə məlumatı
@@ -193,40 +325,61 @@
             </div>
         </div>
 
-        {# Başlama tarixi #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
-            <label class="form-label" for="{{ form.preferred_start_date.id_for_label }}">
-                Dərslərə hansı tarixdən etibarən başlamaq istədiyinizi qeyd edin <span class="text-red-500">*</span>
-            </label>
-            {{ form.preferred_start_date }}
-            {% if form.preferred_start_date.errors %}
-            <p class="text-red-500 text-xs mt-1.5">{{ form.preferred_start_date.errors.0 }}</p>
-            {% endif %}
+        {# ━━ Bölmə 4: Əlavə məlumatlar ━━ #}
+        <div class="reg-card mb-6 animate-section">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-slate-100/80">
+                <span class="reg-section-num">4</span>
+                <div>
+                    <h2 class="text-sm font-bold text-slate-900">Əlavə məlumatlar</h2>
+                    <p class="text-xs text-slate-400">Başlama tarixi və GitHub profili</p>
+                </div>
+            </div>
+
+            {# Başlama tarixi #}
+            <div class="reg-field-group">
+                <label class="form-label" for="{{ form.preferred_start_date.id_for_label }}">
+                    Dərslərə hansı tarixdən başlamaq istəyirsiniz? <span class="text-red-400">*</span>
+                </label>
+                {{ form.preferred_start_date }}
+                {% if form.preferred_start_date.errors %}
+                <p class="text-red-500 text-xs mt-1.5 flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                    {{ form.preferred_start_date.errors.0 }}
+                </p>
+                {% endif %}
+            </div>
+
+            {# GitHub profil linki #}
+            <div class="reg-field-group">
+                <label class="form-label" for="{{ form.github_profile_url.id_for_label }}">
+                    <a href="https://github.com" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-semibold">GitHub</a>
+                    platformasında qeydiyyatdan keç. Profil linkini yaz
+                </label>
+                {{ form.github_profile_url }}
+                {% if form.github_profile_url.errors %}
+                <p class="text-red-500 text-xs mt-1.5">{{ form.github_profile_url.errors.0 }}</p>
+                {% endif %}
+            </div>
         </div>
 
-        {# GitHub profil linki #}
-        <div class="bg-white/95 backdrop-blur-xl rounded-md ring-1 ring-slate-200/60 shadow-sm shadow-slate-900/[.02] p-5 mb-3">
-            <label class="form-label" for="{{ form.github_profile_url.id_for_label }}">
-                <a href="https://github.com" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">GitHub</a>
-                platformasında qeydiyyatdan keç. Profil linkini yaz
-            </label>
-            {{ form.github_profile_url }}
-            {% if form.github_profile_url.errors %}
-            <p class="text-red-500 text-xs mt-1.5">{{ form.github_profile_url.errors.0 }}</p>
-            {% endif %}
-        </div>
-
-        {# Göndər düyməsi #}
-        <div class="flex items-center justify-between mt-6 mb-8">
-            <button type="submit" class="btn btn-primary">
+        {# ━━ Göndər düyməsi ━━ #}
+        <div class="flex items-center justify-between animate-section">
+            <button type="submit"
+                    class="inline-flex items-center gap-2.5 rounded-xl text-sm font-bold text-white px-7 py-3.5 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500"
+                    style="background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%); box-shadow: 0 4px 14px -2px rgba(99,102,241,.4), 0 1px 3px rgba(99,102,241,.2);">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"/></svg>
                 Göndər
             </button>
-            <button type="reset" class="text-sm text-slate-400 hover:text-slate-600 transition">
+            <button type="reset" class="text-sm text-slate-400 hover:text-slate-600 transition font-medium">
                 Formu təmizlə
             </button>
         </div>
     </form>
+
+    {# Footer #}
+    <div class="text-center mt-10 pb-2">
+        <p class="text-xs text-slate-400">&copy; {{ current_year|default:"2026" }} PragmaLife. Bütün hüquqlar qorunur.</p>
+    </div>
 
 </div>
 
