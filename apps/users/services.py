@@ -104,8 +104,8 @@ class UserService:
                 is_active=True,
             )
 
-            # StudentProfile yenilə (signal ilə yaradılır)
-            profile = user.student_profile
+            # StudentProfile yenilə (signal ilə yaradılır, fallback olaraq manual yarat)
+            profile, _ = StudentProfile.objects.get_or_create(user=user)
             profile.status = StudentProfile.Status.ACTIVE
             profile.lessons_per_week = reg_request.lessons_per_week
             profile.status_changed_at = timezone.now()
