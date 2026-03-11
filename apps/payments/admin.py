@@ -8,7 +8,7 @@ class PaymentAdmin(admin.ModelAdmin):
     list_display = ('invoice_number', 'student', 'amount', 'status', 'payment_method', 'paid_at')
     list_filter = ('status', 'payment_method')
     search_fields = ('invoice_number', 'student__email')
-    readonly_fields = ('invoice_number', 'paid_at')
+    readonly_fields = ('invoice_number', 'paid_at', 'epoint_transaction_id', 'epoint_order_id')
 
 
 @admin.register(MonthlySubscription)

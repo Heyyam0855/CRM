@@ -15,8 +15,23 @@ urlpatterns = [
         name='register-success',
     ),
 
-    # Tələbələr (müəllim)
+    # CRM — Tələbələr (müəllim)
     path('students/', views.StudentListView.as_view(), name='student-list'),
+    path(
+        'students/<uuid:pk>/',
+        views.StudentDetailView.as_view(),
+        name='student-detail',
+    ),
+    path(
+        'students/<uuid:pk>/status/',
+        views.StudentStatusUpdateView.as_view(),
+        name='student-status-update',
+    ),
+    path(
+        'students/<uuid:pk>/notes/',
+        views.StudentNotesUpdateView.as_view(),
+        name='student-notes-update',
+    ),
 
     # Qeydiyyat müraciətləri (müəllim)
     path(

@@ -289,9 +289,14 @@ TRIAL_LESSON_DISCOUNT = config('TRIAL_LESSON_DISCOUNT', default=50, cast=int)
 GITHUB_TOKEN = config('GITHUB_TOKEN', default='')
 GITHUB_TEACHER_USERNAME = config('GITHUB_TEACHER_USERNAME', default='')
 YOUTUBE_API_KEY = config('YOUTUBE_API_KEY', default='')
-STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY', default='')
-STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')
-STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='')
+
+# ePoint Payment Gateway
+EPOINT_PUBLIC_KEY = config('EPOINT_PUBLIC_KEY', default='')
+EPOINT_PRIVATE_KEY = config('EPOINT_PRIVATE_KEY', default='')
+EPOINT_API_URL = config('EPOINT_API_URL', default='https://epoint.az/api/1/')
+
+# Site URL (for callbacks)
+SITE_URL = config('SITE_URL', default='http://localhost:8000')
 
 # ─────────────────────────────────────────────
 #  Logging

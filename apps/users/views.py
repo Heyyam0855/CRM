@@ -5,7 +5,9 @@ from django.contrib.auth import login, logout
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 from django.urls import reverse_lazy
-from django.http import HttpResponseNotAllowed
+from django.http import HttpResponseNotAllowed, JsonResponse
+from django.utils import timezone
+from django.db.models import Count, Sum, Q
 
 from core.mixins import TeacherRequiredMixin
 from .models import User, StudentProfile, RegistrationRequest
@@ -14,7 +16,7 @@ from .services import UserService
 
 
 class StudentListView(TeacherRequiredMixin, ListView):
-    """Müəllim üçün tələbələr siyahısı."""
+    """Müəllim üçün tələbələr siyahısı (CRM)."""
 
     model = User
     template_name = 'users/student_list.html'
@@ -22,17 +24,133 @@ class StudentListView(TeacherRequiredMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        return (
+        qs = (
             User.objects
             .filter(role=User.Role.STUDENT)
             .select_related('student_profile')
             .order_by('-date_joined')
         )
+        # Status filter
+        status = self.request.GET.get('status', '')
+        if status:
+            qs = qs.filter(student_profile__status=status)
+        # Axtarış
+        search = self.request.GET.get('q', '').strip()
+        if search:
+            qs = qs.filter(
+                Q(first_name__icontains=search) |
+                Q(last_name__icontains=search) |
+                Q(email__icontains=search) |
+                Q(phone__icontains=search)
+            )
+        return qs
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         context['page_title'] = 'Tələbələr'
+        context['current_status'] = self.request.GET.get('status', '')
+        context['search_query'] = self.request.GET.get('q', '')
+        context['status_counts'] = {
+            'all': User.objects.filter(role=User.Role.STUDENT).count(),
+            'active': StudentProfile.objects.filter(status='active').count(),
+            'pending': StudentProfile.objects.filter(status='pending').count(),
+            'inactive': StudentProfile.objects.filter(status='inactive').count(),
+            'frozen': StudentProfile.objects.filter(status='frozen').count(),
+        }
         return context
+
+
+class StudentDetailView(TeacherRequiredMixin, DetailView):
+    """CRM — Tələbə detalları."""
+    model = User
+    template_name = 'users/student_detail.html'
+    context_object_name = 'student'
+
+    def get_queryset(self):
+        return User.objects.filter(
+            role=User.Role.STUDENT
+        ).select_related('student_profile')
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+        student = self.object
+        context['page_title'] = f'Tələbə — {student.get_full_name()}'
+        context['profile'] = getattr(student, 'student_profile', None)
+
+        # Son dərslər
+        from apps.bookings.models import Booking
+        context['recent_bookings'] = (
+            Booking.objects
+            .filter(student=student)
+            .select_related('slot', 'course')
+            .order_by('-slot__start_time')[:10]
+        )
+
+        # Ödəniş xülasəsi
+        from apps.payments.models import Payment
+        context['total_paid'] = (
+            Payment.objects
+            .filter(student=student, status='completed')
+            .aggregate(total=Sum('amount'))['total'] or 0
+        )
+        context['pending_payments'] = (
+            Payment.objects
+            .filter(student=student, status='pending')
+            .count()
+        )
+
+        # Dərs statistikası
+        context['total_lessons'] = Booking.objects.filter(student=student).count()
+        context['completed_lessons'] = Booking.objects.filter(
+            student=student, status='completed'
+        ).count()
+
+        return context
+
+
+class StudentStatusUpdateView(TeacherRequiredMixin, View):
+    """CRM — Tələbə statusunu dəyiş."""
+
+    def post(self, request, pk):
+        student = get_object_or_404(User, pk=pk, role=User.Role.STUDENT)
+        new_status = request.POST.get('status', '')
+
+        valid_statuses = [s[0] for s in StudentProfile.Status.choices]
+        if new_status not in valid_statuses:
+            messages.error(request, 'Yanlış status.')
+            return redirect('users:student-detail', pk=pk)
+
+        profile = student.student_profile
+        profile.status = new_status
+        profile.status_changed_at = timezone.now()
+        profile.save(update_fields=['status', 'status_changed_at'])
+
+        # Əgər aktiv edildiyi halda user deaktivdirsə
+        if new_status == 'active' and not student.is_active:
+            student.is_active = True
+            student.save(update_fields=['is_active'])
+        elif new_status in ('inactive', 'frozen') and student.is_active:
+            student.is_active = False
+            student.save(update_fields=['is_active'])
+
+        messages.success(
+            request,
+            f'{student.get_full_name()} statusu "{profile.get_status_display()}" olaraq dəyişdirildi.'
+        )
+        return redirect('users:student-detail', pk=pk)
+
+
+class StudentNotesUpdateView(TeacherRequiredMixin, View):
+    """CRM — Tələbə müəllim qeydləri."""
+
+    def post(self, request, pk):
+        student = get_object_or_404(User, pk=pk, role=User.Role.STUDENT)
+        notes = request.POST.get('teacher_notes', '')
+        profile = student.student_profile
+        profile.teacher_notes = notes
+        profile.save(update_fields=['teacher_notes'])
+        messages.success(request, 'Qeydlər saxlanıldı.')
+        return redirect('users:student-detail', pk=pk)
 
 
 class RegistrationRequestListView(TeacherRequiredMixin, ListView):
@@ -70,6 +188,11 @@ class RegistrationRequestDetailView(TeacherRequiredMixin, DetailView):
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         context['page_title'] = f'Müraciət — {self.object.full_name}'
+        # Aylıq ödəniş hesabla
+        from core.utils import calculate_monthly_price
+        context['monthly_price'] = calculate_monthly_price(
+            self.object.lessons_per_week
+        )
         return context
 
 
@@ -135,7 +258,13 @@ class StudentRegisterView(TemplateView):
     def post(self, request, *args, **kwargs):
         form = CourseRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
+            reg_request = form.save()
+            # Aylıq ödəniş hesablanıb success səhifəsinə göndər
+            from core.utils import calculate_monthly_price
+            monthly = calculate_monthly_price(reg_request.lessons_per_week)
+            request.session['reg_monthly_price'] = str(monthly)
+            request.session['reg_lessons_per_week'] = reg_request.lessons_per_week
+            request.session['reg_request_id'] = str(reg_request.id)
             messages.success(
                 request,
                 'Qeydiyyatınız uğurla qəbul edildi! Sizinlə əlaqə saxlanılacaq.'
@@ -148,8 +277,15 @@ class StudentRegisterView(TemplateView):
 
 
 class RegisterSuccessView(TemplateView):
-    """Qeydiyyat uğurlu səhifəsi."""
+    """Qeydiyyat uğurlu səhifəsi — ödəniş məlumatı ilə."""
     template_name = 'auth/register_success.html'
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+        context['monthly_price'] = self.request.session.get('reg_monthly_price', '0')
+        context['lessons_per_week'] = self.request.session.get('reg_lessons_per_week', 2)
+        context['reg_request_id'] = self.request.session.get('reg_request_id', '')
+        return context
 
 
 class ProfileView(LoginRequiredMixin, TemplateView):

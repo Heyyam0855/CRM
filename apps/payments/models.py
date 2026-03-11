@@ -19,10 +19,10 @@ class Payment(BaseModel):
         CANCELLED = 'cancelled', 'Ləğv edildi'
 
     class PaymentMethod(models.TextChoices):
-        STRIPE = 'stripe', 'Stripe (Kart)'
+        EPOINT = 'epoint', 'ePoint (Online kart)'
         BANK_TRANSFER = 'bank_transfer', 'Bank Köçürməsi'
         CASH = 'cash', 'Nağd'
-        ONLINE = 'online', 'Online (e-Manat)'
+        ONLINE = 'online', 'Online'
 
     student = models.ForeignKey(
         'users.User',
@@ -52,13 +52,18 @@ class Payment(BaseModel):
     payment_method = models.CharField(
         max_length=20,
         choices=PaymentMethod.choices,
-        default=PaymentMethod.STRIPE,
+        default=PaymentMethod.EPOINT,
         verbose_name='Ödəniş üsulu'
     )
-    stripe_payment_intent_id = models.CharField(
+    epoint_transaction_id = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name='ePoint Transaction ID'
+    )
+    epoint_order_id = models.CharField(
         max_length=100,
         blank=True,
-        verbose_name='Stripe PaymentIntent ID'
+        verbose_name='ePoint Order ID'
     )
     invoice_number = models.CharField(
         max_length=20,
@@ -130,10 +135,10 @@ class MonthlySubscription(BaseModel):
         default=Status.ACTIVE,
         verbose_name='Status'
     )
-    stripe_subscription_id = models.CharField(
+    epoint_subscription_id = models.CharField(
         max_length=100,
         blank=True,
-        verbose_name='Stripe Subscription ID'
+        verbose_name='ePoint Subscription ID'
     )
     next_billing_date = models.DateField(
         null=True,

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Ödəniş uğursuz — LMS{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-12">
+    <div class="card p-10 text-center">
+        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-5">
+            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"/></svg>
+        </div>
+        <h1 class="text-xl font-bold text-slate-900 mb-2">Ödəniş uğursuz oldu</h1>
+        <p class="text-sm text-slate-500 mb-6">Ödənişiniz tamamlanmadı. Zəhmət olmasa yenidən cəhd edin və ya dəstək xidmətinə müraciət edin.</p>
+        <div class="flex items-center justify-center gap-3">
+            <a href="{% url 'payments:list' %}"
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition">
+                Ödənişlərə qayıt
+            </a>
+            <a href="https://wa.me/994502360901" target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-semibold hover:bg-primary-700 transition">
+                Dəstək
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

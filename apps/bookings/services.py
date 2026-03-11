@@ -1,12 +1,13 @@
 """Bookings App — Services"""
 import logging
 import sys
+from datetime import datetime, timedelta, time as dt_time
 from typing import Optional
 
 from django.db import transaction
 from django.utils import timezone
 
-from .models import AvailabilitySlot, Booking
+from .models import AvailabilitySlot, Booking, WeeklySchedule
 
 logger = logging.getLogger(__name__)
 
@@ -25,19 +26,15 @@ class BookingService:
             return
 
         try:
-            # Google Meet linki yarat (async)
             from apps.video_conferencing.tasks import create_meet_link_task
             create_meet_link_task.delay(booking_id)
 
-            # 24 saat + 1 saat əvvəl xatırlatmalar
             from apps.notifications.tasks import schedule_lesson_reminders
             schedule_lesson_reminders.delay(booking_id)
 
-            # Confirmation email
             from apps.notifications.tasks import send_booking_confirmation
             send_booking_confirmation.delay(booking_id)
         except Exception as exc:
-            # Əsas booking axını external broker xətasına görə qırılmamalıdır.
             logger.warning("Async task enqueue alınmadı: %s", exc, exc_info=True)
 
     def _enqueue_cancellation_task(self, booking_id: str) -> None:
@@ -74,19 +71,8 @@ class BookingService:
         4. Google Meet linki al
         5. Xatırlatma task-ları planlaşdır
         6. Email bildirişi göndər
-
-        Args:
-            student_id: Tələbənin UUID-si
-            slot_id: Slot UUID-si
-            lesson_type: Dərs növü
-            topic: Dərs mövzusu
-            notes: Tələbə qeydləri
-
-        Returns:
-            Optional[Booking]: Yaradılmış booking
         """
         try:
-            # Slot mövcudluğunu yoxla (race condition qaçınmaq üçün)
             slot = AvailabilitySlot.objects.select_for_update().get(
                 id=slot_id,
                 is_reserved=False,
@@ -104,7 +90,6 @@ class BookingService:
             student = User.objects.get(id=student_id, role='student')
             price = getattr(settings, 'LESSON_PRICE', 25.00)
 
-            # Sınaq dərsi üçün endirim
             if lesson_type == Booking.LessonType.TRIAL:
                 discount = getattr(settings, 'TRIAL_LESSON_DISCOUNT', 50)
                 price = price * (100 - discount) / 100
@@ -119,7 +104,6 @@ class BookingService:
                 status=Booking.Status.CONFIRMED,
             )
 
-            # Slotu rezerv et
             slot.is_reserved = True
             slot.save(update_fields=['is_reserved'])
 
@@ -134,16 +118,7 @@ class BookingService:
 
     @transaction.atomic
     def cancel_booking(self, booking_id: str, reason: str = '') -> bool:
-        """
-        Rezervasiyanı ləğv edir.
-
-        Args:
-            booking_id: Booking UUID-si
-            reason: Ləğvetmə səbəbi
-
-        Returns:
-            bool: Uğurlu olduqda True
-        """
+        """Rezervasiyanı ləğv edir."""
         try:
             booking = Booking.objects.select_for_update().get(id=booking_id)
 
@@ -170,3 +145,118 @@ class BookingService:
         except Exception as e:
             logger.error(f"Ləğvetmə xətası: {e}", exc_info=True)
             return False
+
+
+class ScheduleService:
+    """Həftəlik cədvəl və slot yaratma xidməti."""
+
+    def generate_slots(self, weeks_ahead: int = 4) -> int:
+        """
+        Həftəlik cədvəl əsasında gələcək həftələr üçün slot-lar yaradır.
+
+        Args:
+            weeks_ahead: Neçə həftə irəli üçün slot yaratmaq
+
+        Returns:
+            int: Yaradılmış slot sayı
+        """
+        schedules = WeeklySchedule.objects.filter(is_active=True)
+        if not schedules.exists():
+            return 0
+
+        now = timezone.now()
+        today = now.date()
+        created_count = 0
+
+        for week_offset in range(weeks_ahead):
+            week_start = today + timedelta(weeks=week_offset)
+            # Həftənin bazar ertəsinə düzəlt
+            monday = week_start - timedelta(days=week_start.weekday())
+
+            for schedule in schedules:
+                target_date = monday + timedelta(days=schedule.day_of_week)
+
+                # Keçmişdəki tarix üçün slot yaratma
+                if target_date < today:
+                    continue
+                if target_date == today:
+                    min_time = (now + timedelta(hours=2)).time()
+                else:
+                    min_time = dt_time(0, 0)
+
+                current_time = schedule.start_time
+                while current_time < schedule.end_time:
+                    if current_time < min_time and target_date == today:
+                        # Bu saata çatmışıq, növbəti slota keç
+                        minutes = (
+                            current_time.hour * 60 + current_time.minute
+                            + schedule.slot_duration
+                        )
+                        current_time = dt_time(minutes // 60, minutes % 60)
+                        continue
+
+                    slot_start = timezone.make_aware(
+                        datetime.combine(target_date, current_time)
+                    )
+                    end_minutes = (
+                        current_time.hour * 60 + current_time.minute
+                        + schedule.slot_duration
+                    )
+                    slot_end_time = dt_time(
+                        min(end_minutes // 60, 23),
+                        end_minutes % 60
+                    )
+                    slot_end = timezone.make_aware(
+                        datetime.combine(target_date, slot_end_time)
+                    )
+
+                    # Dublikat yoxla
+                    if not AvailabilitySlot.objects.filter(
+                        start_time=slot_start,
+                        end_time=slot_end,
+                    ).exists():
+                        AvailabilitySlot.objects.create(
+                            start_time=slot_start,
+                            end_time=slot_end,
+                            is_active=True,
+                        )
+                        created_count += 1
+
+                    # Növbəti slot
+                    minutes = (
+                        current_time.hour * 60 + current_time.minute
+                        + schedule.slot_duration
+                    )
+                    if minutes >= 24 * 60:
+                        break
+                    current_time = dt_time(minutes // 60, minutes % 60)
+
+        logger.info(f"{created_count} slot yaradıldı ({weeks_ahead} həftəlik)")
+        return created_count
+
+    def get_available_slots_by_date(self) -> dict:
+        """
+        Əlçatan slot-ları tarix əsaslı qruplaşdırılmış qaytarır.
+
+        Returns:
+            dict: {date_str: [slot1, slot2, ...]}
+        """
+        now = timezone.now()
+        slots = (
+            AvailabilitySlot.objects
+            .filter(
+                is_reserved=False,
+                is_active=True,
+                start_time__gt=now,
+            )
+            .order_by('start_time')
+        )
+
+        grouped = {}
+        for slot in slots:
+            date_key = slot.start_time.strftime('%Y-%m-%d')
+            if date_key not in grouped:
+                grouped[date_key] = []
+            grouped[date_key].append(slot)
+
+        return grouped
