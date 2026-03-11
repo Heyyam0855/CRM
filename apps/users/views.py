@@ -284,6 +284,7 @@ class StudentRegisterView(TemplateView):
             request.session['reg_monthly_price'] = str(monthly)
             request.session['reg_lessons_per_week'] = reg_request.lessons_per_week
             request.session['reg_request_id'] = str(reg_request.id)
+            request.session['reg_payment_method'] = payment_method
             if payment:
                 request.session['reg_payment_id'] = str(payment.id)
 
@@ -324,6 +325,7 @@ class RegisterSuccessView(TemplateView):
         context['lessons_per_week'] = self.request.session.get('reg_lessons_per_week', 2)
         context['reg_request_id'] = self.request.session.get('reg_request_id', '')
         context['payment_id'] = self.request.session.get('reg_payment_id', '')
+        context['payment_method'] = self.request.session.get('reg_payment_method', 'epoint')
         # ePoint-dən qayıdış statusu
         context['payment_status'] = self.request.GET.get('payment', '')
         return context

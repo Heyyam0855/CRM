@@ -128,7 +128,54 @@
         </div>
         {% endif %}
 
-        {# ePoint ilə ödə düyməsi #}
+        {% if payment_method == 'epoint' and payment_id %}
+        {# ━━ ePoint — avtomatik yönləndirmə ━━ #}
+        <div class="text-center mb-6">
+            <div class="flex items-center justify-center gap-2 mb-3">
+                <svg class="w-5 h-5 text-primary-500 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                <p class="text-sm font-medium text-primary-600">ePoint ödəniş səhifəsinə yönləndirilirsiniz...</p>
+            </div>
+        </div>
+        <form method="post" action="{% url 'users:register-pay' %}" id="epoint-auto-redirect" class="mb-6">
+            {% csrf_token %}
+            <button type="submit"
+                    class="w-full inline-flex items-center justify-center gap-2.5 rounded-xl text-sm font-bold text-white px-7 py-3.5 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0"
+                    style="background: linear-gradient(135deg, #4338ca 0%, #6366f1 100%); box-shadow: 0 4px 14px -2px rgba(99,102,241,.4);">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                Online ödə — {{ monthly_price }} AZN
+            </button>
+        </form>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('epoint-auto-redirect').submit();
+            });
+        </script>
+
+        {% elif payment_method == 'bank_transfer' %}
+        {# ━━ Bank köçürməsi ━━ #}
+        <div>
+            <p class="text-slate-500 text-sm text-center mb-4">Aşağıdakı hesaba köçürmə edin:</p>
+            <div class="bank-card mb-4">
+                <div class="relative z-10 space-y-1.5">
+                    <div class="flex items-center gap-2 mb-3">
+                        <svg class="w-5 h-5 text-primary-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                        <span class="text-xs font-bold uppercase tracking-widest text-primary-300">Bank məlumatları</span>
+                    </div>
+                    <p class="text-sm"><span class="text-primary-200/70">Bank:</span> <strong>ABB</strong></p>
+                    <p class="text-sm"><span class="text-primary-200/70">Hesab No:</span> <strong class="tracking-wider">4127 2093 0136 9358</strong></p>
+                    <p class="text-sm"><span class="text-primary-200/70">Hesab sahibi:</span> <strong>Samir Kərimov</strong></p>
+                    <p class="text-sm"><span class="text-primary-200/70">Məbləğ:</span> <strong>{{ monthly_price }} AZN</strong></p>
+                </div>
+            </div>
+            <p class="text-xs text-slate-400 text-center">
+                Ödəmə etdikdən sonra şəkli
+                <a href="https://wa.me/994502360901" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">WhatsApp</a>
+                ilə göndərin.
+            </p>
+        </div>
+
+        {% else %}
+        {# Ümumi fallback — ePoint + bank #}
         {% if payment_id %}
         <form method="post" action="{% url 'users:register-pay' %}" class="mb-6">
             {% csrf_token %}
@@ -144,8 +191,6 @@
             <div class="relative flex justify-center"><span class="bg-white px-4 text-xs text-slate-400">və ya</span></div>
         </div>
         {% endif %}
-
-        {# Bank köçürməsi #}
         <div>
             <p class="text-xs text-slate-400 text-center mb-4">Bank köçürməsi ilə ödəyin</p>
             <div class="bank-card mb-4">
