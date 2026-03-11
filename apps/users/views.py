@@ -201,7 +201,7 @@ class ApproveRegistrationView(TeacherRequiredMixin, View):
 
     def post(self, request, pk):
         service = UserService()
-        user = service.approve_registration_request(
+        user, error = service.approve_registration_request(
             request_id=str(pk),
             teacher=request.user,
         )
@@ -212,7 +212,7 @@ class ApproveRegistrationView(TeacherRequiredMixin, View):
                 f'Login məlumatları {user.email} ünvanına göndərildi.'
             )
         else:
-            messages.error(request, 'Müraciət təsdiqlənə bilmədi.')
+            messages.error(request, error or 'Müraciət təsdiqlənə bilmədi.')
         return redirect('users:registration-requests')
 
     def get(self, request, *args, **kwargs):

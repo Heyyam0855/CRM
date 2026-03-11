@@ -1,5 +1,5 @@
 """Users App — Services (Business Logic)"""
-from typing import Optional
+from typing import Optional, Tuple
 import logging
 import secrets
 import string
@@ -60,7 +60,7 @@ class UserService:
     @transaction.atomic
     def approve_registration_request(
         self, request_id: str, teacher
-    ) -> Optional[User]:
+    ) -> Tuple[Optional[User], str]:
         """
         Müəllim tərəfindən qeydiyyat müraciətini təsdiqlə.
         User hesabı yaradılır, parol generasiya edilir, email göndərilir.
@@ -70,12 +70,20 @@ class UserService:
             teacher: Müəllim user obyekti
 
         Returns:
-            Optional[User]: Yaradılmış user obyekti və ya None
+            Tuple[Optional[User], str]: (user, error_message)
         """
         try:
             reg_request = RegistrationRequest.objects.get(
                 id=request_id, status=RegistrationRequest.Status.PENDING
             )
+
+            # Email artıq mövcuddursa xəbərdarlıq
+            if User.objects.filter(email=reg_request.email).exists():
+                return (
+                    None,
+                    f'Bu email ({reg_request.email}) ilə '
+                    'artıq istifadəçi mövcuddur.',
+                )
 
             # Ad və soyadı ayır
             name_parts = reg_request.full_name.strip().split(maxsplit=1)
@@ -129,14 +137,14 @@ class UserService:
                 f"Qeydiyyat təsdiqləndi: {reg_request.email} "
                 f"(teacher: {teacher.email})"
             )
-            return user
+            return user, ''
 
         except RegistrationRequest.DoesNotExist:
             logger.warning(f"Qeydiyyat müraciəti tapılmadı: {request_id}")
-            return None
+            return None, 'Qeydiyyat müraciəti tapılmadı və ya artıq təsdiqlənib.'
         except Exception as e:
             logger.error(f"Qeydiyyat təsdiq xətası: {e}", exc_info=True)
-            return None
+            return None, f'Gözlənilməz xəta baş verdi: {e}'
 
     @transaction.atomic
     def reject_registration_request(
