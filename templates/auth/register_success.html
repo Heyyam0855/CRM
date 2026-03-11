@@ -9,43 +9,47 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
-<body class="bg-gradient-to-br from-primary-50 to-primary-100 min-h-screen">
-<div class="max-w-xl mx-auto px-4 py-16">
-    <div class="bg-white rounded-2xl shadow-sm border-t-4 border-emerald-500 p-10 text-center">
-        <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
-            <svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+<body class="min-h-screen relative">
+<div class="absolute inset-0 bg-gradient-to-br from-slate-50 via-primary-50/40 to-slate-50"></div>
+<div class="absolute top-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full bg-emerald-200/30 blur-3xl"></div>
+<div class="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-primary-200/30 blur-3xl"></div>
+
+<div class="relative z-10 max-w-xl mx-auto px-4 py-16">
+    <div class="bg-white/95 backdrop-blur-xl rounded-2xl shadow-lg shadow-slate-900/[.04] ring-1 ring-slate-200/60 p-10 text-center">
+        <div class="kpi-icon bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/25 mx-auto mb-6">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
         </div>
         <h1 class="text-2xl font-bold text-slate-900 mb-3">Qeydiyyatınız qəbul edildi!</h1>
-        <p class="text-slate-500 mb-4">
+        <p class="text-slate-400 mb-6">
             Müraciətiniz uğurla göndərildi. Müəllim tərəfindən təsdiqlənəndən sonra giriş məlumatlarınız emailinizə göndəriləcək.
         </p>
 
         {% if monthly_price %}
-        <div class="bg-slate-50 rounded-xl p-5 mb-5 text-left">
-            <h3 class="text-sm font-semibold text-slate-700 mb-3">Ödəniş xülasəsi</h3>
+        <div class="bg-slate-50/80 rounded-xl p-5 mb-6 text-left ring-1 ring-slate-200/60">
+            <h3 class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400 mb-3">Ödəniş xülasəsi</h3>
             <div class="space-y-2">
                 <div class="flex justify-between text-sm">
-                    <span class="text-slate-500">Həftəlik dərs sayı</span>
+                    <span class="text-slate-400">Həftəlik dərs sayı</span>
                     <span class="font-semibold text-slate-900">{{ lessons_per_week }} dərs</span>
                 </div>
                 <div class="flex justify-between text-sm">
-                    <span class="text-slate-500">Hər dərs</span>
+                    <span class="text-slate-400">Hər dərs</span>
                     <span class="font-semibold text-slate-900">25 AZN</span>
                 </div>
-                <div class="border-t border-slate-200 pt-2 flex justify-between text-sm">
-                    <span class="text-slate-700 font-medium">Aylıq ödəniş</span>
+                <div class="border-t border-slate-200/60 pt-2 flex justify-between text-sm">
+                    <span class="text-slate-600 font-medium">Aylıq ödəniş</span>
                     <span class="text-lg font-bold text-primary-600">{{ monthly_price }} AZN</span>
                 </div>
             </div>
         </div>
         {% endif %}
 
-        <p class="text-xs text-slate-400 mb-5">
+        <p class="text-xs text-slate-400 mb-6">
             Əlavə sualınız varsa
             <a href="https://wa.me/994502360901" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 font-medium">Whatsapp</a>
             üzərindən yaza bilərsiniz.
         </p>
-        <a href="{% url 'users:register' %}" class="inline-flex items-center gap-2 px-5 py-2.5 border border-primary-600 text-primary-600 font-medium rounded-lg hover:bg-primary-50 transition-colors">
+        <a href="{% url 'users:register' %}" class="btn btn-secondary inline-flex">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
             Əsas səhifəyə qayıt
         </a>

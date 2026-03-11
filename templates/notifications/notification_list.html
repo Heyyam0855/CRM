@@ -3,13 +3,15 @@
 {% block title %}Bildirişlər — LMS Platform{% endblock %}
 
 {% block content %}
-<div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-bold text-slate-900">Bildirişlər</h1>
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Bildirişlər</h1>
+        <p class="page-subtitle">Bütün bildirişləriniz burada göstərilir</p>
+    </div>
     {% if notifications %}
         <form method="post" action="{% url 'notifications:mark-all-read' %}">
             {% csrf_token %}
-            <button type="submit"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 text-slate-600 text-xs font-medium rounded-lg hover:bg-slate-50 transition-colors">
+            <button type="submit" class="btn btn-ghost">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 Hamısını oxunmuş et
             </button>
@@ -17,16 +19,16 @@
     {% endif %}
 </div>
 
-<div class="card">
+<div class="card-hover overflow-hidden">
     {% if notifications %}
-        <ul class="divide-y divide-slate-100">
+        <ul class="divide-y divide-slate-100/80">
             {% for notification in notifications %}
-            <li class="flex items-start gap-3 px-5 py-4 {% if not notification.is_read %}bg-primary-50/40{% endif %}">
-                <div class="mt-1.5 flex-shrink-0">
+            <li class="flex items-start gap-3.5 px-6 py-4 transition-colors {% if not notification.is_read %}bg-primary-50/30 hover:bg-primary-50/50{% else %}hover:bg-slate-50/60{% endif %}">
+                <div class="mt-2 flex-shrink-0">
                     {% if not notification.is_read %}
-                        <span class="block w-2.5 h-2.5 rounded-full bg-primary-500"></span>
+                        <span class="block w-2.5 h-2.5 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 shadow-sm shadow-primary-500/40"></span>
                     {% else %}
-                        <span class="block w-2.5 h-2.5 rounded-full bg-slate-200"></span>
+                        <span class="block w-2.5 h-2.5 rounded-full bg-slate-200/80"></span>
                     {% endif %}
                 </div>
                 <div class="min-w-0 flex-1">
@@ -34,7 +36,7 @@
                         {{ notification.title }}
                     </p>
                     <p class="text-sm text-slate-500 mt-0.5">{{ notification.message }}</p>
-                    <p class="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                    <p class="text-xs text-slate-300 mt-1.5 flex items-center gap-1">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         {{ notification.created_at|date:"d M Y, H:i" }}
                     </p>
@@ -44,9 +46,12 @@
         </ul>
         {% include 'partials/pagination.html' with page_obj=page_obj %}
     {% else %}
-        <div class="text-center py-12">
-            <svg class="mx-auto h-12 w-12 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-            <p class="text-sm text-slate-500">Hələ heç bir bildiriş yoxdur.</p>
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            </div>
+            <h3 class="empty-state-title">Bildiriş yoxdur</h3>
+            <p class="empty-state-text">Hələ heç bir bildiriş yoxdur.</p>
         </div>
     {% endif %}
 </div>

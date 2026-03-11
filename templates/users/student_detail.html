@@ -2,26 +2,33 @@
 
 {% block title %}{{ student.get_full_name }} — CRM — LMS{% endblock %}
 
-{% block content %}
-{# Breadcrumb #}
-<div class="flex items-center gap-2 text-sm text-slate-500 mb-6">
-    <a href="{% url 'users:student-list' %}" class="hover:text-primary-600 transition">Tələbələr</a>
-    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
-    <span class="text-slate-900 font-medium">{{ student.get_full_name }}</span>
+{% block breadcrumb %}
+<div class="page-header">
+    <div class="flex items-center gap-3">
+        <a href="{% url 'users:student-list' %}" class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-white/80 border border-slate-200/60 text-slate-400 hover:text-primary-600 hover:bg-primary-50/50 transition shadow-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+        </a>
+        <div>
+            <h1 class="page-title">{{ student.get_full_name }}</h1>
+            <p class="page-subtitle">Tələbə profili və statistika</p>
+        </div>
+    </div>
 </div>
+{% endblock %}
 
+{% block content %}
 <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
     {# ── Sol: Profil + Statistika ── #}
     <div class="space-y-6">
         {# Profil kartı #}
-        <div class="card overflow-hidden">
-            <div class="h-[72px]" style="background:linear-gradient(135deg,#6366f1,#4f46e5,#4338ca)"></div>
+        <div class="card-hover overflow-hidden">
+            <div class="h-[72px]" style="background:linear-gradient(135deg,#6366f1 0%,#4f46e5 50%,#4338ca 100%)"></div>
             <div class="px-5 pb-5 text-center" style="margin-top:-32px">
                 {% if student.avatar %}
-                    <img src="{{ student.avatar.url }}" class="mx-auto h-16 w-16 rounded-full border-[3px] border-white object-cover">
+                    <img src="{{ student.avatar.url }}" class="mx-auto h-16 w-16 rounded-full border-[3px] border-white object-cover shadow-lg shadow-primary-500/20">
                 {% else %}
-                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-white text-xl font-bold text-white" style="background:linear-gradient(135deg,#6366f1,#4f46e5)">
+                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-white text-xl font-bold text-white shadow-lg shadow-primary-500/20" style="background:linear-gradient(135deg,#6366f1,#4f46e5)">
                         {{ student.first_name|first|upper }}
                     </div>
                 {% endif %}
@@ -34,12 +41,11 @@
                 {# Status badge #}
                 {% if profile %}
                 <div class="mt-3 flex items-center justify-center">
-                    <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold
-                        {% if profile.status == 'active' %}border-emerald-200 bg-emerald-50 text-emerald-700
-                        {% elif profile.status == 'pending' %}border-amber-200 bg-amber-50 text-amber-700
-                        {% elif profile.status == 'frozen' %}border-sky-200 bg-sky-50 text-sky-700
-                        {% elif profile.status == 'graduated' %}border-violet-200 bg-violet-50 text-violet-700
-                        {% else %}border-slate-200 bg-slate-50 text-slate-700{% endif %}">
+                    <span class="{% if profile.status == 'active' %}badge-success
+                        {% elif profile.status == 'pending' %}badge-warning
+                        {% elif profile.status == 'frozen' %}badge-info
+                        {% elif profile.status == 'graduated' %}badge-primary
+                        {% else %}badge-neutral{% endif %}">
                         <span class="h-1.5 w-1.5 rounded-full {% if profile.status == 'active' %}bg-emerald-500{% elif profile.status == 'pending' %}bg-amber-500{% elif profile.status == 'frozen' %}bg-sky-500{% else %}bg-slate-400{% endif %}"></span>
                         {{ profile.get_status_display }}
                     </span>
@@ -48,32 +54,32 @@
             </div>
 
             {# Stats #}
-            <div class="grid grid-cols-2 divide-x divide-slate-100 border-t border-slate-100">
-                <div class="px-4 py-3 text-center">
+            <div class="grid grid-cols-2 divide-x divide-slate-100/80 border-t border-slate-100/80">
+                <div class="px-4 py-3.5 text-center">
                     <p class="text-lg font-bold text-slate-900">{{ total_lessons }}</p>
-                    <p class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Dərslər</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[.12em]">Dərslər</p>
                 </div>
-                <div class="px-4 py-3 text-center">
+                <div class="px-4 py-3.5 text-center">
                     <p class="text-lg font-bold text-slate-900">{{ completed_lessons }}</p>
-                    <p class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Tamamlanmış</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[.12em]">Tamamlanmış</p>
                 </div>
             </div>
-            <div class="grid grid-cols-2 divide-x divide-slate-100 border-t border-slate-100">
-                <div class="px-4 py-3 text-center">
+            <div class="grid grid-cols-2 divide-x divide-slate-100/80 border-t border-slate-100/80">
+                <div class="px-4 py-3.5 text-center">
                     <p class="text-lg font-bold text-emerald-600">{{ total_paid }} ₼</p>
-                    <p class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Ödənib</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[.12em]">Ödənib</p>
                 </div>
-                <div class="px-4 py-3 text-center">
+                <div class="px-4 py-3.5 text-center">
                     <p class="text-lg font-bold {% if pending_payments > 0 %}text-amber-600{% else %}text-slate-900{% endif %}">{{ pending_payments }}</p>
-                    <p class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">Gözləyən</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[.12em]">Gözləyən</p>
                 </div>
             </div>
         </div>
 
         {# Profil detalları #}
         {% if profile %}
-        <div class="card p-5">
-            <h4 class="text-sm font-bold text-slate-900 mb-3">Profil</h4>
+        <div class="card-hover p-5">
+            <h4 class="text-sm font-bold text-slate-900 mb-4">Profil</h4>
             <dl class="space-y-3 text-sm">
                 <div class="flex justify-between">
                     <dt class="text-slate-500">Ödəniş modeli</dt>
@@ -91,7 +97,7 @@
                 <div class="flex justify-between">
                     <dt class="text-slate-500">GitHub</dt>
                     <dd class="font-medium text-slate-900">
-                        <a href="https://github.com/{{ profile.github_username }}" target="_blank" rel="noopener" class="text-primary-600 hover:underline">@{{ profile.github_username }}</a>
+                        <a href="https://github.com/{{ profile.github_username }}" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 transition">@{{ profile.github_username }}</a>
                     </dd>
                 </div>
                 {% endif %}
@@ -110,18 +116,18 @@
         {% endif %}
 
         {# Status dəyişmə #}
-        <div class="card p-5" x-data="{ open: false }">
-            <h4 class="text-sm font-bold text-slate-900 mb-3">Status dəyiş</h4>
+        <div class="card-hover p-5" x-data="{ open: false }">
+            <h4 class="text-sm font-bold text-slate-900 mb-4">Status dəyiş</h4>
             <form method="post" action="{% url 'users:student-status-update' student.pk %}">
                 {% csrf_token %}
-                <select name="status" class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-primary-500 focus:border-transparent mb-3">
+                <select name="status" class="form-input mb-3">
                     <option value="active" {% if profile and profile.status == 'active' %}selected{% endif %}>Aktiv</option>
                     <option value="pending" {% if profile and profile.status == 'pending' %}selected{% endif %}>Gözləyir</option>
                     <option value="frozen" {% if profile and profile.status == 'frozen' %}selected{% endif %}>Dondurulmuş</option>
                     <option value="inactive" {% if profile and profile.status == 'inactive' %}selected{% endif %}>Passiv</option>
                     <option value="graduated" {% if profile and profile.status == 'graduated' %}selected{% endif %}>Bitirmiş</option>
                 </select>
-                <button type="submit" class="w-full rounded-lg border border-primary-200 bg-primary-50 px-4 py-2 text-sm font-medium text-primary-700 transition hover:bg-primary-100">
+                <button type="submit" class="btn btn-secondary w-full">
                     Statusu yenilə
                 </button>
             </form>
@@ -132,50 +138,49 @@
     <div class="xl:col-span-2 space-y-6">
 
         {# Son dərslər #}
-        <div class="card">
-            <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
-                <h3 class="text-sm font-semibold text-slate-900">Son Dərslər</h3>
-                <span class="text-xs text-slate-400">{{ total_lessons }} dərs</span>
+        <div class="card-hover">
+            <div class="flex items-center justify-between border-b border-slate-100/80 px-6 py-4">
+                <h3 class="text-sm font-semibold text-slate-800">Son Dərslər</h3>
+                <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{{ total_lessons }} dərs</span>
             </div>
 
             {% if recent_bookings %}
             <div class="overflow-x-auto">
-                <table class="w-full text-sm">
+                <table class="data-table">
                     <thead>
-                        <tr class="bg-slate-50/60">
-                            <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Tarix</th>
-                            <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Mövzu</th>
-                            <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Status</th>
-                            <th class="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">Əməliyyat</th>
+                        <tr>
+                            <th>Tarix</th>
+                            <th>Mövzu</th>
+                            <th>Status</th>
+                            <th>Əməliyyat</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-100">
+                    <tbody>
                         {% for booking in recent_bookings %}
-                        <tr class="transition hover:bg-slate-50/60">
-                            <td class="px-5 py-3 whitespace-nowrap">
+                        <tr>
+                            <td class="whitespace-nowrap">
                                 <span class="text-slate-700">{{ booking.slot.start_time|date:"d.m.Y" }}</span>
-                                <span class="ml-1 inline-flex items-center rounded-md bg-slate-100 px-1.5 py-0.5 text-[11px] font-semibold text-slate-600">{{ booking.slot.start_time|time:"H:i" }}</span>
+                                <span class="ml-1 inline-flex items-center rounded-lg bg-slate-100/80 px-1.5 py-0.5 text-[11px] font-semibold text-slate-600">{{ booking.slot.start_time|time:"H:i" }}</span>
                             </td>
-                            <td class="px-5 py-3 text-slate-600">{{ booking.topic|default:"—"|truncatechars:40 }}</td>
-                            <td class="px-5 py-3">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                    {% if booking.status == 'confirmed' %}bg-emerald-100 text-emerald-800
-                                    {% elif booking.status == 'completed' %}bg-primary-100 text-primary-800
-                                    {% elif booking.status == 'cancelled' %}bg-slate-100 text-slate-600
-                                    {% else %}bg-amber-100 text-amber-800{% endif %}">
+                            <td class="text-slate-600">{{ booking.topic|default:"—"|truncatechars:40 }}</td>
+                            <td>
+                                <span class="{% if booking.status == 'confirmed' %}badge-success
+                                    {% elif booking.status == 'completed' %}badge-primary
+                                    {% elif booking.status == 'cancelled' %}badge-neutral
+                                    {% else %}badge-warning{% endif %}">
                                     {{ booking.get_status_display }}
                                 </span>
                             </td>
-                            <td class="px-5 py-3">
+                            <td>
                                 {% if booking.status == 'confirmed' %}
                                 <form method="post" action="{% url 'bookings:complete' booking.pk %}" class="inline">
                                     {% csrf_token %}
-                                    <button type="submit" class="rounded-lg px-2.5 py-1 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition">
+                                    <button type="submit" class="btn btn-ghost text-emerald-700 hover:bg-emerald-50">
                                         Tamamla
                                     </button>
                                 </form>
                                 {% elif booking.meet_link %}
-                                <a href="{{ booking.meet_link }}" target="_blank" rel="noopener" class="rounded-lg px-2.5 py-1 text-xs font-medium text-primary-700 bg-primary-50 border border-primary-200 hover:bg-primary-100 transition">Qoşul</a>
+                                <a href="{{ booking.meet_link }}" target="_blank" rel="noopener" class="btn btn-ghost text-primary-700 hover:bg-primary-50">Qoşul</a>
                                 {% else %}
                                 <span class="text-xs text-slate-400">—</span>
                                 {% endif %}
@@ -186,22 +191,25 @@
                 </table>
             </div>
             {% else %}
-            <div class="px-6 py-8 text-center">
-                <p class="text-sm text-slate-500">Hələ dərs yoxdur.</p>
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                </div>
+                <p class="empty-state-title">Hələ dərs yoxdur</p>
             </div>
             {% endif %}
         </div>
 
         {# Müəllim qeydləri #}
-        <div class="card p-6">
-            <h3 class="text-sm font-bold text-slate-900 mb-4">Müəllim Qeydləri</h3>
+        <div class="card-hover p-6">
+            <h3 class="text-sm font-bold text-slate-800 mb-4">Müəllim Qeydləri</h3>
             <form method="post" action="{% url 'users:student-notes-update' student.pk %}">
                 {% csrf_token %}
                 <textarea name="teacher_notes" rows="5"
-                          class="w-full rounded-lg border border-slate-200 px-4 py-3 text-sm text-slate-700 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                          class="form-input"
                           placeholder="Bu tələbə haqqında qeydlər əlavə edin...">{% if profile %}{{ profile.teacher_notes }}{% endif %}</textarea>
                 <div class="mt-3 flex justify-end">
-                    <button type="submit" class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium text-white transition hover:opacity-90" style="background:linear-gradient(135deg,#6366f1,#4f46e5)">
+                    <button type="submit" class="btn btn-primary">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
                         Saxla
                     </button>
