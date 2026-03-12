@@ -24,6 +24,18 @@ class CourseRegistrationForm(forms.ModelForm):
         label='Həftəlik dərs sayı',
     )
 
+    PAYMENT_METHOD_CHOICES = [
+        ('epoint', 'Online ödəniş (kart ilə)'),
+        ('bank_transfer', 'Bank köçürməsi'),
+    ]
+
+    payment_method = forms.ChoiceField(
+        choices=PAYMENT_METHOD_CHOICES,
+        initial='epoint',
+        widget=forms.RadioSelect(),
+        label='Ödəniş üsulu',
+    )
+
     class Meta:
         model = RegistrationRequest
         fields = [
@@ -33,32 +45,32 @@ class CourseRegistrationForm(forms.ModelForm):
         ]
         widgets = {
             'full_name': forms.TextInput(attrs={
-                'class': 'form-control',
+                'class': 'form-input',
                 'placeholder': 'Ad və soyadınızı daxil edin',
             }),
             'email': forms.EmailInput(attrs={
-                'class': 'form-control',
+                'class': 'form-input',
                 'placeholder': 'email@example.com',
             }),
             'phone': forms.TextInput(attrs={
-                'class': 'form-control',
+                'class': 'form-input',
                 'placeholder': '+994501234567',
             }),
             'course_package': forms.RadioSelect(),
             'other_course': forms.TextInput(attrs={
-                'class': 'form-control',
+                'class': 'form-input',
                 'placeholder': 'Digər dərs paketinin adını yazın',
             }),
             'payment_receipt': forms.TextInput(attrs={
-                'class': 'form-control',
+                'class': 'form-input',
                 'placeholder': 'Qısa qeyd yazın',
             }),
             'preferred_start_date': forms.DateInput(attrs={
-                'class': 'form-control',
+                'class': 'form-input',
                 'type': 'date',
             }),
             'github_profile_url': forms.URLInput(attrs={
-                'class': 'form-control',
+                'class': 'form-input',
                 'placeholder': 'https://github.com/username',
             }),
         }

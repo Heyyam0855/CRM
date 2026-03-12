@@ -5,7 +5,8 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 
 from core.mixins import TeacherRequiredMixin, HTMXMixin
-from .models import Course, Module, Lesson, Enrollment
+from .models import Course, Enrollment
+from .forms import CourseForm
 
 
 class CourseListView(LoginRequiredMixin, HTMXMixin, ListView):
@@ -50,3 +51,43 @@ class CourseDetailView(LoginRequiredMixin, DetailView):
                 course=self.object
             ).first()
         return context
+
+
+class CourseCreateView(TeacherRequiredMixin, CreateView):
+    """Yeni kurs yaratma."""
+    model = Course
+    form_class = CourseForm
+    template_name = 'courses/course_form.html'
+
+    def get_success_url(self):
+        return reverse_lazy('courses:detail', kwargs={'slug': self.object.slug})
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = 'Yeni kurs əlavə et'
+        context['is_edit'] = False
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Kurs uğurla yaradıldı!')
+        return super().form_valid(form)
+
+
+class CourseUpdateView(TeacherRequiredMixin, UpdateView):
+    """Kurs redaktə etmə."""
+    model = Course
+    form_class = CourseForm
+    template_name = 'courses/course_form.html'
+
+    def get_success_url(self):
+        return reverse_lazy('courses:detail', kwargs={'slug': self.object.slug})
+
+    def get_context_data(self, **kwargs) -> dict:
+        context = super().get_context_data(**kwargs)
+        context['page_title'] = f'{self.object.title} — Redaktə'
+        context['is_edit'] = True
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Kurs uğurla yeniləndi!')
+        return super().form_valid(form)

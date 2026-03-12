@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+
+{% block title %}Dərs Təyin Et — LMS{% endblock %}
+
+{% block breadcrumb %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Dərs Təyin Et</h1>
+        <p class="page-subtitle">Uyğun vaxtı seçin və dərsinizi planlaşdırın</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div x-data="bookingCalendar()" x-init="init()" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    {# ── Sol: Təqvim ── #}
+    <div class="lg:col-span-2">
+        <div class="card-hover">
+            {# Ay navigator #}
+            <div class="flex items-center justify-between border-b border-slate-100/80 px-6 py-4">
+                <button @click="prevMonth()" class="rounded-md p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+                </button>
+                <h3 class="text-sm font-semibold text-slate-800" x-text="monthTitle"></h3>
+                <button @click="nextMonth()" class="rounded-md p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                </button>
+            </div>
+
+            {# Gün başlıqları #}
+            <div class="grid grid-cols-7 border-b border-slate-100/80">
+                <template x-for="day in dayNames" :key="day">
+                    <div class="py-2.5 text-center text-[10px] font-bold uppercase tracking-[.12em] text-slate-400" x-text="day"></div>
+                </template>
+            </div>
+
+            {# Günlər #}
+            <div class="grid grid-cols-7">
+                <template x-for="(cell, i) in calendarCells" :key="i">
+                    <div class="min-h-[80px] border-b border-r border-slate-100/50 p-1.5 transition"
+                         :class="{
+                             'bg-slate-50/40': !cell.currentMonth,
+                             'cursor-pointer hover:bg-primary-50/40': cell.hasSlots && cell.currentMonth,
+                             'ring-2 ring-inset ring-primary-500 bg-primary-50/60': cell.dateStr === selectedDate,
+                         }"
+                         @click="cell.hasSlots && cell.currentMonth && selectDate(cell.dateStr)">
+                        <div class="flex items-start justify-between">
+                            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full text-xs font-medium"
+                                  :class="{
+                                      'text-slate-300': !cell.currentMonth,
+                                      'text-slate-700': cell.currentMonth && !cell.isToday,
+                                      'bg-primary-600 text-white font-bold shadow-sm shadow-primary-500/30': cell.isToday,
+                                  }" x-text="cell.day"></span>
+                            <span x-show="cell.hasSlots && cell.currentMonth"
+                                  class="mt-0.5 inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-emerald-100 px-1.5 text-[10px] font-bold text-emerald-700"
+                                  x-text="cell.slotCount"></span>
+                        </div>
+                        <template x-if="cell.hasSlots && cell.currentMonth">
+                            <div class="mt-1">
+                                <div class="h-1 rounded-full bg-emerald-400/40"></div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    {# ── Sağ: Seçilmiş günün slotları ── #}
+    <div>
+        <div class="card-hover sticky top-6">
+            <div class="border-b border-slate-100/80 px-6 py-4">
+                <h3 class="text-sm font-semibold text-slate-800" x-text="selectedDate ? formattedDate : 'Gün seçin'"></h3>
+                <p class="mt-0.5 text-xs text-slate-400" x-text="selectedDate ? selectedSlots.length + ' boş vaxt' : 'Təqvimdən bir gün seçin'"></p>
+            </div>
+
+            {# Slotlar #}
+            <div class="divide-y divide-slate-100/80" x-show="selectedDate">
+                <template x-if="selectedSlots.length > 0">
+                    <div class="max-h-[480px] overflow-y-auto">
+                        <template x-for="slot in selectedSlots" :key="slot.id">
+                            <div class="flex items-center justify-between px-6 py-3.5 transition hover:bg-primary-50/30">
+                                <div class="flex items-center gap-3">
+                                    <div class="kpi-icon bg-gradient-to-br from-primary-500 to-primary-600 shadow-lg shadow-primary-500/25" style="width:40px;height:40px">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-slate-900" x-text="slot.start + ' — ' + slot.end"></p>
+                                        <p class="text-[11px] text-slate-400">60 dəqiqə</p>
+                                    </div>
+                                </div>
+                                <button @click="bookSlot(slot)"
+                                        :disabled="booking"
+                                        class="btn btn-primary text-xs px-3 py-1.5 disabled:opacity-50">
+                                    <svg x-show="!booking" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                                    <svg x-show="booking" class="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M 12 2 a 10 10 0 0 1 10 10"/></svg>
+                                    <span x-text="booking ? 'Gözləyin...' : 'Seç'"></span>
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                <template x-if="selectedDate && selectedSlots.length === 0">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </div>
+                        <p class="empty-state-title">Bu gün üçün boş vaxt yoxdur</p>
+                    </div>
+                </template>
+            </div>
+
+            <template x-if="!selectedDate">
+                <div class="empty-state">
+                    <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-primary-50">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                    </div>
+                    <p class="empty-state-title">Yaşıl işarəli günlərdən birini seçin</p>
+                    <p class="empty-state-text">Boş vaxtlar göstəriləcək</p>
+                </div>
+            </template>
+        </div>
+    </div>
+</div>
+
+{# ── Uğurlu booking modal ── #}
+<div x-show="successMsg"
+     x-transition:enter="transition ease-out duration-300"
+     x-transition:enter-start="opacity-0"
+     x-transition:enter-end="opacity-100"
+     x-transition:leave="transition ease-in duration-200"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm"
+     @click.self="successMsg = ''">
+    <div class="w-full max-w-sm rounded-lg bg-white/95 backdrop-blur-xl p-8 text-center shadow-2xl shadow-slate-900/[.08]"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-95"
+         x-transition:enter-end="opacity-100 scale-100">
+        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-lg bg-emerald-100">
+            <svg class="h-8 w-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="mt-4 text-lg font-bold text-slate-900">Dərs təyin edildi!</h3>
+        <p class="mt-2 text-sm text-slate-500" x-text="successMsg"></p>
+        <div class="mt-6 flex gap-3">
+            <a href="{% url 'bookings:list' %}" class="btn btn-secondary flex-1 justify-center">Dərslərim</a>
+            <button @click="successMsg = ''" class="btn btn-primary flex-1 justify-center">Davam et</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function bookingCalendar() {
+    const calendarData = {{ calendar_data|safe }};
+    const availableDates = {{ available_dates|safe }};
+    const azMonths = ['Yanvar','Fevral','Mart','Aprel','May','İyun','İyul','Avqust','Sentyabr','Oktyabr','Noyabr','Dekabr'];
+
+    return {
+        currentDate: new Date(),
+        selectedDate: null,
+        selectedSlots: [],
+        booking: false,
+        successMsg: '',
+        calendarCells: [],
+        dayNames: ['B.e.', 'Ç.a.', 'Ç.', 'C.a.', 'C.', 'Ş.', 'B.'],
+
+        get monthTitle() {
+            return azMonths[this.currentDate.getMonth()] + ' ' + this.currentDate.getFullYear();
+        },
+
+        get formattedDate() {
+            if (!this.selectedDate) return '';
+            const parts = this.selectedDate.split('-');
+            const d = new Date(parts[0], parts[1]-1, parts[2]);
+            return d.getDate() + ' ' + azMonths[d.getMonth()] + ' ' + d.getFullYear();
+        },
+
+        init() {
+            this.buildCalendar();
+        },
+
+        buildCalendar() {
+            const year = this.currentDate.getFullYear();
+            const month = this.currentDate.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            // Monday = 0
+            let startDay = (firstDay.getDay() + 6) % 7;
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            this.calendarCells = [];
+
+            // Previous month days
+            const prevLast = new Date(year, month, 0);
+            for (let i = startDay - 1; i >= 0; i--) {
+                const day = prevLast.getDate() - i;
+                const dateStr = this.formatDate(year, month - 1, day);
+                this.calendarCells.push({
+                    day, dateStr, currentMonth: false, isToday: false,
+                    hasSlots: false, slotCount: 0
+                });
+            }
+
+            // Current month
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const dateStr = this.formatDate(year, month, day);
+                const d = new Date(year, month, day);
+                d.setHours(0,0,0,0);
+                const slots = calendarData[dateStr] || [];
+                this.calendarCells.push({
+                    day, dateStr, currentMonth: true,
+                    isToday: d.getTime() === today.getTime(),
+                    hasSlots: slots.length > 0 && d >= today,
+                    slotCount: slots.length
+                });
+            }
+
+            // Fill remaining to complete grid
+            const remaining = 42 - this.calendarCells.length;
+            for (let day = 1; day <= remaining; day++) {
+                this.calendarCells.push({
+                    day, dateStr: '', currentMonth: false, isToday: false,
+                    hasSlots: false, slotCount: 0
+                });
+            }
+        },
+
+        formatDate(y, m, d) {
+            const dt = new Date(y, m, d);
+            const yy = dt.getFullYear();
+            const mm = String(dt.getMonth() + 1).padStart(2, '0');
+            const dd = String(dt.getDate()).padStart(2, '0');
+            return `${yy}-${mm}-${dd}`;
+        },
+
+        prevMonth() {
+            this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1, 1);
+            this.buildCalendar();
+        },
+
+        nextMonth() {
+            this.currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
+            this.buildCalendar();
+        },
+
+        selectDate(dateStr) {
+            this.selectedDate = dateStr;
+            this.selectedSlots = calendarData[dateStr] || [];
+        },
+
+        async bookSlot(slot) {
+            this.booking = true;
+            try {
+                const formData = new FormData();
+                formData.append('slot_id', slot.id);
+                formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}');
+
+                const res = await fetch('{% url "bookings:quick-book" %}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}' }
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    this.successMsg = data.message;
+                    // Slotdan çıxar
+                    this.selectedSlots = this.selectedSlots.filter(s => s.id !== slot.id);
+                    // Təqvimi yenilə
+                    delete calendarData[this.selectedDate];
+                    if (this.selectedSlots.length > 0) {
+                        calendarData[this.selectedDate] = this.selectedSlots;
+                    }
+                    this.buildCalendar();
+                } else {
+                    alert(data.error || 'Xəta baş verdi');
+                }
+            } catch(e) {
+                alert('Şəbəkə xətası');
+            } finally {
+                this.booking = false;
+            }
+        }
+    };
+}
+</script>
+{% endblock %}

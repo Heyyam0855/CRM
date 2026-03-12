@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Ödəniş uğurlu — LMS{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto mt-16">
+    <div class="card-hover p-10 text-center">
+        <div class="kpi-icon bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/25 mx-auto mb-6">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+        </div>
+        <h1 class="text-xl font-bold text-slate-900 mb-2">Ödəniş uğurla tamamlandı!</h1>
+        <p class="text-sm text-slate-400 mb-8">Ödənişiniz qəbul edildi. Təşəkkür edirik.</p>
+        <a href="{% url 'payments:list' %}" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
+            Ödənişlərə qayıt
+        </a>
+    </div>
+</div>
+{% endblock %}

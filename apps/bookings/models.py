@@ -9,6 +9,48 @@ from django.utils import timezone
 from core.validators import validate_future_datetime
 
 
+class WeeklySchedule(BaseModel):
+    """
+    Müəllimin həftəlik iş cədvəli.
+    Hər gün üçün başlama/bitmə saatı təyin edilir.
+    Bu cədvəl əsasında avtomatik slot-lar yaradılır.
+    """
+
+    class DayOfWeek(models.IntegerChoices):
+        MONDAY = 0, 'Bazar ertəsi'
+        TUESDAY = 1, 'Çərşənbə axşamı'
+        WEDNESDAY = 2, 'Çərşənbə'
+        THURSDAY = 3, 'Cümə axşamı'
+        FRIDAY = 4, 'Cümə'
+        SATURDAY = 5, 'Şənbə'
+        SUNDAY = 6, 'Bazar'
+
+    day_of_week = models.IntegerField(
+        choices=DayOfWeek.choices,
+        verbose_name='Həftənin günü'
+    )
+    start_time = models.TimeField(verbose_name='Başlama saatı')
+    end_time = models.TimeField(verbose_name='Bitmə saatı')
+    slot_duration = models.PositiveSmallIntegerField(
+        default=60,
+        verbose_name='Slot müddəti (dəqiqə)'
+    )
+    is_active = models.BooleanField(default=True, verbose_name='Aktivdir')
+
+    class Meta:
+        db_table = 'bookings_weekly_schedule'
+        verbose_name = 'Həftəlik Cədvəl'
+        verbose_name_plural = 'Həftəlik Cədvəllər'
+        ordering = ['day_of_week', 'start_time']
+        unique_together = ['day_of_week', 'start_time']
+
+    def __str__(self) -> str:
+        return (
+            f"{self.get_day_of_week_display()} "
+            f"{self.start_time:%H:%M}—{self.end_time:%H:%M}"
+        )
+
+
 class AvailabilitySlot(BaseModel):
     """
     Müəllimin əlçatan vaxt slotu.

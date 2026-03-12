@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ student.get_full_name }} — CRM — LMS{% endblock %}
+
+{% block breadcrumb %}
+<div class="page-header">
+    <div class="flex items-center gap-3">
+        <a href="{% url 'users:student-list' %}" class="btn-icon border border-slate-200/60 bg-white/80 shadow-sm">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+        </a>
+        <div>
+            <h1 class="page-title">{{ student.get_full_name }}</h1>
+            <p class="page-subtitle">Tələbə profili və statistika</p>
+        </div>
+    </div>
+    {% if profile %}
+    <span class="{% if profile.status == 'active' %}badge-success
+        {% elif profile.status == 'pending' %}badge-warning
+        {% elif profile.status == 'frozen' %}badge-info
+        {% elif profile.status == 'graduated' %}badge-primary
+        {% else %}badge-neutral{% endif %}">
+        <span class="h-1.5 w-1.5 rounded-full {% if profile.status == 'active' %}bg-emerald-500{% elif profile.status == 'pending' %}bg-amber-500{% elif profile.status == 'frozen' %}bg-sky-500{% else %}bg-slate-400{% endif %}"></span>
+        {{ profile.get_status_display }}
+    </span>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+    {# ── Sol: Profil + Statistika ── #}
+    <div class="space-y-6">
+        {# Profil kartı #}
+        <div class="card-hover overflow-hidden">
+            <div class="h-[72px]" style="background:linear-gradient(135deg,#6366f1 0%,#4f46e5 50%,#4338ca 100%)"></div>
+            <div class="px-5 pb-5 text-center" style="margin-top:-32px">
+                {% if student.avatar %}
+                    <img src="{{ student.avatar.url }}" class="mx-auto h-16 w-16 rounded-full border-[3px] border-white object-cover shadow-lg shadow-primary-500/20">
+                {% else %}
+                    <div class="avatar avatar-xl mx-auto border-[3px] border-white shadow-lg shadow-primary-500/20">
+                        {{ student.first_name|first|upper }}
+                    </div>
+                {% endif %}
+                <h3 class="mt-3 text-base font-bold text-slate-900">{{ student.get_full_name }}</h3>
+                <p class="mt-0.5 text-xs text-slate-400">{{ student.email }}</p>
+                {% if student.phone %}
+                <p class="mt-0.5 text-xs text-slate-400">{{ student.phone }}</p>
+                {% endif %}
+            </div>
+
+            {# Stats grid #}
+            <div class="grid grid-cols-2 divide-x divide-slate-100/80 border-t border-slate-100/80">
+                <div class="stat-item">
+                    <p class="text-lg font-bold text-slate-900">{{ total_lessons }}</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[.12em]">Dərslər</p>
+                </div>
+                <div class="stat-item">
+                    <p class="text-lg font-bold text-slate-900">{{ completed_lessons }}</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[.12em]">Tamamlanmış</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 divide-x divide-slate-100/80 border-t border-slate-100/80">
+                <div class="stat-item">
+                    <p class="text-lg font-bold text-emerald-600">{{ total_paid }} ₼</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[.12em]">Ödənib</p>
+                </div>
+                <div class="stat-item">
+                    <p class="text-lg font-bold {% if pending_payments > 0 %}text-amber-600{% else %}text-slate-900{% endif %}">{{ pending_payments }}</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[.12em]">Gözləyən</p>
+                </div>
+            </div>
+        </div>
+
+        {# Profil detalları #}
+        {% if profile %}
+        <div class="card-hover">
+            <div class="card-section">
+                <h4 class="card-section-title">Profil</h4>
+            </div>
+            <dl class="space-y-3 text-sm p-5">
+                <div class="flex justify-between">
+                    <dt class="text-slate-500">Ödəniş modeli</dt>
+                    <dd class="font-medium text-slate-900">{{ profile.get_payment_model_display }}</dd>
+                </div>
+                <div class="flex justify-between">
+                    <dt class="text-slate-500">Həftəlik dərs</dt>
+                    <dd class="font-medium text-slate-900">{{ profile.lessons_per_week }}</dd>
+                </div>
+                <div class="flex justify-between">
+                    <dt class="text-slate-500">Aylıq ödəniş</dt>
+                    <dd class="font-bold text-primary-600">{{ profile.get_monthly_price }} ₼</dd>
+                </div>
+                {% if profile.github_username %}
+                <div class="flex justify-between">
+                    <dt class="text-slate-500">GitHub</dt>
+                    <dd class="font-medium text-slate-900">
+                        <a href="https://github.com/{{ profile.github_username }}" target="_blank" rel="noopener" class="text-primary-600 hover:text-primary-700 transition">@{{ profile.github_username }}</a>
+                    </dd>
+                </div>
+                {% endif %}
+                {% if profile.goals %}
+                <div>
+                    <dt class="text-slate-500 mb-1">Məqsədlər</dt>
+                    <dd class="text-slate-700">{{ profile.goals }}</dd>
+                </div>
+                {% endif %}
+                <div class="flex justify-between">
+                    <dt class="text-slate-500">Qeydiyyat</dt>
+                    <dd class="text-slate-700">{{ student.date_joined|date:"d.m.Y" }}</dd>
+                </div>
+            </dl>
+        </div>
+        {% endif %}
+
+        {# Status dəyişmə #}
+        <div class="card-hover">
+            <div class="card-section">
+                <h4 class="card-section-title">Status dəyiş</h4>
+            </div>
+            <div class="p-5">
+                <form method="post" action="{% url 'users:student-status-update' student.pk %}">
+                    {% csrf_token %}
+                    <select name="status" class="form-input mb-3">
+                        <option value="active" {% if profile and profile.status == 'active' %}selected{% endif %}>Aktiv</option>
+                        <option value="pending" {% if profile and profile.status == 'pending' %}selected{% endif %}>Gözləyir</option>
+                        <option value="frozen" {% if profile and profile.status == 'frozen' %}selected{% endif %}>Dondurulmuş</option>
+                        <option value="inactive" {% if profile and profile.status == 'inactive' %}selected{% endif %}>Passiv</option>
+                        <option value="graduated" {% if profile and profile.status == 'graduated' %}selected{% endif %}>Bitirmiş</option>
+                    </select>
+                    <button type="submit" class="btn btn-secondary w-full">
+                        Statusu yenilə
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {# ── Sağ: Dərslər + Qeydlər ── #}
+    <div class="xl:col-span-2 space-y-6">
+
+        {# Son dərslər #}
+        <div class="card-hover">
+            <div class="card-section">
+                <h3 class="card-section-title">Son Dərslər</h3>
+                <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">{{ total_lessons }} dərs</span>
+            </div>
+
+            {% if recent_bookings %}
+            <div class="overflow-x-auto">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tarix</th>
+                            <th>Mövzu</th>
+                            <th>Status</th>
+                            <th>Əməliyyat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in recent_bookings %}
+                        <tr>
+                            <td class="whitespace-nowrap">
+                                <span class="text-slate-700">{{ booking.slot.start_time|date:"d.m.Y" }}</span>
+                                <span class="ml-1 badge-neutral">{{ booking.slot.start_time|time:"H:i" }}</span>
+                            </td>
+                            <td class="text-slate-600">{{ booking.topic|default:"—"|truncatechars:40 }}</td>
+                            <td>
+                                <span class="{% if booking.status == 'confirmed' %}badge-success
+                                    {% elif booking.status == 'completed' %}badge-primary
+                                    {% elif booking.status == 'cancelled' %}badge-neutral
+                                    {% else %}badge-warning{% endif %}">
+                                    {{ booking.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if booking.status == 'confirmed' %}
+                                <form method="post" action="{% url 'bookings:complete' booking.pk %}" class="inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-ghost text-emerald-700 hover:bg-emerald-50">
+                                        Tamamla
+                                    </button>
+                                </form>
+                                {% elif booking.meet_link %}
+                                <a href="{{ booking.meet_link }}" target="_blank" rel="noopener" class="btn btn-ghost text-primary-700 hover:bg-primary-50">Qoşul</a>
+                                {% else %}
+                                <span class="text-xs text-slate-400">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+                </div>
+                <p class="empty-state-title">Hələ dərs yoxdur</p>
+            </div>
+            {% endif %}
+        </div>
+
+        {# Müəllim qeydləri #}
+        <div class="card-hover">
+            <div class="card-section">
+                <h3 class="card-section-title">Müəllim Qeydləri</h3>
+            </div>
+            <div class="p-6">
+                <form method="post" action="{% url 'users:student-notes-update' student.pk %}">
+                    {% csrf_token %}
+                    <textarea name="teacher_notes" rows="5"
+                              class="form-input"
+                              placeholder="Bu tələbə haqqında qeydlər əlavə edin...">{% if profile %}{{ profile.teacher_notes }}{% endif %}</textarea>
+                    <div class="mt-3 flex justify-end">
+                        <button type="submit" class="btn btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                            Saxla
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

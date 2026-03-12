@@ -1,20 +1,26 @@
 {% if page_obj.has_other_pages %}
-<nav aria-label="Səhifələmə" class="flex items-center justify-center gap-1 border-t border-slate-200 px-4 py-3">
+<nav aria-label="Səhifələmə" class="flex items-center justify-center gap-1.5 pt-5 mt-5 border-t border-slate-100/80">
     {% if page_obj.has_previous %}
     <a href="?page={{ page_obj.previous_page_number }}"
-       class="rounded-lg px-3 py-1.5 text-sm text-slate-600 transition hover:bg-slate-100">&laquo; Əvvəlki</a>
+       class="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm text-slate-500 ring-1 ring-slate-200/60 transition hover:bg-slate-50 hover:text-slate-700">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        Əvvəlki
+    </a>
     {% endif %}
     {% for num in page_obj.paginator.page_range %}
         {% if page_obj.number == num %}
-        <span class="rounded-lg bg-primary-600 px-3 py-1.5 text-sm font-medium text-white">{{ num }}</span>
+        <span class="rounded-lg bg-gradient-to-r from-primary-500 to-primary-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm shadow-primary-500/25">{{ num }}</span>
         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
         <a href="?page={{ num }}"
-           class="rounded-lg px-3 py-1.5 text-sm text-slate-600 transition hover:bg-slate-100">{{ num }}</a>
+           class="rounded-lg px-3 py-1.5 text-sm text-slate-500 transition hover:bg-slate-50 hover:text-slate-700">{{ num }}</a>
         {% endif %}
     {% endfor %}
     {% if page_obj.has_next %}
     <a href="?page={{ page_obj.next_page_number }}"
-       class="rounded-lg px-3 py-1.5 text-sm text-slate-600 transition hover:bg-slate-100">Növbəti &raquo;</a>
+       class="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm text-slate-500 ring-1 ring-slate-200/60 transition hover:bg-slate-50 hover:text-slate-700">
+        Növbəti
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    </a>
     {% endif %}
 </nav>
 {% endif %}

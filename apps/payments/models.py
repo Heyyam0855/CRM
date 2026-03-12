@@ -19,16 +19,26 @@ class Payment(BaseModel):
         CANCELLED = 'cancelled', 'Ləğv edildi'
 
     class PaymentMethod(models.TextChoices):
-        STRIPE = 'stripe', 'Stripe (Kart)'
+        EPOINT = 'epoint', 'ePoint (Online kart)'
         BANK_TRANSFER = 'bank_transfer', 'Bank Köçürməsi'
         CASH = 'cash', 'Nağd'
-        ONLINE = 'online', 'Online (e-Manat)'
+        ONLINE = 'online', 'Online'
 
     student = models.ForeignKey(
         'users.User',
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name='payments',
         verbose_name='Tələbə'
+    )
+    registration_request = models.ForeignKey(
+        'users.RegistrationRequest',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='payments',
+        verbose_name='Qeydiyyat müraciəti'
     )
     booking = models.ForeignKey(
         'bookings.Booking',
@@ -52,13 +62,18 @@ class Payment(BaseModel):
     payment_method = models.CharField(
         max_length=20,
         choices=PaymentMethod.choices,
-        default=PaymentMethod.STRIPE,
+        default=PaymentMethod.EPOINT,
         verbose_name='Ödəniş üsulu'
     )
-    stripe_payment_intent_id = models.CharField(
+    epoint_transaction_id = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name='ePoint Transaction ID'
+    )
+    epoint_order_id = models.CharField(
         max_length=100,
         blank=True,
-        verbose_name='Stripe PaymentIntent ID'
+        verbose_name='ePoint Order ID'
     )
     invoice_number = models.CharField(
         max_length=20,
@@ -93,7 +108,8 @@ class Payment(BaseModel):
         ]
 
     def __str__(self) -> str:
-        return f"{self.student.get_full_name()} — {self.amount} AZN ({self.get_status_display()})"
+        name = self.student.get_full_name() if self.student else 'Qeydiyyat'
+        return f"{name} — {self.amount} AZN ({self.get_status_display()})"
 
     def save(self, *args, **kwargs):
         if not self.invoice_number:
@@ -130,10 +146,10 @@ class MonthlySubscription(BaseModel):
         default=Status.ACTIVE,
         verbose_name='Status'
     )
-    stripe_subscription_id = models.CharField(
+    epoint_subscription_id = models.CharField(
         max_length=100,
         blank=True,
-        verbose_name='Stripe Subscription ID'
+        verbose_name='ePoint Subscription ID'
     )
     next_billing_date = models.DateField(
         null=True,

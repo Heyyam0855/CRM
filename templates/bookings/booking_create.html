@@ -2,21 +2,26 @@
 
 {% block title %}Yeni Rezervasiya — LMS{% endblock %}
 
-{% block content %}
-<div class="flex items-center justify-between mb-6">
-    <h1 class="text-2xl font-bold text-slate-900">Yeni Rezervasiya</h1>
-    <a href="{% url 'bookings:list' %}" class="inline-flex items-center gap-2 px-4 py-2 border border-slate-300 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
+{% block breadcrumb %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">Yeni Rezervasiya</h1>
+        <p class="page-subtitle">Uyğun vaxt seçin və dərsinizi planlaşdırın</p>
+    </div>
+    <a href="{% url 'bookings:list' %}" class="btn btn-secondary">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"/></svg>
         Geri
     </a>
 </div>
+{% endblock %}
 
+{% block content %}
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
     <!-- Sol: Mövcud slotlar -->
     <div class="lg:col-span-7">
-        <div class="card">
-            <div class="px-5 py-4 border-b border-slate-200/60">
-                <h3 class="font-semibold text-slate-900">Əlçatan Vaxtlar</h3>
+        <div class="card-hover">
+            <div class="card-section">
+                <h3 class="card-section-title">Əlçatan Vaxtlar</h3>
             </div>
             <div hx-get="{% url 'bookings:slots' %}"
                  hx-trigger="load"
@@ -31,11 +36,11 @@
 
     <!-- Sağ: Rezervasiya formu -->
     <div class="lg:col-span-5">
-        <div class="card">
-            <div class="px-5 py-4 border-b border-slate-200/60">
-                <h3 class="font-semibold text-slate-900">Dərs Məlumatları</h3>
+        <div class="card-hover">
+            <div class="card-section">
+                <h3 class="card-section-title">Dərs Məlumatları</h3>
             </div>
-            <div class="p-5">
+            <div class="p-6">
                 <form method="post"
                       action="{% url 'bookings:create' %}"
                       hx-post="{% url 'bookings:create' %}"
@@ -47,18 +52,17 @@
 
                     <!-- Seçilmiş vaxt göstəricisi -->
                     <div class="mb-4">
-                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Seçilmiş vaxt</label>
+                        <label class="form-label">Seçilmiş vaxt</label>
                         <div id="selected-slot-display"
-                             class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-400">
+                             class="form-input text-slate-400">
                             Soldan bir vaxt seçin
                         </div>
                     </div>
 
                     <!-- Dərs növü -->
                     <div class="mb-4">
-                        <label for="lesson_type" class="block text-sm font-semibold text-slate-700 mb-1.5">Dərs növü</label>
-                        <select name="lesson_type" id="lesson_type"
-                                class="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500">
+                        <label for="lesson_type" class="form-label">Dərs növü</label>
+                        <select name="lesson_type" id="lesson_type" class="form-input">
                             <option value="standard">Standart dərs</option>
                             <option value="trial">Sınaq dərsi</option>
                             <option value="consultation">Məsləhət</option>
@@ -68,32 +72,32 @@
 
                     <!-- Mövzu -->
                     <div class="mb-4">
-                        <label for="topic" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                        <label for="topic" class="form-label">
                             Mövzu <span class="text-slate-400 font-normal">(ixtiyari)</span>
                         </label>
                         <input type="text" name="topic" id="topic"
-                               class="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                               class="form-input"
                                placeholder="Məs: Python funksiyaları, Django views...">
                     </div>
 
                     <!-- Qeydlər -->
                     <div class="mb-4">
-                        <label for="notes" class="block text-sm font-semibold text-slate-700 mb-1.5">Əlavə qeydlər</label>
+                        <label for="notes" class="form-label">Əlavə qeydlər</label>
                         <textarea name="notes" id="notes" rows="3"
-                                  class="w-full px-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                  class="form-input"
                                   placeholder="Müəllimə bildirmək istədiyiniz məlumatlar..."></textarea>
                     </div>
 
                     <!-- Qiymət cədvəli -->
-                    <div class="flex items-center gap-2 p-3 bg-sky-50 border border-sky-200 rounded-lg text-sm text-sky-800 mb-5">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
+                    <div class="flex items-center gap-2.5 p-3.5 bg-primary-50/60 border border-primary-100/60 rounded-md text-sm text-primary-800 mb-5">
+                        <svg class="w-4 h-4 shrink-0 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"/></svg>
                         <span>Standart dərs: <strong>25 AZN</strong> | Sınaq dərsi: <strong>12.50 AZN</strong></span>
                     </div>
 
                     <button type="submit"
-                            class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            class="btn btn-primary w-full justify-center"
                             id="submit-btn" disabled>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"/></svg>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg>
                         Rezervasiya Et
                     </button>
                 </form>

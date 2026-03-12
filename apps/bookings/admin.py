@@ -1,6 +1,13 @@
 """Bookings App — Admin"""
 from django.contrib import admin
-from .models import AvailabilitySlot, Booking
+from .models import WeeklySchedule, AvailabilitySlot, Booking
+
+
+@admin.register(WeeklySchedule)
+class WeeklyScheduleAdmin(admin.ModelAdmin):
+    list_display = ('get_day_of_week_display', 'start_time', 'end_time', 'slot_duration', 'is_active')
+    list_filter = ('day_of_week', 'is_active')
+    ordering = ('day_of_week', 'start_time')
 
 
 @admin.register(AvailabilitySlot)
