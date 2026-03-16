@@ -1,31 +1,31 @@
-# LMS Platform — Fərdi Online Tədris İdarəetmə Sistemi
+# LMS Platform — Personal Online Learning Management System
 
-> **Tək müəllim + çoxlu tələbə** modeli ilə 1-1 fərdi online tədris platforması.  
-> **AI Model**: Claude Sonnet 4.6 | **Framework**: Django 5.0+ | **Dil**: Azərbaycan
+> A **one-teacher + multiple students** model for 1-on-1 personalized online tutoring.  
+> **AI Model**: Claude Sonnet 4.6 | **Framework**: Django 5.0+ | **Language**: English
 
 ---
 
-## Layihə Haqqında
+## About the Project
 
-Bu LMS (Learning Management System) platformu tək müəllimin çoxlu sayda tələbəni **fərdi online format** (1-1) ilə effektiv idarə etməsi üçün hazırlanıb. Sistem bütün tədris prosesini — rezervasiyadan ödənişə, GitHub repo yaradılmasından analitikaya qədər — avtomatlaşdırır.
+This LMS (Learning Management System) platform is designed to help a single teacher efficiently manage multiple students in a **1-on-1 online tutoring format**. The system automates the entire teaching workflow — from lesson booking and payments to GitHub repository creation and analytics.
 
-### Biznes Modelinin Əsas Xüsusiyyətləri
+### Business Model Overview
 
-| Parametr | Dəyər |
+| Parameter | Value |
 |---|---|
-| Tədris növü | Yalnız 1-1 fərdi dərslər |
-| Tədris forması | Online (Google Meet) |
-| Dərs qiyməti | **25 AZN / dərs (SABİT)** |
-| Ödəniş Model 1 | Aylıq abunə (həftəlik dərs × 4 × 25 AZN) |
-| Ödəniş Model 2 | Dərs əsaslı (pay-as-you-go) |
-| Müəllim sayı | 1 (tək müəllim sistemi) |
+| Teaching format | 1-on-1 private lessons only |
+| Delivery method | Online (Google Meet) |
+| Lesson price | **25 AZN / lesson (FIXED)** |
+| Payment Model 1 | Monthly subscription (lessons/week × 4 × 25 AZN) |
+| Payment Model 2 | Pay-as-you-go (per lesson) |
+| Number of teachers | 1 (single-teacher system) |
 
 ---
 
-## Texniki Arxitektura
+## Technical Architecture
 
 ```
-Arxitektura:    Django Fullstack Monolithic
+Architecture:   Django Fullstack Monolithic
 Backend:        Django 5.0+ (Python 3.11+)
 Database:       PostgreSQL 15+ (Django ORM)
 Cache:          Redis 7+
@@ -38,7 +38,7 @@ Deployment:     DigitalOcean App Platform / Railway
 
 ---
 
-## Layihə Strukturu
+## Project Structure
 
 ```
 lms_platform/
@@ -53,17 +53,17 @@ lms_platform/
 │   └── asgi.py
 │
 ├── apps/
-│   ├── users/              # İstifadəçi idarəetməsi
-│   ├── courses/            # Kurs + material idarəsi
-│   ├── bookings/           # Dərs rezervasiyası (Calendly tipli)
-│   ├── payments/           # Aylıq/dərs ödəniş sistemi
-│   ├── github_integration/ # GitHub API — tələbə repo-su
+│   ├── users/              # User management
+│   ├── courses/            # Course + material management
+│   ├── bookings/           # Lesson scheduling (Calendly-style)
+│   ├── payments/           # Monthly/per-lesson payment system
+│   ├── github_integration/ # GitHub API — student repositories
 │   ├── youtube/            # YouTube Data API v3
 │   ├── video_conferencing/ # Google Meet API
-│   ├── notifications/      # Email/SMS/real-time bildirişlər
-│   ├── support/            # Dəstək ticket sistemi
-│   ├── analytics/          # Dashboard analitikası
-│   └── assessments/        # Qiymətləndirmə sistemi
+│   ├── notifications/      # Email/SMS/real-time notifications
+│   ├── support/            # Support ticket system
+│   ├── analytics/          # Dashboard analytics
+│   └── assessments/        # Assessment & grading system
 │
 ├── templates/
 │   ├── base.html
@@ -88,158 +88,158 @@ lms_platform/
 
 ---
 
-## Əsas Funksionallıqlar
+## Key Features
 
-### 1. İstifadəçi İdarəetməsi (`apps/users/`)
-- **Müəllim**: Tam sistem nəzarəti, bütün tələbə məlumatlarına giriş
-- **Tələbə**: Fərdi profil, kurslara giriş, dərs rezervasiyası
-- Qeydiyyat → Müəllim təsdiqi → GitHub repo yaratma → Email bildiriş axını
-- İki faktorlu autentifikasiya (2FA)
-- Social login dəstəyi (opsional)
+### 1. User Management (`apps/users/`)
+- **Teacher**: Full system control, access to all student data
+- **Student**: Personal profile, course access, lesson booking
+- Registration → Teacher approval → GitHub repo creation → Email notification flow
+- Two-factor authentication (2FA)
+- Social login support (optional)
 
-### 2. Kurs İdarəetməsi (`apps/courses/`)
-- Kurs, Modul, Dərs hierarxiyası
-- YouTube video linklərinin avtomatik metadata çəkilməsi
-- GitHub inteqrasiyası ilə material sync
-- Drag & drop sıralama, versiya idarəetməsi
-- PDF, kod nümunələri, rich text dəstəyi
+### 2. Course Management (`apps/courses/`)
+- Course → Module → Lesson hierarchy
+- Automatic YouTube video metadata fetching
+- Material sync with GitHub integration
+- Drag & drop ordering, version control
+- PDF, code snippets, and rich text support
 
-### 3. Dərs Rezervasiyası (`apps/bookings/`)
-- Calendly tipli slot seçim sistemi
-- Real-time mövcud saatların göstərilməsi
-- Avtomatik Google Meet link generasiyası
-- 24 saat + 1 saat əvvəl xatırlatma (Celery tasks)
-- Ləğvetmə qaydaları (minimum 24 saat əvvəl)
+### 3. Lesson Booking (`apps/bookings/`)
+- Calendly-style time slot selection
+- Real-time availability display
+- Automatic Google Meet link generation
+- Reminders 24 hours and 1 hour before the lesson (Celery tasks)
+- Cancellation policy (minimum 24 hours in advance)
 
-### 4. Ödəniş Sistemi (`apps/payments/`)
-- **Model 1 — Aylıq**: həftəlik_dərs × 4 × 25 AZN (prepaid)
-- **Model 2 — Dərs əsaslı**: Hər dərsdən sonra 25 AZN (24 saat limit)
-- Stripe inteqrasiyası (beynəlxalq kartlar)
-- Lokal ödəniş sistemləri (e-Manat, Milliköçürmə)
-- Avtomatik faktura generasiyası (PDF)
-- Gecikmiş ödəniş — növbəti dərs bloklanması
+### 4. Payment System (`apps/payments/`)
+- **Model 1 — Monthly**: lessons/week × 4 × 25 AZN (prepaid)
+- **Model 2 — Per Lesson**: 25 AZN after each lesson (24-hour payment window)
+- Stripe integration (international cards)
+- Local payment methods (e-Manat, Milliköçürmə)
+- Automatic invoice generation (PDF)
+- Overdue payment → next lesson blocked
 
-### 5. GitHub İnteqrasiyası (`apps/github_integration/`)
-- Tələbə təsdiqlənəndə avtomatik **private repo** yaradılması
-- Repo adı formatı: `{student-ad-soyad}-{kurs-slug}`
-- Default qovluqlar: `lessons/`, `projects/`, `resources/`
-- README.md avtomatik yaradılması (tələbə məlumatları ilə)
-- Müəllim + tələbə collaborator hüquqları
-- Celery task ilə async icra (3 retry, 60s interval)
+### 5. GitHub Integration (`apps/github_integration/`)
+- Automatic **private repository** creation upon student approval
+- Repository naming convention: `{student-full-name}-{course-slug}`
+- Default folders: `lessons/`, `projects/`, `resources/`
+- Auto-generated README.md with student details
+- Teacher + student collaborator access
+- Async execution via Celery task (3 retries, 60s interval)
 
-### 6. YouTube İnteqrasiyası (`apps/youtube/`)
-- Metadata avtomatik çəkilməsi (başlıq, müddət, thumbnail)
-- Embedded player (platforma daxilindən izləmə)
-- Redis keşi (24 saatlıq caching)
-- URL formatları: `youtube.com/watch?v=`, `youtu.be/`
+### 6. YouTube Integration (`apps/youtube/`)
+- Automatic metadata fetching (title, duration, thumbnail)
+- Embedded player (watch within the platform)
+- Redis caching (24-hour TTL)
+- Supported URL formats: `youtube.com/watch?v=`, `youtu.be/`
 
-### 7. Bildiriş Sistemi (`apps/notifications/`)
+### 7. Notification System (`apps/notifications/`)
 - Email (SendGrid / Mailgun / AWS SES)
-- SMS xatırlatmaları (opsional)
-- Real-time in-app bildirişlər (Django Channels + WebSocket)
-- Bulk email, fərdi mesajlaşma
+- SMS reminders (optional)
+- Real-time in-app notifications (Django Channels + WebSocket)
+- Bulk email and individual messaging
 
-### 8. Dəstək Sistemi (`apps/support/`)
-- Ticket sistemi (Yeni → Baxılır → Cavablandı → Həll → Bağlandı)
-- Rich text editor, file əlavəsi, kod formatı
-- FAQ bazası, şablon cavablar
-- Orta cavab müddəti analitikası
+### 8. Support System (`apps/support/`)
+- Ticket lifecycle (New → In Review → Answered → Resolved → Closed)
+- Rich text editor, file attachments, code formatting
+- FAQ database, template responses
+- Average response time analytics
 
-### 9. Qiymətləndirmə (`apps/assessments/`)
-- Çoxseçimli, doğru/yanlış, kod yazma sualları
-- Avtomatik qiymətləndirmə
-- Rəqəmsal sertifikatlar və nailiyyət nişanları
+### 9. Assessments (`apps/assessments/`)
+- Multiple choice, true/false, and code-writing questions
+- Automatic grading
+- Digital certificates and achievement badges
 
-### 10. Analitika (`apps/analytics/`)
-- Gündəlik/Aylıq gəlir hesabatı (25 AZN × dərs sayı)
-- Model üzrə breakdown (aylıq vs dərs əsaslı)
-- Tələbə churn/retention analizi
-- Doldurulma nisbəti (booked vs available slots)
-- Chart.js ilə vizual dashboardlar
+### 10. Analytics (`apps/analytics/`)
+- Daily/Monthly revenue report (25 AZN × number of lessons)
+- Breakdown by payment model (monthly vs. per-lesson)
+- Student churn/retention analysis
+- Slot utilization rate (booked vs. available)
+- Visual dashboards with Chart.js
 
 ---
 
-## Ödəniş Məntiqi (Biznes Qaydaları)
+## Payment Logic (Business Rules)
 
 ```python
 from decimal import Decimal
 
-LESSON_PRICE         = Decimal('25.00')  # SABİT — heç vaxt dəyişdirilməz!
-CANCELLATION_HOURS   = 24               # Ləğvetmə minimum saatı
-MAX_LESSONS_PER_WEEK = 7                # Həftəlik maksimum dərs
+LESSON_PRICE         = Decimal('25.00')  # FIXED — never changes!
+CANCELLATION_HOURS   = 24               # Minimum hours required for cancellation
+MAX_LESSONS_PER_WEEK = 7                # Maximum lessons allowed per week
 
 def calculate_monthly_price(lessons_per_week: int) -> Decimal:
-    """Aylıq ödəniş: həftəlik dərs × 4 həftə × 25 AZN"""
+    """Monthly payment: lessons per week × 4 weeks × 25 AZN"""
     return Decimal(lessons_per_week) * 4 * LESSON_PRICE
 
-# Nümunə: 2 dərs/həftə → 2 × 4 × 25 = 200 AZN/ay
+# Example: 2 lessons/week → 2 × 4 × 25 = 200 AZN/month
 ```
 
 ---
 
-## Üçüncü Tərəf İnteqrasiyaları
+## Third-Party Integrations
 
-| Xidmət | Məqsəd | Kitabxana |
+| Service | Purpose | Library |
 |---|---|---|
-| GitHub API | Tələbə repo yaratma | `PyGithub` |
+| GitHub API | Student repository creation | `PyGithub` |
 | YouTube Data API v3 | Video metadata | `google-api-python-client` |
-| Google Meet | Dərs video linki | `google-auth` |
-| Google Calendar | Sinxronizasiya | `google-api-python-client` |
-| Stripe | Ödəniş | `stripe` |
-| SendGrid / Mailgun | Email | `django-anymail` |
-| Twilio | SMS | `twilio` |
-| DigitalOcean Spaces | Fayl saxlama | `django-storages` |
+| Google Meet | Lesson video link | `google-auth` |
+| Google Calendar | Calendar synchronization | `google-api-python-client` |
+| Stripe | Payment processing | `stripe` |
+| SendGrid / Mailgun | Email delivery | `django-anymail` |
+| Twilio | SMS notifications | `twilio` |
+| DigitalOcean Spaces | File storage | `django-storages` |
 
 ---
 
 ## Deployment
 
-### DigitalOcean App Platform (Tövsiyə)
+### DigitalOcean App Platform (Recommended)
 - Python 3.11 native runtime
-- Managed PostgreSQL 15+ ($15/ay)
-- Managed Redis 7+ ($15/ay)
-- Spaces CDN ($5/ay — 250GB)
+- Managed PostgreSQL 15+ ($15/month)
+- Managed Redis 7+ ($15/month)
+- Spaces CDN ($5/month — 250GB)
 - Gunicorn + Whitenoise
-- Avtomatik SSL sertifikatları
-- Push-to-deploy (GitHub inteqrasiyası)
+- Automatic SSL certificates
+- Push-to-deploy (GitHub integration)
 
-### Railway (Alternativ)
-- `railway up` ilə deployment
-- PostgreSQL + Redis daxil
-- $5/ay başlanğıc
+### Railway (Alternative)
+- Deploy with `railway up`
+- PostgreSQL + Redis included
+- Starting at $5/month
 
 ---
 
-## Kurulum
+## Installation
 
 ```bash
-# 1. Repo-nu klonla
+# 1. Clone the repository
 git clone <repo-url>
 cd lms_platform
 
-# 2. Virtual environment
+# 2. Create a virtual environment
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 venv\Scripts\activate     # Windows
 
-# 3. Asılılıqları quraşdır
+# 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Mühit dəyişənlərini təyin et
+# 4. Set up environment variables
 cp .env.example .env
-# .env faylını redaktə et
+# Edit the .env file with your values
 
-# 5. Verilənlər bazasını hazırla
+# 5. Run database migrations
 python manage.py migrate
 
-# 6. Superuser yarat
+# 6. Create a superuser
 python manage.py createsuperuser
 
-# 7. Serveri başlat
+# 7. Start the development server
 python manage.py runserver
 ```
 
-### Mühit Dəyişənləri
+### Environment Variables
 
 ```env
 SECRET_KEY=<django-secret-key>
@@ -263,210 +263,210 @@ AWS_STORAGE_BUCKET_NAME=<spaces-bucket>
 
 ---
 
-## Celery İşçiləri
+## Celery Workers
 
 ```bash
-# Background işçi başlat
+# Start background worker
 celery -A config worker -l info -Q default,notifications,github
 
-# Scheduled tasks (xatırlatmalar, aylıq ödənişlər)
+# Scheduled tasks (reminders, monthly payments)
 celery -A config beat -l info
 
-# Flower (monitoring)
+# Flower (monitoring dashboard)
 celery -A config flower
 ```
 
 ---
 
-## Test
+## Testing
 
 ```bash
-# Bütün testlər
+# Run all tests
 pytest
 
-# Coverage hesabatı (hədəf: >80%)
+# Coverage report (target: >80%)
 pytest --cov=apps --cov-report=html
 
-# Xüsusi app
+# Run tests for a specific app
 pytest apps/bookings/
 pytest apps/payments/
 ```
 
 ---
 
-## Kod Standartları
+## Code Standards
 
-- **PEP 8** (Black formatter, 88 simvol)
-- **isort** (import sıralaması)
-- **Type hints** — bütün public metodlarda məcburi
-- **Docstring** — Args + Returns formatı
-- **BaseModel** — bütün modellər UUID pk + timestamps ilə
-- **verbose_name** — Azərbaycan dilindədir
-- **`@transaction.atomic`** — bütün kritik DB əməliyyatlarında
+- **PEP 8** (Black formatter, 88 characters per line)
+- **isort** (import ordering)
+- **Type hints** — required on all public methods
+- **Docstrings** — Args + Returns format
+- **BaseModel** — all models use UUID primary key + timestamps
+- **verbose_name** — defined in Azerbaijani in the source code (localized for end users)
+- **`@transaction.atomic`** — applied to all critical database operations
 
 ---
 
-## Scaffold Statusu — 28.02.2026
+## Scaffold Status — 28.02.2026
 
-Aşağıdakı bütün fayllar yaradılıb və GitHub-a push edilib (**120 fayl, 5 196 sətir**).
+All files listed below have been created and pushed to GitHub (**120 files, 5,196 lines**).
 
-### `config/` — Django Konfiqurası
+### `config/` — Django Configuration
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
-| `config/settings/base.py` | INSTALLED_APPS, Redis, Celery, LMS konstantları |
-| `config/settings/development.py` | Debug toolbar, konsol email |
-| `config/settings/production.py` | Sentry, DigitalOcean Spaces, HTTPS |
-| `config/urls.py` | Bütün app URL-lərinin birləşdirilməsi |
-| `config/asgi.py` | Django Channels ASGI (WebSocket) |
-| `config/celery.py` | Celery app, 4 queue (default/notifications/github/payments) |
+| `config/settings/base.py` | INSTALLED_APPS, Redis, Celery, LMS constants |
+| `config/settings/development.py` | Debug toolbar, console email backend |
+| `config/settings/production.py` | Sentry, DigitalOcean Spaces, HTTPS settings |
+| `config/urls.py` | Root URL configuration aggregating all app URLs |
+| `config/asgi.py` | Django Channels ASGI entry point (WebSocket) |
+| `config/celery.py` | Celery app, 4 queues (default/notifications/github/payments) |
 
-### `core/` — Ümumi Yardımçılar
+### `core/` — Shared Utilities
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
 | `core/utils.py` | `LESSON_PRICE`, `calculate_monthly_price()`, `get_repo_name()`, `generate_invoice_number()`, `extract_youtube_video_id()` |
 | `core/mixins.py` | `TeacherRequiredMixin`, `StudentOwnerMixin`, `HTMXMixin` |
-| `core/permissions.py` | DRF: `IsTeacher`, `IsStudent`, `IsOwnerOrTeacher` |
+| `core/permissions.py` | DRF permissions: `IsTeacher`, `IsStudent`, `IsOwnerOrTeacher` |
 | `core/validators.py` | `validate_future_datetime`, `validate_youtube_url`, `validate_github_username`, `validate_phone_number` |
-| `core/context_processors.py` | `lms_globals` — LESSON_PRICE, APP_NAME, rol məlumatı |
+| `core/context_processors.py` | `lms_globals` — injects LESSON_PRICE, APP_NAME, and user role into templates |
 
-### `apps/users/` — İstifadəçi Sistemi
+### `apps/users/` — User System
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
 | `models.py` | `BaseModel` (UUID+timestamps), `User` (AbstractBaseUser), `StudentProfile` |
 | `services.py` | `UserService.register_student()`, `approve_student()` |
-| `signals.py` | `post_save` → tələbəyə avtomatik `StudentProfile` |
+| `signals.py` | `post_save` → auto-creates `StudentProfile` for new students |
 | `forms.py` | `StudentRegistrationForm`, `StudentProfileUpdateForm` |
 | `views.py` | `StudentRegisterView`, `ProfileView`, `StudentProfileUpdateView` |
-| `api_urls.py` | `/api/v1/me/` — cari istifadəçi JSON |
+| `api_urls.py` | `/api/v1/me/` — current user JSON endpoint |
 
-### `apps/courses/` — Kurs İdarəetməsi
+### `apps/courses/` — Course Management
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
 | `models.py` | `Category`, `Course`, `Enrollment`, `Module`, `Lesson` (MaterialType choices) |
 | `services.py` | `CourseService.create_lesson_with_youtube()` |
 | `views.py` | `CourseListView`, `CourseDetailView` |
-| `api_urls.py` | `/api/v1/courses/` — aktiv kurslar JSON |
+| `api_urls.py` | `/api/v1/courses/` — active courses JSON endpoint |
 
-### `apps/bookings/` — Rezervasiya Sistemi
+### `apps/bookings/` — Booking System
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
 | `models.py` | `AvailabilitySlot`, `Booking` (Status + LessonType choices, `can_cancel` property) |
 | `services.py` | `BookingService.create_booking()` (`select_for_update`), `cancel_booking()` |
 | `tasks.py` | `send_lesson_reminder_task` (max_retries=3, queue=notifications) |
 | `views.py` | `BookingListView`, `AvailableSlotsView`, `BookingCreateView` |
-| `api_views.py` + `api_urls.py` | `/api/v1/bookings/` |
+| `api_views.py` + `api_urls.py` | `/api/v1/bookings/` REST endpoint |
 
-### `apps/payments/` — Ödəniş Sistemi
+### `apps/payments/` — Payment System
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
 | `models.py` | `Payment` (Status, PaymentMethod, auto invoice_number), `MonthlySubscription` |
 | `services.py` | `PaymentService.create_lesson_payment()`, `process_stripe_payment()` |
 | `tasks.py` | `check_overdue_payments_task`, `send_overdue_payment_reminders_task` |
-| `views.py` | `PaymentListView` (müəllim + tələbə görünüşü) |
-| `api_urls.py` | `/api/v1/payments/` |
+| `views.py` | `PaymentListView` (teacher + student views) |
+| `api_urls.py` | `/api/v1/payments/` REST endpoint |
 
 ### `apps/github_integration/` — GitHub API
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
-| `models.py` | `StudentRepository` (Status choices, idempotency) |
+| `models.py` | `StudentRepository` (Status choices, idempotency guard) |
 | `services.py` | `GitHubService.create_student_repository()`, `repo_exists()` |
 | `tasks.py` | `create_student_repo_task` (max_retries=3, 60s delay, idempotency check) |
 
 ### `apps/youtube/` — YouTube API
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
-| `services.py` | `YouTubeService` — Redis 24h cache, ISO 8601 duration parser, thumbnail |
+| `services.py` | `YouTubeService` — Redis 24h cache, ISO 8601 duration parser, thumbnail fetching |
 
 ### `apps/video_conferencing/` — Google Meet
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
 | `services.py` | `GoogleMeetService.create_meeting()` — Calendar API, attendee invite |
-| `tasks.py` | `create_meet_link_task` (max_retries=3, idempotency) |
+| `tasks.py` | `create_meet_link_task` (max_retries=3, idempotency check) |
 
-### `apps/notifications/` — Bildiriş Sistemi
+### `apps/notifications/` — Notification System
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
-| `models.py` | `Notification` (7 növ, `is_read`, JSON data) |
+| `models.py` | `Notification` (7 types, `is_read` flag, JSON data field) |
 | `services.py` | `NotificationService` — booking confirmation, lesson reminder, payment reminder |
 | `tasks.py` | `send_booking_confirmation`, `send_lesson_reminder`, `send_payment_receipt`, `send_student_approval_email` |
 | `consumers.py` | `NotificationConsumer` — AsyncWebsocketConsumer (unread count, mark_read) |
-| `routing.py` | `ws/notifications/` WebSocket route — `config/asgi.py` tərəfindən import edilir |
-| `views.py` | `NotificationListView`, `MarkAllReadView` (HTMX-uyğun) |
+| `routing.py` | `ws/notifications/` WebSocket route — imported by `config/asgi.py` |
+| `views.py` | `NotificationListView`, `MarkAllReadView` (HTMX-compatible) |
 
-### `apps/support/` — Dəstək Ticketləri
+### `apps/support/` — Support Tickets
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
-| `models.py` | `Ticket` (Status + Priority), `TicketMessage` |
+| `models.py` | `Ticket` (Status + Priority choices), `TicketMessage` |
 | `forms.py` | `TicketCreateForm`, `TicketMessageForm` |
 | `views.py` | `TicketListView`, `TicketCreateView`, `TicketDetailView` |
 
 ### `apps/analytics/` — Dashboard
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
-| `views.py` | `DashboardView` (KPI: tələbə, dərs, gəlir, gecikmiş ödəniş), `StudentDashboardView` |
+| `views.py` | `DashboardView` (KPIs: students, lessons, revenue, overdue payments), `StudentDashboardView` |
 
-### `apps/assessments/` — Qiymətləndirmə
+### `apps/assessments/` — Grading System
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
 | `models.py` | `Assessment` (Quiz/Homework/Project/Exam, `percentage` property) |
 | `forms.py` | `AssessmentCreateForm`, `AssessmentGradeForm` |
 | `views.py` | `AssessmentListView`, `AssessmentCreateView`, `AssessmentGradeView` |
 
-### `templates/` — HTML Şablonlar
+### `templates/` — HTML Templates
 
-| Şablon | Təyinat |
+| Template | Purpose |
 |--------|---------|
-| `base.html` | Bootstrap 5.3 + HTMX + Alpine.js + Chart.js + WebSocket toast |
-| `partials/navbar.html` | Bildiriş badge, istifadəçi dropdown |
-| `partials/sidebar.html` | Müəllim/tələbə rol əsaslı menyu |
-| `partials/pagination.html` | Bootstrap pagination (universal) |
-| `auth/login.html` | Allauth uyğun login formu |
-| `analytics/dashboard.html` | Müəllim KPI kartları + yaxınlaşan dərslər cədvəli |
-| `bookings/booking_list.html` | Dərslər cədvəli (status badge, meet link) |
-| `payments/payment_list.html` | Ödənişlər cədvəli (status badge, faktura nömrəsi) |
+| `base.html` | Bootstrap 5.3 + HTMX + Alpine.js + Chart.js + WebSocket toast notifications |
+| `partials/navbar.html` | Notification badge, user dropdown menu |
+| `partials/sidebar.html` | Role-based navigation menu (teacher/student) |
+| `partials/pagination.html` | Universal Bootstrap pagination component |
+| `auth/login.html` | Allauth-compatible login form |
+| `analytics/dashboard.html` | Teacher KPI cards + upcoming lessons table |
+| `bookings/booking_list.html` | Lessons table with status badges and Meet links |
+| `payments/payment_list.html` | Payments table with status badges and invoice numbers |
 
 ### Deploy & Test
 
-| Fayl | Təyinat |
+| File | Purpose |
 |------|---------|
-| `Dockerfile` | Python 3.11-slim, non-root user, Daphne |
-| `docker-compose.yml` | web + db + redis + celery_worker + celery_beat |
-| `.do/app.yaml` | DigitalOcean App Platform spec (3 servis + Managed PG) |
-| `pytest.ini` | DJANGO_SETTINGS_MODULE, coverage, --cov-fail-under=50 |
-| `setup.cfg` | flake8 (88 char), isort (profile=black), mypy (django-stubs) |
+| `Dockerfile` | Python 3.11-slim, non-root user, Daphne ASGI server |
+| `docker-compose.yml` | web + db + redis + celery_worker + celery_beat services |
+| `.do/app.yaml` | DigitalOcean App Platform spec (3 services + Managed PostgreSQL) |
+| `pytest.ini` | DJANGO_SETTINGS_MODULE, coverage config, --cov-fail-under=50 |
+| `setup.cfg` | flake8 (88 chars), isort (profile=black), mypy (django-stubs) |
 | `conftest.py` | `teacher_user`, `student_user`, `available_slot`, `reserved_slot`, `past_slot` fixtures |
-| `tests/test_booking_service.py` | BookingService — 4 test (uğurlu, rezerv slot, keçmiş slot, ləğv) |
-| `tests/test_utils.py` | core utils — 6 test (LESSON_PRICE, calculate, repo_name, youtube_id, azn format, invoice) |
+| `tests/test_booking_service.py` | BookingService — 4 tests (success, reserved slot, past slot, cancellation) |
+| `tests/test_utils.py` | core utils — 6 tests (LESSON_PRICE, calculate, repo_name, youtube_id, azn format, invoice) |
 
 ---
 
-## Sənədlər
+## Documentation
 
-- [Tam Layihə Planı](docs/project.md) — Bütün funksionallıqların ətraflı təsviri
-- [Copilot Təlimatları](.github/copilot-instructions.md) — AI kod standartları
-- [Agent Siyahısı](.github/copilot-agents.md) — Spesializasiya agentləri
-- [Prompt Kitabxanası](.github/copilot-prompts.md) — Hazır prompt şablonları
+- [Full Project Plan](docs/project.md) — Detailed description of all features
+- [Copilot Instructions](.github/copilot-instructions.md) — AI coding standards
+- [Agent List](.github/copilot-agents.md) — Specialized agent definitions
+- [Prompt Library](.github/copilot-prompts.md) — Ready-to-use prompt templates
 
 ---
 
-## Lisenziya
+## License
 
-Bu layihə şəxsi istifadə üçündür. Bütün hüquqlar qorunur.
+This project is for personal use. All rights reserved.
 
 ---
 
 *LMS Platform — Django 5.0+ | PostgreSQL | Redis | Celery | HTMX | Alpine.js*  
-*AI Model: Claude Sonnet 4.6 | Scaffold tamamlandı: 28.02.2026*
+*AI Model: Claude Sonnet 4.6 | Scaffold completed: 28.02.2026*
