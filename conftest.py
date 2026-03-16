@@ -39,7 +39,7 @@ def student_user(db):
 def available_slot(db):
     """Mövcud AvailabilitySlot."""
     from apps.bookings.models import AvailabilitySlot
-    start = timezone.now() + timedelta(days=1)
+    start = timezone.now() + timedelta(days=2)
     return AvailabilitySlot.objects.create(
         start_time=start,
         end_time=start + timedelta(hours=1),

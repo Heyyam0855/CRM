@@ -91,6 +91,110 @@ def send_student_approval_email(self, student_id: str) -> dict:
 
 
 @shared_task(bind=True, max_retries=3, default_retry_delay=60, queue='notifications')
+def schedule_lesson_reminders(self, booking_id: str) -> dict:
+    """
+    Dərs üçün 24 saat və 1 saat əvvəl xatırlatma task-larını planlaşdırır.
+
+    Args:
+        booking_id: Booking UUID-si
+
+    Returns:
+        dict: Nəticə
+    """
+    try:
+        from apps.bookings.models import Booking
+        from django.utils import timezone
+        from datetime import timedelta
+
+        booking = Booking.objects.select_related('slot').get(id=booking_id)
+        start_time = booking.slot.start_time
+        now = timezone.now()
+
+        scheduled = []
+
+        # 24 saat əvvəl xatırlatma
+        reminder_24h = start_time - timedelta(hours=24)
+        if reminder_24h > now:
+            send_lesson_reminder.apply_async(
+                args=[booking_id, 24],
+                eta=reminder_24h
+            )
+            scheduled.append('24h')
+
+        # 1 saat əvvəl xatırlatma
+        reminder_1h = start_time - timedelta(hours=1)
+        if reminder_1h > now:
+            send_lesson_reminder.apply_async(
+                args=[booking_id, 1],
+                eta=reminder_1h
+            )
+            scheduled.append('1h')
+
+        logger.info(f"Xatırlatmalar planlaşdırıldı: booking={booking_id}, {scheduled}")
+        return {'success': True, 'scheduled': scheduled}
+
+    except Exception as exc:
+        logger.error(f"Xatırlatma planlaşdırma xətası: {exc}", exc_info=True)
+        raise self.retry(exc=exc)
+
+
+@shared_task(bind=True, max_retries=3, default_retry_delay=60, queue='notifications')
+def send_cancellation_notification(self, booking_id: str) -> dict:
+    """
+    Rezervasiya ləğvi haqqında bildiriş göndərir.
+
+    Args:
+        booking_id: Booking UUID-si
+
+    Returns:
+        dict: Nəticə
+    """
+    try:
+        from apps.bookings.models import Booking
+        from django.core.mail import send_mail
+        from django.conf import settings
+
+        booking = Booking.objects.select_related('student', 'slot').get(id=booking_id)
+        student = booking.student
+
+        subject = "Rezervasiya ləğv edildi — LMS Platform"
+        message = (
+            f"Hörmətli {student.get_full_name()},\n\n"
+            f"Dərs rezervasiyanız ləğv edildi.\n"
+            f"Tarix: {booking.slot.start_time:%d.%m.%Y %H:%M}\n"
+        )
+        if booking.cancellation_reason:
+            message += f"Səbəb: {booking.cancellation_reason}\n"
+        message += "\nSualınız varsa, müəllimlə əlaqə saxlayın.\n"
+
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[student.email],
+            fail_silently=False
+        )
+
+        # In-app bildiriş
+        from .services import NotificationService
+        ns = NotificationService()
+        ns.create_notification(
+            user_id=str(student.id),
+            title='Rezervasiya ləğv edildi',
+            message=f"Dərsiniz ({booking.slot.start_time:%d.%m.%Y %H:%M}) ləğv edildi.",
+            notification_type='booking_cancelled',
+            data={'booking_id': str(booking.id)}
+        )
+
+        logger.info(f"Ləğv bildirişi göndərildi: booking={booking_id}")
+        return {'success': True, 'booking_id': booking_id}
+
+    except Exception as exc:
+        logger.error(f"Ləğv bildirişi xətası: {exc}", exc_info=True)
+        raise self.retry(exc=exc)
+
+
+@shared_task(bind=True, max_retries=3, default_retry_delay=60, queue='notifications')
 def send_student_credentials_email(self, student_id: str, password: str) -> dict:
     """Tələbəyə login məlumatlarını email ilə göndərir."""
     try:

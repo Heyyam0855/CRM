@@ -1,0 +1,15 @@
+Hörmətli {{ student.get_full_name }},
+
+Dərs rezervasiyanız uğurla təsdiqləndi!
+
+Dərs məlumatları:
+  Tarix:   {{ booking.slot.start_time|date:"d.m.Y H:i" }}
+  Mövzu:   {{ booking.topic|default:"—" }}
+  Qiymət:  {{ booking.price }} AZN
+{% if booking.meet_link %}  Meet:    {{ booking.meet_link }}
+{% else %}  Meet:    Tezliklə göndəriləcək
+{% endif %}
+Ləğv etmək lazım olarsa, dərsdən ən azı 24 saat əvvəl müəllimlə əlaqə saxlayın.
+
+Uğurlar!
+LMS Platform

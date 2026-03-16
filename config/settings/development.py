@@ -43,5 +43,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Allauth — email verification-ı deaktiv et
 ACCOUNT_EMAIL_VERIFICATION = 'none'
 
+# Celery — development/test-də Redis olmadan işlət
+CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_EAGER_PROPAGATES = True
+CELERY_BROKER_URL = 'memory://'
+CELERY_RESULT_BACKEND = 'cache+memory://'
+
 # Strict mode — development-da xətalara daha çox diqqət
 TEMPLATES[0]['OPTIONS']['string_if_invalid'] = '[INVALID: %s]'  # noqa: F405
