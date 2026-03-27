@@ -248,6 +248,23 @@ class RejectRegistrationView(TeacherRequiredMixin, View):
         return HttpResponseNotAllowed(['POST'])
 
 
+class DeleteRegistrationView(TeacherRequiredMixin, View):
+    """Qeydiyyat müraciətini sil."""
+
+    def post(self, request, pk):
+        try:
+            reg_request = RegistrationRequest.objects.get(pk=pk)
+            full_name = reg_request.full_name
+            reg_request.delete()
+            messages.success(request, f'{full_name} müraciəti silindi.')
+        except RegistrationRequest.DoesNotExist:
+            messages.error(request, 'Müraciət tapılmadı.')
+        return redirect('users:registration-requests')
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotAllowed(['POST'])
+
+
 class StudentRegisterView(TemplateView):
     """Tələbə dərs qeydiyyat formu (Google Form tipli)."""
     template_name = 'auth/register.html'

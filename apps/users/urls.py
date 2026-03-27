@@ -59,6 +59,11 @@ urlpatterns = [
         views.RejectRegistrationView.as_view(),
         name='registration-request-reject',
     ),
+    path(
+        'registration-requests/<uuid:pk>/delete/',
+        views.DeleteRegistrationView.as_view(),
+        name='registration-request-delete',
+    ),
 
     # Profil
     path('profile/', views.ProfileView.as_view(), name='profile'),
