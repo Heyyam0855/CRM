@@ -81,8 +81,8 @@ jobs:
             # Build and deploy
             export POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
             docker compose -f docker-compose.prod.yml build
-            docker compose -f docker-compose.prod.yml down
-            docker compose -f docker-compose.prod.yml up -d
+            docker compose -f docker-compose.prod.yml down --remove-orphans --timeout 30
+            docker compose -f docker-compose.prod.yml up -d --force-recreate
 
             # Wait for services
             sleep 15
