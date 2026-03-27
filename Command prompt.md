@@ -189,3 +189,117 @@
 
 > **Qeyd**: İstənilən komanda haqqında ətraflı məlumat almaq üçün CMD-də `komanda_adı /?` yazın.
 > Məsələn: `ipconfig /?`, `robocopy /?`, `schtasks /?`
+
+---
+
+## 11. SSH (Secure Shell) Komandaları
+
+### Əsas Bağlantı
+
+| Komanda | İzah |
+|---------|------|
+| `ssh user@host` | Uzaq serverə SSH ilə bağlanır |
+| `ssh -p 2222 user@host` | Fərqli port ilə bağlanır (default: 22) |
+| `ssh -i ~/.ssh/key.pem user@host` | Xüsusi private key ilə bağlanır |
+| `ssh -v user@host` | Verbose rejim — bağlantı problemlərini debug edir |
+| `ssh -vvv user@host` | Ən ətraflı debug çıxışı |
+
+### SSH Açar İdarəetməsi
+
+| Komanda | İzah |
+|---------|------|
+| `ssh-keygen -t ed25519 -C "email@example.com"` | Yeni SSH açar cütü yaradır (Ed25519 — tövsiyə olunan) |
+| `ssh-keygen -t rsa -b 4096 -C "email@example.com"` | RSA 4096-bit açar cütü yaradır |
+| `ssh-keygen -p -f ~/.ssh/id_ed25519` | Mövcud açarın parolunu (passphrase) dəyişir |
+| `ssh-keygen -l -f ~/.ssh/id_ed25519.pub` | Açarın barmaq izini (fingerprint) göstərir |
+| `ssh-keygen -R hostname` | Known hosts-dan köhnə açarı silir |
+| `ssh-copy-id user@host` | Public açarı uzaq serverə kopyalayır (Linux/macOS) |
+| `type ~/.ssh/id_ed25519.pub \| ssh user@host "cat >> ~/.ssh/authorized_keys"` | Windows-da public açarı serverə əl ilə kopyalayır |
+
+### SCP — Fayl Köçürmə (Secure Copy)
+
+| Komanda | İzah |
+|---------|------|
+| `scp file.txt user@host:/remote/path/` | Yerli faylı uzaq serverə kopyalayır |
+| `scp user@host:/remote/file.txt ./local/` | Uzaq serverdən yerli kompüterə kopyalayır |
+| `scp -r folder/ user@host:/remote/path/` | Qovluğu rekursiv olaraq kopyalayır |
+| `scp -P 2222 file.txt user@host:/path/` | Fərqli port ilə kopyalayır |
+| `scp -i key.pem file.txt user@host:/path/` | Xüsusi key ilə kopyalayır |
+
+### SFTP — Təhlükəsiz Fayl Transferi
+
+| Komanda | İzah |
+|---------|------|
+| `sftp user@host` | SFTP sessiyası başladır |
+| `sftp -P 2222 user@host` | Fərqli port ilə SFTP bağlantısı |
+| `put local_file.txt` | (SFTP daxilində) Yerli faylı serverə yükləyir |
+| `get remote_file.txt` | (SFTP daxilində) Serverdən faylı yükləyir |
+| `ls` / `lls` | (SFTP daxilində) Uzaq / yerli qovluq siyahısı |
+| `cd` / `lcd` | (SFTP daxilində) Uzaq / yerli qovluq dəyişmə |
+
+### SSH Tunnel (Port Yönləndirmə)
+
+| Komanda | İzah |
+|---------|------|
+| `ssh -L 8080:localhost:80 user@host` | Local port forwarding — yerli 8080-i uzaq 80-ə yönləndirir |
+| `ssh -R 9090:localhost:3000 user@host` | Remote port forwarding — uzaq 9090-u yerli 3000-ə yönləndirir |
+| `ssh -D 1080 user@host` | Dynamic port forwarding (SOCKS proxy) |
+| `ssh -N -L 5432:localhost:5432 user@host` | Yalnız tunnel (shell açmadan) — DB bağlantısı üçün ideal |
+| `ssh -fN -L 8080:localhost:80 user@host` | Arxa planda tunnel açır |
+
+### SSH Agent
+
+| Komanda | İzah |
+|---------|------|
+| `ssh-agent -s` | SSH agenti başladır (bash) |
+| `Start-Service ssh-agent` | Windows-da SSH agent xidmətini başladır (PowerShell Admin) |
+| `ssh-add ~/.ssh/id_ed25519` | Private açarı agentə əlavə edir |
+| `ssh-add -l` | Agentdəki açarların siyahısını göstərir |
+| `ssh-add -D` | Bütün açarları agentdən silir |
+
+### SSH Config Faylı (~/.ssh/config)
+
+```
+# Nümunə konfiqurasiya
+Host myserver
+    HostName 192.168.1.100
+    User admin
+    Port 22
+    IdentityFile ~/.ssh/id_ed25519
+
+Host production
+    HostName prod.example.com
+    User deploy
+    Port 2222
+    IdentityFile ~/.ssh/prod_key
+    ForwardAgent yes
+
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/github_ed25519
+```
+
+> Config faylı ilə `ssh myserver` yazmaq kifayətdir — bütün parametrlər avtomatik tətbiq olunur.
+
+### Windows-da SSH Quraşdırma
+
+| Komanda (PowerShell — Admin) | İzah |
+|-------------------------------|------|
+| `Get-WindowsCapability -Online \| Where-Object Name -like 'OpenSSH*'` | SSH mövcudluğunu yoxlayır |
+| `Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0` | SSH Client quraşdırır |
+| `Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0` | SSH Server quraşdırır |
+| `Start-Service sshd` | SSH Server xidmətini başladır |
+| `Set-Service -Name sshd -StartupType Automatic` | SSH Server-i avtomatik başlatma rejimində qurur |
+
+### SSH ilə GitHub
+
+| Komanda | İzah |
+|---------|------|
+| `ssh -T git@github.com` | GitHub SSH bağlantısını test edir |
+| `ssh-keygen -t ed25519 -C "email@example.com"` | GitHub üçün SSH açarı yaradır |
+| `clip < ~/.ssh/id_ed25519.pub` | Public açarı clipboard-a kopyalayır (Windows) |
+| `git remote set-url origin git@github.com:user/repo.git` | HTTPS-dən SSH-ə keçid |
+| `git clone git@github.com:user/repo.git` | SSH ilə repo klonlayır |
+
+> **Qeyd**: SSH haqqında ətraflı məlumat üçün `ssh -h` və ya `man ssh` (Linux/macOS) istifadə edin.
