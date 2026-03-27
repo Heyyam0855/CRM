@@ -46,9 +46,9 @@ if SENTRY_DSN:
         send_default_pii=False,
     )
 
-# Email — SendGrid key yoxdursa console backend + email verification söndür
-_sendgrid_key = config('SENDGRID_API_KEY', default='')
-if not _sendgrid_key:
+# Email — Gmail SMTP parol yoxdursa console backend + email verification söndür
+_email_password = config('EMAIL_HOST_PASSWORD', default='')
+if not _email_password:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     ACCOUNT_EMAIL_VERIFICATION = 'none'
 

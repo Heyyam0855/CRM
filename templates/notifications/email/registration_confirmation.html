@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qeydiyyat təsdiqi</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f7fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f4f7fa; padding: 40px 0;">
+        <tr>
+            <td align="center">
+                <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                    <!-- Header -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px 40px; text-align: center;">
+                            <h1 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600;">PragmaLife</h1>
+                            <p style="color: rgba(255,255,255,0.85); margin: 8px 0 0; font-size: 14px;">Learning Management System</p>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding: 40px;">
+                            <h2 style="color: #2d3748; margin: 0 0 20px; font-size: 20px;">Hörmətli {{ reg_request.full_name }},</h2>
+
+                            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 0 0 20px;">
+                                LMS platformasına qeydiyyat müraciətiniz <strong>uğurla qəbul edildi</strong>.
+                            </p>
+
+                            <!-- Info Box -->
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f7fafc; border-radius: 8px; border: 1px solid #e2e8f0; margin: 20px 0;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td style="color: #718096; font-size: 14px; padding: 6px 0;">Dərs paketi:</td>
+                                                <td style="color: #2d3748; font-size: 14px; padding: 6px 0; font-weight: 600; text-align: right;">{{ reg_request.get_course_package_display }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color: #718096; font-size: 14px; padding: 6px 0;">Həftəlik dərs sayı:</td>
+                                                <td style="color: #2d3748; font-size: 14px; padding: 6px 0; font-weight: 600; text-align: right;">{{ reg_request.lessons_per_week }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="color: #718096; font-size: 14px; padding: 6px 0;">Başlama tarixi:</td>
+                                                <td style="color: #2d3748; font-size: 14px; padding: 6px 0; font-weight: 600; text-align: right;">{{ reg_request.preferred_start_date|date:"d.m.Y" }}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin: 20px 0;">
+                                Müraciətiniz müəllim tərəfindən yoxlanılacaq. Təsdiqləndiyi halda giriş məlumatlarınız bu email ünvanına göndəriləcək.
+                            </p>
+
+                            <!-- Divider -->
+                            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+                            <p style="color: #a0aec0; font-size: 13px; line-height: 1.5; margin: 0;">
+                                Hər hansı sualınız varsa, bu emailə cavab yaza bilərsiniz.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #f7fafc; padding: 20px 40px; text-align: center; border-top: 1px solid #e2e8f0;">
+                            <p style="color: #a0aec0; font-size: 12px; margin: 0;">
+                                &copy; 2026 PragmaLife. Bütün hüquqlar qorunur.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

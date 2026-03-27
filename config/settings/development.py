@@ -37,8 +37,12 @@ DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'  # noqa: F405
 
-# Email-ləri konsolda göstər
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Email — Gmail SMTP (development-da da real email göndər)
+# App Password .env-dən oxunur; boşdursa console-a fallback
+from decouple import config as _config
+_email_pass = _config('EMAIL_HOST_PASSWORD', default='')
+if not _email_pass:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Allauth — email verification-ı deaktiv et
 ACCOUNT_EMAIL_VERIFICATION = 'none'

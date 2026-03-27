@@ -64,8 +64,8 @@ google-auth==2.32.0
 google-auth-oauthlib==1.2.1
 google-auth-httplib2==0.2.0
 
-# Email
-django-anymail[sendgrid]==11.1
+# Email (Django built-in SMTP — Gmail)
+# django-anymail artıq istifadə olunmur
 
 # Celery Utilities
 kombu==5.3.7

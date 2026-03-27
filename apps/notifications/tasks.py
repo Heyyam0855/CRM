@@ -126,3 +126,44 @@ def send_student_credentials_email(self, student_id: str, password: str) -> dict
     except Exception as exc:
         logger.error(f"Credentials email xətası: {exc}", exc_info=True)
         raise self.retry(exc=exc)
+
+
+@shared_task(bind=True, max_retries=3, default_retry_delay=60, queue='notifications')
+def send_registration_confirmation_email(self, reg_request_id: str) -> dict:
+    """Tələbə qeydiyyat müraciəti qəbul edildikdən sonra təsdiq emaili göndərir."""
+    try:
+        from apps.users.models import RegistrationRequest
+        from django.core.mail import send_mail
+        from django.template.loader import render_to_string
+        from django.conf import settings
+
+        reg_request = RegistrationRequest.objects.get(id=reg_request_id)
+
+        subject = "Qeydiyyatınız qəbul edildi — PragmaLife"
+        html_message = render_to_string(
+            'notifications/email/registration_confirmation.html',
+            {'reg_request': reg_request}
+        )
+        plain_message = (
+            f"Hörmətli {reg_request.full_name},\n\n"
+            f"LMS platformasına qeydiyyat müraciətiniz uğurla qəbul edildi.\n\n"
+            f"Müraciətiniz müəllim tərəfindən yoxlanılacaq və "
+            f"təsdiqləndiyi halda giriş məlumatlarınız email ilə göndəriləcək.\n\n"
+            f"Təşəkkürlər!\n"
+            f"PragmaLife Komandası"
+        )
+
+        send_mail(
+            subject=subject,
+            message=plain_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[reg_request.email],
+            html_message=html_message,
+            fail_silently=False,
+        )
+        logger.info(f"Qeydiyyat təsdiq emaili göndərildi: {reg_request.email}")
+        return {'success': True, 'reg_request_id': reg_request_id}
+
+    except Exception as exc:
+        logger.error(f"Qeydiyyat təsdiq email xətası: {exc}", exc_info=True)
+        raise self.retry(exc=exc)

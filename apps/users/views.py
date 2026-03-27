@@ -269,6 +269,10 @@ class StudentRegisterView(TemplateView):
             reg_request = form.save()
             payment_method = form.cleaned_data.get('payment_method', 'epoint')
 
+            # Qeydiyyat təsdiq emaili göndər (async)
+            from apps.notifications.tasks import send_registration_confirmation_email
+            send_registration_confirmation_email.delay(str(reg_request.id))
+
             # Aylıq ödəniş hesabla
             from core.utils import calculate_monthly_price
             monthly = calculate_monthly_price(reg_request.lessons_per_week)
