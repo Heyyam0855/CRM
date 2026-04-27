@@ -1,12 +1,13 @@
 ﻿{% extends 'base.html' %}
 
-{% block title %}İdarəçilik Paneli — LMS{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "İdarəçilik Paneli" %} — LMS{% endblock %}
 
 {% block breadcrumb %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">İdarəçilik Paneli</h1>
-        <p class="page-subtitle">Xoş gəldiniz, {{ request.user.first_name }}. Bütün göstəricilər burada.</p>
+        <h1 class="page-title">{% trans "İdarəçilik Paneli" %}</h1>
+        <p class="page-subtitle">{% blocktrans with name=request.user.first_name %}Xoş gəldiniz, {{ name }}. Bütün göstəricilər burada.{% endblocktrans %}</p>
     </div>
     <div class="hidden sm:flex items-center gap-2 rounded-md border border-slate-200/40 bg-white/80 backdrop-blur-sm px-3 py-2 text-xs text-slate-500 shadow-sm"
          x-data="liveClock()" x-init="start()">
@@ -28,7 +29,7 @@
             </div>
             <div>
                 <p class="text-2xl font-bold text-slate-900 tracking-tight" x-data="counter({{ total_students|default:0 }})" x-text="display">0</p>
-                <p class="text-[11px] font-semibold text-slate-400 mt-0.5 uppercase tracking-wider">Aktiv Tələbələr</p>
+                <p class="text-[11px] font-semibold text-slate-400 mt-0.5 uppercase tracking-wider">{% trans "Aktiv Tələbələr" %}</p>
             </div>
         </div>
     </div>
@@ -40,7 +41,7 @@
             </div>
             <div>
                 <p class="text-2xl font-bold text-slate-900 tracking-tight" x-data="counter({{ this_month_bookings|default:0 }})" x-text="display">0</p>
-                <p class="text-[11px] font-semibold text-slate-400 mt-0.5 uppercase tracking-wider">Keçirilən Dərslər</p>
+                <p class="text-[11px] font-semibold text-slate-400 mt-0.5 uppercase tracking-wider">{% trans "Keçirilən Dərslər" %}</p>
             </div>
         </div>
     </div>
@@ -55,7 +56,7 @@
                     <p class="text-2xl font-bold text-slate-900 tracking-tight" x-data="counter({{ monthly_revenue|default:0 }})" x-text="display">0</p>
                     <span class="text-sm font-bold text-slate-400">₼</span>
                 </div>
-                <p class="text-[11px] font-semibold text-slate-400 mt-0.5 uppercase tracking-wider">Aylıq Gəlir</p>
+                <p class="text-[11px] font-semibold text-slate-400 mt-0.5 uppercase tracking-wider">{% trans "Aylıq Gəlir" %}</p>
             </div>
         </div>
     </div>
@@ -70,7 +71,7 @@
                     <p class="text-2xl font-bold text-slate-900 tracking-tight" x-data="counter({{ pending_students|default:0 }})" x-text="display">0</p>
                     {% if pending_students > 0 %}<span class="h-2 w-2 rounded-full bg-amber-500 animate-pulse-dot"></span>{% endif %}
                 </div>
-                <p class="text-[11px] font-semibold text-slate-400 mt-0.5 uppercase tracking-wider">Gözləyən Müraciətlər</p>
+                <p class="text-[11px] font-semibold text-slate-400 mt-0.5 uppercase tracking-wider">{% trans "Gözləyən Müraciətlər" %}</p>
             </div>
         </div>
     </div>
@@ -80,10 +81,10 @@
 <div class="grid grid-cols-1 xl:grid-cols-3 gap-3 mb-5">
     <div class="xl:col-span-2 card-hover">
         <div class="card-section">
-            <h3 class="card-section-title">Aylıq Statistika</h3>
+            <h3 class="card-section-title">{% trans "Aylıq Statistika" %}</h3>
             <div class="flex items-center gap-4 text-[11px] font-semibold text-slate-400">
-                <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-primary-500"></span>Gəlir</span>
-                <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>Dərslər</span>
+                <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-primary-500"></span>{% trans "Gəlir" %}</span>
+                <span class="flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-emerald-500"></span>{% trans "Dərslər" %}</span>
             </div>
         </div>
         <div class="p-4">
@@ -93,7 +94,7 @@
 
     <div class="card-hover">
         <div class="card-section">
-            <h3 class="card-section-title">Ümumi Baxış</h3>
+            <h3 class="card-section-title">{% trans "Ümumi Baxış" %}</h3>
         </div>
         <div class="divide-y divide-slate-100/80">
             <a href="{% url 'users:student-list' %}" class="flex items-center gap-3 px-4 py-3 transition hover:bg-primary-50/30 group">
@@ -101,7 +102,7 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <p class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400">Tələbələr</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400">{% trans "Tələbələr" %}</p>
                     <p class="text-lg font-bold text-slate-900 tracking-tight">{{ total_students|default:0 }}</p>
                 </div>
                 <svg width="16" height="16" class="text-slate-300 group-hover:text-primary-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
@@ -111,7 +112,7 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <p class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400">Bu ay dərslər</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400">{% trans "Bu ay dərslər" %}</p>
                     <p class="text-lg font-bold text-slate-900 tracking-tight">{{ this_month_bookings|default:0 }}</p>
                 </div>
                 <svg width="16" height="16" class="text-slate-300 group-hover:text-emerald-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
@@ -121,7 +122,7 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <p class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400">Aylıq gəlir</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400">{% trans "Aylıq gəlir" %}</p>
                     <p class="text-lg font-bold text-slate-900 tracking-tight">{{ monthly_revenue|default:0 }} <span class="text-sm text-slate-400">₼</span></p>
                 </div>
                 <svg width="16" height="16" class="text-slate-300 group-hover:text-violet-400 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
@@ -131,7 +132,7 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
                 </div>
                 <div class="min-w-0 flex-1">
-                    <p class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400">Gecikmiş ödəniş</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[.12em] text-slate-400">{% trans "Gecikmiş ödəniş" %}</p>
                     <p class="text-lg font-bold tracking-tight {% if overdue_count > 0 %}text-red-600{% else %}text-slate-900{% endif %}">{{ overdue_count|default:0 }}</p>
                 </div>
             </div>
@@ -142,18 +143,18 @@
 {# ── Upcoming Lessons Table ── #}
 <div class="card-hover">
     <div class="card-section">
-        <h3 class="card-section-title">Yaxınlaşan Dərslər</h3>
-        <a href="{% url 'bookings:list' %}" class="text-xs font-semibold text-primary-600 hover:text-primary-700 transition">Hamısına bax →</a>
+        <h3 class="card-section-title">{% trans "Yaxınlaşan Dərslər" %}</h3>
+        <a href="{% url 'bookings:list' %}" class="text-xs font-semibold text-primary-600 hover:text-primary-700 transition">{% trans "Hamısına bax" %} →</a>
     </div>
     {% if upcoming_bookings %}
     <div class="overflow-x-auto">
         <table class="data-table">
             <thead>
                 <tr>
-                    <th class="px-6 py-3 text-left">Tələbə</th>
-                    <th class="px-6 py-3 text-left">Tarix</th>
-                    <th class="px-6 py-3 text-left">Mövzu</th>
-                    <th class="px-6 py-3 text-left">Status</th>
+                    <th class="px-6 py-3 text-left">{% trans "Tələbə" %}</th>
+                    <th class="px-6 py-3 text-left">{% trans "Tarix" %}</th>
+                    <th class="px-6 py-3 text-left">{% trans "Mövzu" %}</th>
+                    <th class="px-6 py-3 text-left">{% trans "Status" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -177,11 +178,11 @@
                         <a href="{{ booking.meet_link }}" target="_blank" rel="noopener"
                            class="badge-success inline-flex items-center gap-1.5">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
-                            Qoşul
+                            {% trans "Qoşul" %}
                         </a>
                         {% else %}
                         <span class="badge-neutral inline-flex items-center gap-1.5">
-                            <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>Gözlənilir
+                            <span class="h-1.5 w-1.5 rounded-full bg-slate-400"></span>{% trans "Gözlənilir" %}
                         </span>
                         {% endif %}
                     </td>
@@ -195,8 +196,8 @@
         <div class="empty-state-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
         </div>
-        <p class="empty-state-title">Yaxınlaşan dərs yoxdur</p>
-        <p class="empty-state-text">Dərslər bölməsindən yeni dərs planlaşdırın</p>
+        <p class="empty-state-title">{% trans "Yaxınlaşan dərs yoxdur" %}</p>
+        <p class="empty-state-text">{% trans "Dərslər bölməsindən yeni dərs planlaşdırın" %}</p>
     </div>
     {% endif %}
 </div>

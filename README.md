@@ -453,6 +453,127 @@ Aşağıdakı bütün fayllar yaradılıb və GitHub-a push edilib (**120 fayl, 
 
 ---
 
+---
+
+## Çoxdilli Dəstək (i18n) — 🇦🇿 AZ · 🇬🇧 EN · 🇷🇺 RU
+
+LMS platformu **3 dil** dəstəkləyir. İstifadəçi veb panelindəki dil düyməsi ilə istənilən an dili dəyişdirə bilər.
+
+### Dil Dəyişdirici (Language Switcher)
+
+Navbar-da sağ üst küncündə yerləşən dropdown düyməsi:
+
+```
+[AZ ▾]  klik →  🇦🇿 Azərbaycanca  ← aktiv
+                🇬🇧 English
+                🇷🇺 Русский
+```
+
+**Texniki həyata keçirilmə (HTML / CSS / JavaScript / Python):**
+
+| Fayl | Edilən dəyişiklik |
+|---|---|
+| `templates/base.html` | `{% load i18n %}` + `lang="{{ request.LANGUAGE_CODE }}"` |
+| `templates/partials/navbar.html` | Alpine.js dropdown + `{% url 'set_language' %}` POST formu + CSRF |
+| `templates/partials/sidebar.html` | Bütün mətnlər `{% trans "..." %}` ilə işarələndi |
+| `config/settings/base.py` | `LANGUAGES`, `LOCALE_PATHS`, `LocaleMiddleware`, `rosetta` əlavə edildi |
+| `config/urls.py` | `/i18n/` + `/rosetta/` URL-ləri əlavə edildi |
+| `locale/az/LC_MESSAGES/django.po+mo` | Azərbaycanca əsas dil (fallback) |
+| `locale/en/LC_MESSAGES/django.po+mo` | 27 söz İngilis dilinə tərcümə edildi |
+| `locale/ru/LC_MESSAGES/django.po+mo` | 27 söz Rus dilinə tərcümə edildi |
+
+### Hazır Tərcümə Sözlüyü (27 söz)
+
+| Azərbaycanca | English | Русский |
+|---|---|---|
+| İdarəetmə | Management | Управление |
+| Panel | Dashboard | Панель |
+| Tələbələr | Students | Ученики |
+| Müraciətlər | Applications | Заявки |
+| Tədris | Education | Обучение |
+| Dərslər | Lessons | Уроки |
+| Cədvəl | Schedule | Расписание |
+| Kurslar | Courses | Курсы |
+| Qiymətlər | Grades | Оценки |
+| Ödənişlər | Payments | Платежи |
+| Əsas Səhifə | Home | Главная |
+| Dərs Təyin Et | Book a Lesson | Записаться |
+| Dərslərim | My Lessons | Мои уроки |
+| Tapşırıqlar | Assignments | Задания |
+| Kurs Materialları | Course Materials | Материалы |
+| Dəstək | Support | Поддержка |
+| Bildirişlər | Notifications | Уведомления |
+| Maliyyə | Finance | Финансы |
+| Menyu | Menu | Меню |
+| Digər | Other | Прочее |
+| Müəllim | Teacher | Учитель |
+| Tələbə | Student | Ученик |
+| Çıxış | Logout | Выход |
+| Profil | Profile | Профиль |
+| Parametrlər | Settings | Настройки |
+| LMS Platform | LMS Platform | LMS Платформа |
+
+### Rosetta — Vebdən Tərcümə İdarəetmə Paneli
+
+Admin hesabı ilə daxil olaraq `/rosetta/` ünvanından bütün tərcümələri brauzerdən redaktə etmək mümkündür:
+
+```
+http://127.0.0.1:8000/rosetta/
+```
+
+### Yeni Söz Əlavə Etmək
+
+1. Template-də `{% trans "Yeni söz" %}` istifadə edin
+2. `/rosetta/` panelindən EN/RU tərcüməsini əlavə edin
+3. Saxla düyməsinə basın — dərhal aktiv olur
+
+### i18n Əsas Qaydası — Dil Dəyişəndə NƏ Dəyişməlidir?
+
+> **Qayda №1**: İstifadəçi dili dəyişdirəndə ekrandakı **bütün UI mətnləri** (navbar, sidebar, düymə, başlıq, label, mesaj, tooltip, xəbərdarlıq) dərhal həmin dilə keçməlidir. Heç bir sabit hardcoded mətn qalmamalıdır.
+
+#### Dəyişməli olan elementlər:
+
+| Bölmə | Nümunə element | Metod |
+|---|---|---|
+| Navbar | "Bildirişlər", "Çıxış", "Profil" | `{% trans "..." %}` |
+| Sidebar | Bütün menyu elementləri | `{% trans "..." %}` |
+| Səhifə başlıqları (`<h1>`, `<h2>`) | "İdarəçilik Paneli", "Dərslər" | `{% trans "..." %}` |
+| Cədvəl başlıqları (`<th>`) | "Tarix", "Status", "Qiymət" | `{% trans "..." %}` |
+| Düymələr (`<button>`, `<a>`) | "Saxla", "Ləğv et", "Ətraflı" | `{% trans "..." %}` |
+| Form label-ları | "Ad", "Soyad", "Email" | `gettext_lazy(...)` in `forms.py` |
+| Form placeholder-lar | "Adınızı daxil edin" | `{% trans "..." %}` |
+| Flash mesajları | "Uğurla saxlandı!" | `_("...")` in `views.py` |
+| Xəta mesajları | "Bu sahə məcburidir" | `gettext_lazy(...)` in `forms.py` |
+| Status badge-ləri | "Gözlənilir", "Tamamlandı" | `TextChoices` + `get_FOO_display()` |
+| Modal başlıqları | "Əminsinizmi?" | `{% trans "..." %}` |
+| Boş vəziyyət mətnləri | "Heç bir dərs tapılmadı" | `{% trans "..." %}` |
+| Email şablonları | Mövzu + gövdə | Ayrıca `.po` faylı |
+| Django Admin | Sahə adları, menyu | `verbose_name` + `gettext_lazy` |
+
+#### Dəyişməməli olan elementlər (i18n tətbiq edilmir):
+
+| Element | Səbəb |
+|---|---|
+| İstifadəçi tərəfindən daxil edilmiş məlumatlar | Ad, soyad, kurs başlığı — DB-də olduğu kimi qalır |
+| Tarix/vaxt formatı | `django.utils.formats` avtomatik idarə edir |
+| Pul məbləği | `25 AZN` — valyuta dəyişmir |
+| URL slug-lar | `/bookings/`, `/courses/` — dəyişmir |
+
+---
+
+### Gələcək Plan (i18n Roadmap)
+
+- [ ] **Bütün app template-ləri** (`bookings/`, `courses/`, `payments/`, `support/`, `assessments/`, `notifications/`) — hər mətn `{% trans "..." %}` ilə işarələnməlidir
+- [ ] **Form label + placeholder + help_text** (`forms.py`) — `gettext_lazy()` ilə əvəzlənməlidir
+- [ ] **View-lardakı messages** (`messages.success(...)`) — `_("...")` ilə əvəzlənməlidir
+- [ ] **Model `TextChoices`** — `get_FOO_display()` artıq avtomatik tərcümə edir, `.po`-ya əlavə edilməlidir
+- [ ] **Django Admin paneli** — AZ dilinə tam çevrilməsi
+- [ ] **Email şablonları** — 3 dildə ayrıca HTML şablonlar hazırlanmalıdır
+- [ ] **Tələbənin profil dil seçimi** — `User.language_preference` field-i + `LocaleMiddleware` inteqrasiyası
+- [ ] **`makemessages` skripti** — yeni mətn əlavə ediləndə: `python manage.py makemessages -a` + `compilemessages`
+
+---
+
 ## Sənədlər
 
 - [Tam Layihə Planı](docs/project.md) — Bütün funksionallıqların ətraflı təsviri
@@ -469,4 +590,4 @@ Bu layihə şəxsi istifadə üçündür. Bütün hüquqlar qorunur.
 ---
 
 *LMS Platform — Django 5.0+ | PostgreSQL | Redis | Celery | HTMX | Alpine.js*  
-*AI Model: Claude Sonnet 4.6 | Scaffold tamamlandı: 28.02.2026*
+*AI Model: Claude Sonnet 4.6 | Scaffold tamamlandı: 28.02.2026 | i18n əlavə edildi: 27.04.2026*

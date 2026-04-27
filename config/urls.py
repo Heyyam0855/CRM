@@ -12,6 +12,12 @@ urlpatterns = [
     # Admin
     path('admin/', admin.site.urls),
 
+    # Rosetta (Tərcümələr UI)
+    path('rosetta/', include('rosetta.urls')),
+
+    # i18n (Language switch)
+    path('i18n/', include('django.conf.urls.i18n')),
+
     # Auth (django-allauth)
     path('accounts/', include('allauth.urls')),
     path('auth/', include('apps.users.urls', namespace='users')),

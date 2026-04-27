@@ -1,6 +1,7 @@
 """Users App — Forms"""
 from django import forms
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from .models import User, StudentProfile, RegistrationRequest
 
@@ -9,11 +10,11 @@ class CourseRegistrationForm(forms.ModelForm):
     """Tələbə dərs qeydiyyat formu (Google Form tipli)."""
 
     LESSONS_PER_WEEK_CHOICES = [
-        (1, '1 dərs / həftə'),
-        (2, '2 dərs / həftə'),
-        (3, '3 dərs / həftə'),
-        (4, '4 dərs / həftə'),
-        (5, '5 dərs / həftə'),
+        (1, _('1 dərs / həftə')),
+        (2, _('2 dərs / həftə')),
+        (3, _('3 dərs / həftə')),
+        (4, _('4 dərs / həftə')),
+        (5, _('5 dərs / həftə')),
     ]
 
     lessons_per_week = forms.TypedChoiceField(
@@ -21,19 +22,19 @@ class CourseRegistrationForm(forms.ModelForm):
         coerce=int,
         initial=2,
         widget=forms.RadioSelect(),
-        label='Həftəlik dərs sayı',
+        label=_('Ħəftəlik dərs sayı'),
     )
 
     PAYMENT_METHOD_CHOICES = [
-        ('epoint', 'Online ödəniş (kart ilə)'),
-        ('bank_transfer', 'Bank köçürməsi'),
+        ('epoint', _('Online ödəniş (kart ilə)')),
+        ('bank_transfer', _('Bank köçürməsi')),
     ]
 
     payment_method = forms.ChoiceField(
         choices=PAYMENT_METHOD_CHOICES,
         initial='epoint',
         widget=forms.RadioSelect(),
-        label='Ödəniş üsulu',
+        label=_('Ödəniş üslulu'),
     )
 
     class Meta:
@@ -75,16 +76,14 @@ class CourseRegistrationForm(forms.ModelForm):
             }),
         }
         labels = {
-            'full_name': 'Ad Soyad',
-            'email': 'Email',
-            'phone': 'Telefon (Whatsapp)',
-            'course_package': 'Hansı dərs paketi üzrə dərs almaq istəyirsiniz?',
-            'other_course': 'Digər dərs paketi',
-            'payment_receipt': 'Ödəmə məlumatı',
-            'preferred_start_date': (
-                'Hansı tarixdən başlamaq istəyirsiniz?'
-            ),
-            'github_profile_url': 'GitHub profil linki',
+            'full_name': _('Ad Soyad'),
+            'email': _('Email'),
+            'phone': _('Telefon (Whatsapp)'),
+            'course_package': _('Hansı dərs paketi üzrə dərs almaq istəyirsiniz?'),
+            'other_course': _('Digər dərs paketi'),
+            'payment_receipt': _('Ödəmə məlumatı'),
+            'preferred_start_date': _('Hansı tarixdən başlamaq istəyirsiniz?'),
+            'github_profile_url': _('GitHub profil linki'),
         }
 
     def clean_email(self):
@@ -94,14 +93,14 @@ class CourseRegistrationForm(forms.ModelForm):
             status=RegistrationRequest.Status.PENDING,
         ).exists():
             raise forms.ValidationError(
-                'Bu email ilə artıq gözləmədə olan müraciət var.'
+                _('Bu email ilə artıq gözləmədə olan müraciət var.')
             )
         return email
 
     def clean_preferred_start_date(self):
         date = self.cleaned_data['preferred_start_date']
         if date and date < timezone.now().date():
-            raise forms.ValidationError('Tarix keçmişdə ola bilməz.')
+            raise forms.ValidationError(_('Tarix keçmişdə ola bilməz.'))
         return date
 
     def clean(self):
@@ -111,7 +110,7 @@ class CourseRegistrationForm(forms.ModelForm):
         if package == RegistrationRequest.CoursePackage.OTHER and not other:
             self.add_error(
                 'other_course',
-                '"Digər" seçdiyiniz üçün dərs paketinin adını yazmalısınız.'
+                _('"Digər" seçdiyiniz üçün dərs paketinin adını yazmalısınız.')
             )
         return cleaned_data
 
@@ -129,8 +128,8 @@ class StudentProfileUpdateForm(forms.ModelForm):
             'goals': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
         }
         labels = {
-            'github_username': 'GitHub istifadəçi adı',
-            'timezone': 'Vaxt zonası',
-            'education_level': 'Təhsil səviyyəsi',
-            'goals': 'Öyrənmə hədəflərim',
+            'github_username': _('GitHub istifadəçi adı'),
+            'timezone': _('Vaxt zonası'),
+            'education_level': _('Təhsil səviyyəsi'),
+            'goals': _('Öyrənmə hədəflərim'),
         }

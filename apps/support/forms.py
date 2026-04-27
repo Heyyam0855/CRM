@@ -1,5 +1,6 @@
 """Support — Forms"""
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from .models import Ticket, TicketMessage
 
 
@@ -12,8 +13,8 @@ class TicketCreateForm(forms.ModelForm):
             'priority': forms.Select(attrs={'class': 'form-select'}),
         }
         labels = {
-            'subject': 'Mövzu',
-            'priority': 'Prioritet',
+            'subject': _('Mövzu'),
+            'priority': _('Prioritet'),
         }
 
 
@@ -24,4 +25,4 @@ class TicketMessageForm(forms.ModelForm):
         widgets = {
             'body': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
         }
-        labels = {'body': 'Cavab'}
+        labels = {'body': _('Cavab')}

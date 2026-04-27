@@ -1,5 +1,6 @@
 """Bookings App — Forms"""
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from .models import WeeklySchedule
 
 
@@ -21,14 +22,14 @@ class WeeklyScheduleForm(forms.ModelForm):
             ),
             'slot_duration': forms.Select(
                 attrs={'class': 'form-select'},
-                choices=[(30, '30 dəq'), (45, '45 dəq'), (60, '60 dəq'), (90, '90 dəq')],
+                choices=[(30, _('30 dəq')), (45, _('45 dəq')), (60, _('60 dəq')), (90, _('90 dəq'))],
             ),
         }
         labels = {
-            'day_of_week': 'Həftənin günü',
-            'start_time': 'Başlama saatı',
-            'end_time': 'Bitmə saatı',
-            'slot_duration': 'Dərs müddəti',
+            'day_of_week': _('Ħəftənin günü'),
+            'start_time': _('Başlama saatı'),
+            'end_time': _('Bitmə saatı'),
+            'slot_duration': _('Dərs müddəti'),
         }
 
     def clean(self):
@@ -36,5 +37,5 @@ class WeeklyScheduleForm(forms.ModelForm):
         start = cleaned.get('start_time')
         end = cleaned.get('end_time')
         if start and end and start >= end:
-            raise forms.ValidationError('Bitmə saatı başlama saatından sonra olmalıdır.')
+            raise forms.ValidationError(_('Bitmə saatı başlama saatından sonra olmalıdır.'))
         return cleaned

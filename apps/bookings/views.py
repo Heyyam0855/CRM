@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from core.mixins import HTMXMixin, TeacherRequiredMixin
 from .models import Booking, AvailabilitySlot, WeeklySchedule
@@ -29,7 +30,7 @@ class BookingListView(LoginRequiredMixin, HTMXMixin, ListView):
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
-        context['page_title'] = 'Rezervasiyalarım' if self.request.user.is_student_user else 'Bütün Dərslər'
+        context['page_title'] = _('Rezervasiyalarım') if self.request.user.is_student_user else _('Bütün Dərslər')
         return context
 
 
@@ -61,11 +62,11 @@ class BookingCreateView(LoginRequiredMixin, TemplateView):
             notes=request.POST.get('notes', ''),
         )
         if booking:
-            messages.success(request, 'Dərs uğurla rezerv edildi!')
+            messages.success(request, _('Dərs uğurla rezerv edildi!'))
             if request.headers.get('HX-Request'):
                 return JsonResponse({'success': True, 'booking_id': str(booking.id)})
         else:
-            messages.error(request, 'Rezervasiya mümkün olmadı. Slot artıq tutulmuş ola bilər.')
+            messages.error(request, _('Rezervasiya mümkün olmadı. Slot artıq tutulmuş ola bilər.'))
         return self.render_to_response(self.get_context_data())
 
 
@@ -75,7 +76,7 @@ class BookingCancelView(LoginRequiredMixin, View):
     def post(self, request, pk):
         booking = get_object_or_404(Booking, pk=pk)
         if request.user.is_student_user and booking.student != request.user:
-            messages.error(request, 'Bu əməliyyat üçün icazəniz yoxdur.')
+            messages.error(request, _('Bu əməliyyat üçün icəzəniz yoxdur.'))
             return redirect('bookings:list')
 
         service = BookingService()
@@ -83,11 +84,11 @@ class BookingCancelView(LoginRequiredMixin, View):
         success = service.cancel_booking(str(pk), reason)
 
         if success:
-            messages.success(request, 'Dərs ləğv edildi.')
+            messages.success(request, _('Dərs ləğv edildi.'))
         else:
             messages.error(
                 request,
-                'Ləğvetmə mümkün olmadı. Dərsə 24 saatdan az qalıb.'
+                _('Ləğetmə mümkün olmadı. Dərsə 24 saatdan az qalıb.')
             )
         return redirect('bookings:list')
 
@@ -100,7 +101,7 @@ class BookingCompleteView(TeacherRequiredMixin, View):
         booking.status = Booking.Status.COMPLETED
         booking.completed_at = timezone.now()
         booking.save(update_fields=['status', 'completed_at'])
-        messages.success(request, f'{booking.student.get_full_name()} dərsi tamamlandı.')
+        messages.success(request, _('{name} dərsi tamamlandı.').format(name=booking.student.get_full_name()))
         return redirect('bookings:list')
 
 
@@ -114,7 +115,7 @@ class BookingCalendarView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
-        context['page_title'] = 'Dərs Təyin Et'
+        context['page_title'] = _('Dərs Təyin Et')
 
         schedule_service = ScheduleService()
         slots_by_date = schedule_service.get_available_slots_by_date()
@@ -179,7 +180,7 @@ class ScheduleManageView(TeacherRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
-        context['page_title'] = 'Cədvəl İdarəetməsi'
+        context['page_title'] = _('Cədvəl İdarəetməsi')
         context['schedules'] = WeeklySchedule.objects.filter(
             is_active=True
         ).order_by('day_of_week', 'start_time')
@@ -214,7 +215,7 @@ class ScheduleCreateView(TeacherRequiredMixin, View):
         form = WeeklyScheduleForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Cədvəl əlavə edildi.')
+            messages.success(request, _('Cədvəl əlavə edildi.'))
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -229,7 +230,7 @@ class ScheduleDeleteView(TeacherRequiredMixin, View):
         schedule = get_object_or_404(WeeklySchedule, pk=pk)
         schedule.is_active = False
         schedule.save(update_fields=['is_active'])
-        messages.success(request, 'Cədvəl deaktiv edildi.')
+        messages.success(request, _('Cədvəl deaktiv edildi.'))
         return redirect('bookings:schedule-manage')
 
 
@@ -242,5 +243,5 @@ class GenerateSlotsView(TeacherRequiredMixin, View):
 
         service = ScheduleService()
         count = service.generate_slots(weeks_ahead=weeks)
-        messages.success(request, f'{count} yeni slot yaradıldı ({weeks} həftəlik).')
+        messages.success(request, _('{count} yeni slot yaratıldı ({weeks} həftəlik).').format(count=count, weeks=weeks))
         return redirect('bookings:schedule-manage')

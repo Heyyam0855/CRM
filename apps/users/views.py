@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import HttpResponseNotAllowed, JsonResponse
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from django.db.models import Count, Sum, Q
 
 from core.mixins import TeacherRequiredMixin
@@ -117,7 +118,7 @@ class StudentStatusUpdateView(TeacherRequiredMixin, View):
 
         valid_statuses = [s[0] for s in StudentProfile.Status.choices]
         if new_status not in valid_statuses:
-            messages.error(request, 'Yanlış status.')
+            messages.error(request, _('Yanlış status.'))
             return redirect('users:student-detail', pk=pk)
 
         profile = student.student_profile
@@ -135,7 +136,10 @@ class StudentStatusUpdateView(TeacherRequiredMixin, View):
 
         messages.success(
             request,
-            f'{student.get_full_name()} statusu "{profile.get_status_display()}" olaraq dəyişdirildi.'
+            _('{name} statusu "{status}" olaraq dəyişdirildi.').format(
+                name=student.get_full_name(),
+                status=profile.get_status_display()
+            )
         )
         return redirect('users:student-detail', pk=pk)
 
@@ -149,7 +153,7 @@ class StudentNotesUpdateView(TeacherRequiredMixin, View):
         profile = student.student_profile
         profile.teacher_notes = notes
         profile.save(update_fields=['teacher_notes'])
-        messages.success(request, 'Qeydlər saxlanıldı.')
+        messages.success(request, _('Qeydlər saxlanıldı.'))
         return redirect('users:student-detail', pk=pk)
 
 
@@ -216,11 +220,13 @@ class ApproveRegistrationView(TeacherRequiredMixin, View):
         if user:
             messages.success(
                 request,
-                f'{user.get_full_name()} hesabı yaradıldı. '
-                f'Login məlumatları {user.email} ünvanına göndərildi.'
+                _('{name} hesabı yaratıldı. Login məlumatları {email} ünvanına göndərildi.').format(
+                    name=user.get_full_name(),
+                    email=user.email
+                )
             )
         else:
-            messages.error(request, error or 'Müraciət təsdiqlənə bilmədi.')
+            messages.error(request, error or _('Müraciət təsdiqlnə bilmədi.'))
         return redirect('users:registration-requests')
 
     def get(self, request, *args, **kwargs):
@@ -239,9 +245,9 @@ class RejectRegistrationView(TeacherRequiredMixin, View):
             notes=notes,
         )
         if success:
-            messages.success(request, 'Müraciət rədd edildi.')
+            messages.success(request, _('Müraciət rədd edildi.'))
         else:
-            messages.error(request, 'Müraciət rədd edilə bilmədi.')
+            messages.error(request, _('Müraciət rədd edilə bilmədi.'))
         return redirect('users:registration-requests')
 
     def get(self, request, *args, **kwargs):
@@ -256,9 +262,9 @@ class DeleteRegistrationView(TeacherRequiredMixin, View):
             reg_request = RegistrationRequest.objects.get(pk=pk)
             full_name = reg_request.full_name
             reg_request.delete()
-            messages.success(request, f'{full_name} müraciəti silindi.')
+            messages.success(request, _('{name} müraciəti silindi.').format(name=full_name))
         except RegistrationRequest.DoesNotExist:
-            messages.error(request, 'Müraciət tapılmadı.')
+            messages.error(request, _('Müraciət tapılmadı.'))
         return redirect('users:registration-requests')
 
     def get(self, request, *args, **kwargs):

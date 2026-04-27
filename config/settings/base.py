@@ -51,6 +51,8 @@ THIRD_PARTY_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'widget_tweaks',
+    # Translations
+    'rosetta',
     # Channels
     'channels',
     # Celery Beat
@@ -80,6 +82,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -261,7 +264,23 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # ─────────────────────────────────────────────
 #  Internationalization
 # ─────────────────────────────────────────────
+from django.utils.translation import gettext_lazy as _
+
 LANGUAGE_CODE = 'az'
+
+LANGUAGES = [
+    ('az', _('Azərbaycanca')),
+    ('en', _('İngiliscə')),
+    ('ru', _('Rusca')),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
+
+ROSETTA_MESSAGES_PER_PAGE = 50
+ROSETTA_ENABLE_TRANSLATION_SUGGESTIONS = True
+
 TIME_ZONE = 'Asia/Baku'
 USE_I18N = True
 USE_TZ = True

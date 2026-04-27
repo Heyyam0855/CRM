@@ -1,5 +1,6 @@
 """Assessments — Forms"""
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from .models import Assessment
 
 
@@ -18,12 +19,12 @@ class AssessmentCreateForm(forms.ModelForm):
             ),
         }
         labels = {
-            'student': 'Tələbə',
-            'lesson': 'Dərs',
-            'title': 'Başlıq',
-            'type': 'Növ',
-            'max_score': 'Maksimum bal',
-            'due_date': 'Son tarix',
+            'student': _('Tələbə'),
+            'lesson': _('Dərs'),
+            'title': _('Başlıq'),
+            'type': _('Növ'),
+            'max_score': _('Maksimum bal'),
+            'due_date': _('Son tarix'),
         }
 
 
@@ -36,6 +37,6 @@ class AssessmentGradeForm(forms.ModelForm):
             'feedback': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
         }
         labels = {
-            'score': 'Bal',
-            'feedback': 'Rəy',
+            'score': _('Bal'),
+            'feedback': _('Rəy'),
         }

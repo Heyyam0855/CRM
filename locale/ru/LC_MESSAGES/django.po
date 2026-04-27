@@ -1,0 +1,385 @@
+#
+msgid ""
+msgstr ""
+"Language: ru\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "LMS Platform"
+msgstr "LMS Платформа"
+
+msgid "İdarəetmə"
+msgstr "Управление"
+
+msgid "Panel"
+msgstr "Панель"
+
+msgid "Tələbələr"
+msgstr "Ученики"
+
+msgid "Müraciətlər"
+msgstr "Заявки"
+
+msgid "Tədris"
+msgstr "Обучение"
+
+msgid "Dərslər"
+msgstr "Уроки"
+
+msgid "Cədvəl"
+msgstr "Расписание"
+
+msgid "Kurslar"
+msgstr "Курсы"
+
+msgid "Qiymətlər"
+msgstr "Оценки"
+
+msgid "Ödənişlər"
+msgstr "Платежи"
+
+msgid "Əsas Səhifə"
+msgstr "Главная"
+
+msgid "Dərs Təyin Et"
+msgstr "Записаться"
+
+msgid "Dərslərim"
+msgstr "Мои уроки"
+
+msgid "Tapşırıqlar"
+msgstr "Задания"
+
+msgid "Kurs Materialları"
+msgstr "Материалы"
+
+msgid "Dəstək"
+msgstr "Поддержка"
+
+msgid "Bildirişlər"
+msgstr "Уведомления"
+
+msgid "Maliyyə"
+msgstr "Финансы"
+
+msgid "Menyu"
+msgstr "Меню"
+
+msgid "Digər"
+msgstr "Прочее"
+
+msgid "Müəllim"
+msgstr "Учитель"
+
+msgid "Tələbə"
+msgstr "Ученик"
+
+msgid "Çıxış"
+msgstr "Выход"
+
+msgid "Profil"
+msgstr "Профиль"
+
+msgid "Parametrlər"
+msgstr "Настройки"
+
+msgid "Axtar..."
+msgstr "Поиск..."
+
+msgid "\"Digər\" seçdiyiniz üçün dərs paketinin adını yazmalısınız."
+msgstr ""
+
+msgid "1 dərs / həftə"
+msgstr ""
+
+msgid "2 dərs / həftə"
+msgstr ""
+
+msgid "3 dərs / həftə"
+msgstr ""
+
+msgid "30 dəq"
+msgstr ""
+
+msgid "4 dərs / həftə"
+msgstr ""
+
+msgid "45 dəq"
+msgstr ""
+
+msgid "5 dərs / həftə"
+msgstr ""
+
+msgid "60 dəq"
+msgstr ""
+
+msgid "90 dəq"
+msgstr ""
+
+msgid "Ad Soyad"
+msgstr ""
+
+msgid "Aktiv Tələbələr"
+msgstr ""
+
+msgid "Aylıq Gəlir"
+msgstr ""
+
+msgid "Aylıq Statistika"
+msgstr ""
+
+msgid "Aylıq gəlir"
+msgstr ""
+
+msgid "Bal"
+msgstr ""
+
+msgid "Bank köçürməsi"
+msgstr ""
+
+msgid "Başlama saatı"
+msgstr ""
+
+msgid "Başlıq"
+msgstr ""
+
+msgid "Bitmə saatı"
+msgstr ""
+
+msgid "Bitmə saatı başlama saatından sonra olmalıdır."
+msgstr ""
+
+msgid "Bu ay dərslər"
+msgstr ""
+
+msgid "Bu email ilə artıq gözləmədə olan müraciət var."
+msgstr ""
+
+msgid "Bu əməliyyat üçün icəzəniz yoxdur."
+msgstr ""
+
+msgid "Bütün Dərslər"
+msgstr ""
+
+msgid "Bütün rezervasiyalarınız burada"
+msgstr ""
+
+msgid "Bütün ödəniş tarixçəniz"
+msgstr ""
+
+msgid "Cavab"
+msgstr ""
+
+msgid "Cədvəl deaktiv edildi."
+msgstr ""
+
+msgid "Cədvəl İdarəetməsi"
+msgstr ""
+
+msgid "Cədvəl əlavə edildi."
+msgstr ""
+
+msgid "Digər dərs paketi"
+msgstr ""
+
+msgid "Dərs"
+msgstr ""
+
+msgid "Dərs ləğv edildi."
+msgstr ""
+
+msgid "Dərs müddəti"
+msgstr ""
+
+msgid "Dərs uğurla rezerv edildi!"
+msgstr ""
+
+msgid "Dərslər bölməsindən yeni dərs planlaşdırın"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Faktura"
+msgstr ""
+
+msgid "Gecikmiş ödəniş"
+msgstr ""
+
+msgid "GitHub istifadəçi adı"
+msgstr ""
+
+msgid "GitHub profil linki"
+msgstr ""
+
+msgid "Görüşə qoşul"
+msgstr ""
+
+msgid "Gözlənilir"
+msgstr ""
+
+msgid "Gözləyən Müraciətlər"
+msgstr ""
+
+msgid "Gəlir"
+msgstr ""
+
+msgid "Hamısına bax"
+msgstr ""
+
+msgid "Hansı dərs paketi üzrə dərs almaq istəyirsiniz?"
+msgstr ""
+
+msgid "Hansı tarixdən başlamaq istəyirsiniz?"
+msgstr ""
+
+msgid "Heç bir rezervasiya tapılmadı"
+msgstr ""
+
+msgid "Hələ heç bir ödəniş yoxdur"
+msgstr ""
+
+msgid "Keçirilən Dərslər"
+msgstr ""
+
+msgid "Ləğetmə mümkün olmadı. Dərsə 24 saatdan az qalıb."
+msgstr ""
+
+msgid "Maksimum bal"
+msgstr ""
+
+msgid "Mövzu"
+msgstr ""
+
+msgid "Müraciət rədd edildi."
+msgstr ""
+
+msgid "Müraciət rədd edilə bilmədi."
+msgstr ""
+
+msgid "Müraciət tapılmadı."
+msgstr ""
+
+msgid "Müraciət təsdiqlnə bilmədi."
+msgstr ""
+
+msgid "Məbləğ"
+msgstr ""
+
+msgid "Növ"
+msgstr ""
+
+msgid "Online ödəniş (kart ilə)"
+msgstr ""
+
+msgid "Prioritet"
+msgstr ""
+
+msgid "Qeydlər saxlanıldı."
+msgstr ""
+
+msgid "Qiymət qeyd edildi!"
+msgstr ""
+
+msgid "Qiymətləndirmə yaratıldı!"
+msgstr ""
+
+msgid "Qiymətləndirmələr"
+msgstr ""
+
+msgid "Qoşul"
+msgstr ""
+
+msgid "Rezervasiya mümkün olmadı. Slot artıq tutulmuş ola bilər."
+msgstr ""
+
+msgid "Rezervasiyalarım"
+msgstr ""
+
+msgid "Rəy"
+msgstr ""
+
+msgid "Son tarix"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Tarix"
+msgstr ""
+
+msgid "Tarix keçmişdə ola bilməz."
+msgstr ""
+
+msgid "Telefon (Whatsapp)"
+msgstr ""
+
+msgid "Təhsil səviyyəsi"
+msgstr ""
+
+msgid "Vaxt zonası"
+msgstr ""
+
+msgid "Yanlış status."
+msgstr ""
+
+msgid "Yaxınlaşan Dərslər"
+msgstr ""
+
+msgid "Yaxınlaşan dərs yoxdur"
+msgstr ""
+
+msgid "Yeni Rezervasiya"
+msgstr ""
+
+msgid "{count} yeni slot yaratıldı ({weeks} həftəlik)."
+msgstr ""
+
+msgid "{name} dərsi tamamlandı."
+msgstr ""
+
+msgid ""
+"{name} hesabı yaratıldı. Login məlumatları {email} ünvanına göndərildi."
+msgstr ""
+
+msgid "{name} müraciəti silindi."
+msgstr ""
+
+msgid "{name} statusu \"{status}\" olaraq dəyişdirildi."
+msgstr ""
+
+msgid "Ödə"
+msgstr ""
+
+msgid "Ödəmə məlumatı"
+msgstr ""
+
+msgid "Ödənib"
+msgstr ""
+
+msgid "Ödəniş"
+msgstr ""
+
+msgid "Ödəniş üslulu"
+msgstr ""
+
+msgid "Ödənişlər burada görünəcək"
+msgstr ""
+
+msgid "Öyrənmə hədəflərim"
+msgstr ""
+
+msgid "Ümumi Baxış"
+msgstr ""
+
+msgid "Üsul"
+msgstr ""
+
+msgid "Ħəftəlik dərs sayı"
+msgstr ""
+
+msgid "Ħəftənin günü"
+msgstr ""
+
+msgid "İdarəçilik Paneli"
+msgstr ""

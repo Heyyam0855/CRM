@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
-
-{% block title %}Dərslərim — LMS{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Dərslərim" %} — LMS{% endblock %}
 
 {% block breadcrumb %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">Dərslərim</h1>
-        <p class="page-subtitle">Bütün rezervasiyalarınız burada</p>
+        <h1 class="page-title">{% trans "Dərslərim" %}</h1>
+        <p class="page-subtitle">{% trans "Bütün rezervasiyalarınız burada" %}</p>
     </div>
     <a href="{% url 'bookings:create' %}" class="btn btn-primary">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-        Yeni Rezervasiya
+        {% trans "Yeni Rezervasiya" %}
     </a>
 </div>
 {% endblock %}
