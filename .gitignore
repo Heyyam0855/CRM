@@ -1,0 +1,58 @@
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+env/
+.venv/
+.venv-1/
+.env/
+
+# Environment Variables
+.env
+.env.local
+.env.*
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# OS / IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Layihə üçün spesifik fayllar (Görünməz edilən və yerli test faylları)
+AGENTS.md
+Qeydiyyat.md
+Command prompt.md
+compile_translations.py
+Git.md
+main.asm
+main.o
+create_superuser.py
