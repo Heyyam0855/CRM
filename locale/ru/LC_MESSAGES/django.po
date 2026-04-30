@@ -15,7 +15,7 @@ msgid "Panel"
 msgstr "Панель"
 
 msgid "Tələbələr"
-msgstr "Ученики"
+msgstr "Студенты"
 
 msgid "Müraciətlər"
 msgstr "Заявки"
@@ -120,13 +120,13 @@ msgid "Ad Soyad"
 msgstr ""
 
 msgid "Aktiv Tələbələr"
-msgstr ""
+msgstr "Активные студенты"
 
 msgid "Aylıq Gəlir"
-msgstr ""
+msgstr "Ежемесячный доход"
 
 msgid "Aylıq Statistika"
-msgstr ""
+msgstr "Ежемесячная статистика"
 
 msgid "Aylıq gəlir"
 msgstr ""
@@ -150,7 +150,7 @@ msgid "Bitmə saatı başlama saatından sonra olmalıdır."
 msgstr ""
 
 msgid "Bu ay dərslər"
-msgstr ""
+msgstr "Уроки в этом месяце"
 
 msgid "Bu email ilə artıq gözləmədə olan müraciət var."
 msgstr ""
@@ -195,7 +195,7 @@ msgid "Dərs uğurla rezerv edildi!"
 msgstr ""
 
 msgid "Dərslər bölməsindən yeni dərs planlaşdırın"
-msgstr ""
+msgstr "Запланируйте новый урок в разделе уроков"
 
 msgid "Email"
 msgstr ""
@@ -204,7 +204,7 @@ msgid "Faktura"
 msgstr ""
 
 msgid "Gecikmiş ödəniş"
-msgstr ""
+msgstr "Просроченные платежи"
 
 msgid "GitHub istifadəçi adı"
 msgstr ""
@@ -219,13 +219,13 @@ msgid "Gözlənilir"
 msgstr ""
 
 msgid "Gözləyən Müraciətlər"
-msgstr ""
+msgstr "Ожидающие заявки"
 
 msgid "Gəlir"
-msgstr ""
+msgstr "Доход"
 
 msgid "Hamısına bax"
-msgstr ""
+msgstr "Смотреть все"
 
 msgid "Hansı dərs paketi üzrə dərs almaq istəyirsiniz?"
 msgstr ""
@@ -240,7 +240,7 @@ msgid "Hələ heç bir ödəniş yoxdur"
 msgstr ""
 
 msgid "Keçirilən Dərslər"
-msgstr ""
+msgstr "Проведенные уроки"
 
 msgid "Ləğetmə mümkün olmadı. Dərsə 24 saatdan az qalıb."
 msgstr ""
@@ -288,7 +288,7 @@ msgid "Qiymətləndirmələr"
 msgstr ""
 
 msgid "Qoşul"
-msgstr ""
+msgstr "Присоединиться"
 
 msgid "Rezervasiya mümkün olmadı. Slot artıq tutulmuş ola bilər."
 msgstr ""
@@ -303,10 +303,10 @@ msgid "Son tarix"
 msgstr ""
 
 msgid "Status"
-msgstr ""
+msgstr "Статус"
 
 msgid "Tarix"
-msgstr ""
+msgstr "Дата"
 
 msgid "Tarix keçmişdə ola bilməz."
 msgstr ""
@@ -324,10 +324,10 @@ msgid "Yanlış status."
 msgstr ""
 
 msgid "Yaxınlaşan Dərslər"
-msgstr ""
+msgstr "Предстоящие уроки"
 
 msgid "Yaxınlaşan dərs yoxdur"
-msgstr ""
+msgstr "Нет предстоящих уроков"
 
 msgid "Yeni Rezervasiya"
 msgstr ""
@@ -370,7 +370,7 @@ msgid "Öyrənmə hədəflərim"
 msgstr ""
 
 msgid "Ümumi Baxış"
-msgstr ""
+msgstr "Обзор"
 
 msgid "Üsul"
 msgstr ""
@@ -382,4 +382,13 @@ msgid "Ħəftənin günü"
 msgstr ""
 
 msgid "İdarəçilik Paneli"
-msgstr ""
+msgstr "Панель управления"
+
+msgid "Xoş gəldiniz, %(name)s. Bütün göstəricilər burada."
+msgstr "Добро пожаловать, %(name)s. Все показатели здесь."
+
+msgid "dərs"
+msgstr "урок"
+
+msgid "Hələ məlumat yoxdur"
+msgstr "Пока нет данных"

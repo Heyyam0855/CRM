@@ -46,5 +46,5 @@ class AssessmentGradeView(TeacherRequiredMixin, UpdateView):
     success_url = reverse_lazy('assessments:list')
 
     def form_valid(self, form):
-        messages.success(self.request, _('Qiymət qeyd edildi!')))
+        messages.success(self.request, _('Qiymət qeyd edildi!'))
         return super().form_valid(form)

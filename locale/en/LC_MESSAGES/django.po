@@ -120,13 +120,13 @@ msgid "Ad Soyad"
 msgstr ""
 
 msgid "Aktiv Tələbələr"
-msgstr ""
+msgstr "Active Students"
 
 msgid "Aylıq Gəlir"
-msgstr ""
+msgstr "Monthly Revenue"
 
 msgid "Aylıq Statistika"
-msgstr ""
+msgstr "Monthly Statistics"
 
 msgid "Aylıq gəlir"
 msgstr ""
@@ -150,7 +150,7 @@ msgid "Bitmə saatı başlama saatından sonra olmalıdır."
 msgstr ""
 
 msgid "Bu ay dərslər"
-msgstr ""
+msgstr "Lessons this month"
 
 msgid "Bu email ilə artıq gözləmədə olan müraciət var."
 msgstr ""
@@ -195,7 +195,7 @@ msgid "Dərs uğurla rezerv edildi!"
 msgstr ""
 
 msgid "Dərslər bölməsindən yeni dərs planlaşdırın"
-msgstr ""
+msgstr "Plan a new lesson from the lessons section"
 
 msgid "Email"
 msgstr ""
@@ -204,7 +204,7 @@ msgid "Faktura"
 msgstr ""
 
 msgid "Gecikmiş ödəniş"
-msgstr ""
+msgstr "Overdue payments"
 
 msgid "GitHub istifadəçi adı"
 msgstr ""
@@ -219,13 +219,13 @@ msgid "Gözlənilir"
 msgstr ""
 
 msgid "Gözləyən Müraciətlər"
-msgstr ""
+msgstr "Pending Applications"
 
 msgid "Gəlir"
-msgstr ""
+msgstr "Revenue"
 
 msgid "Hamısına bax"
-msgstr ""
+msgstr "See all"
 
 msgid "Hansı dərs paketi üzrə dərs almaq istəyirsiniz?"
 msgstr ""
@@ -240,7 +240,7 @@ msgid "Hələ heç bir ödəniş yoxdur"
 msgstr ""
 
 msgid "Keçirilən Dərslər"
-msgstr ""
+msgstr "Conducted Lessons"
 
 msgid "Ləğetmə mümkün olmadı. Dərsə 24 saatdan az qalıb."
 msgstr ""
@@ -288,7 +288,7 @@ msgid "Qiymətləndirmələr"
 msgstr ""
 
 msgid "Qoşul"
-msgstr ""
+msgstr "Join"
 
 msgid "Rezervasiya mümkün olmadı. Slot artıq tutulmuş ola bilər."
 msgstr ""
@@ -303,10 +303,10 @@ msgid "Son tarix"
 msgstr ""
 
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 msgid "Tarix"
-msgstr ""
+msgstr "Date"
 
 msgid "Tarix keçmişdə ola bilməz."
 msgstr ""
@@ -324,10 +324,10 @@ msgid "Yanlış status."
 msgstr ""
 
 msgid "Yaxınlaşan Dərslər"
-msgstr ""
+msgstr "Upcoming Lessons"
 
 msgid "Yaxınlaşan dərs yoxdur"
-msgstr ""
+msgstr "No upcoming lessons"
 
 msgid "Yeni Rezervasiya"
 msgstr ""
@@ -370,7 +370,7 @@ msgid "Öyrənmə hədəflərim"
 msgstr ""
 
 msgid "Ümumi Baxış"
-msgstr ""
+msgstr "Overview"
 
 msgid "Üsul"
 msgstr ""
@@ -382,4 +382,13 @@ msgid "Ħəftənin günü"
 msgstr ""
 
 msgid "İdarəçilik Paneli"
-msgstr ""
+msgstr "Dashboard"
+
+msgid "Xoş gəldiniz, %(name)s. Bütün göstəricilər burada."
+msgstr "Welcome, %(name)s. All metrics are here."
+
+msgid "dərs"
+msgstr "lesson"
+
+msgid "Hələ məlumat yoxdur"
+msgstr "No data yet"

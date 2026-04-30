@@ -561,16 +561,71 @@ http://127.0.0.1:8000/rosetta/
 
 ---
 
+### 🔴 Aşkar Edilmiş Problem — 27.04.2026
+
+**Test nəticəsi:** EN dili seçiləndə sol sidebar və navbar düzgün tərcümə olunur, lakin **əsas content sahəsi hələ Azərbaycancadır**.
+
+#### Dashboard səhifəsində (`templates/analytics/dashboard.html`) hələ hardcoded qalan mətnlər:
+
+| Mətn | Bölmə | Status |
+|---|---|---|
+| `İdarəcilik Paneli` | `<h1>` səhifə başlığı | ✅ Template-də var |
+| `Xoş gəldiniz, {{ user }}. Bütün göstəricilər burada.` | Alt başlıq | ✅ Template-də var |
+| `AKTIV TƏLƏBƏLƏR` | KPI kart başlığı | ✅ Template-də var |
+| `KEÇİRİLƏN DƏRSLƏR` | KPI kart başlığı | ✅ Template-də var |
+| `AYLIQ GƏLİR` | KPI kart başlığı | ✅ Template-də var |
+| `GÖZLƏYƏN MÜRACİƏTLƏR` | KPI kart başlığı | ✅ Template-də var |
+| `Aylıq Statistika` | Qrafik bölməsi başlığı | ✅ Template-də var |
+| `Gəlir` | Chart.js legend label | ✅ Həll olundu |
+| `Ümumi Baxış` | Sağ panel başlığı | ✅ Template-də var |
+| `BU AY DƏRSLƏR` | Stat label | ✅ Template-də var |
+| `GECİKMİŞ ÖDƏNİŞ` | Stat label | ✅ Template-də var |
+
+#### Səbəb — niyə sidebar keçir, content keçmir?
+
+Sidebar `{% trans "..." %}` ilə işarələnib, `.po` faylında tərcüməsi var.  
+Dashboard template-dəki mətnlər isə `{% trans %}` olmadan birbaşa yazılıb — Django onları tərcümə etmir.
+
+#### Xüsusi diqqət — Chart.js label-ları:
+
+JavaScript içindəki stringlər `{% trans %}` ilə işləmir. Bunun üçün:
+```html
+<!-- Template-də JS-ə trans ötürmək -->
+<script>
+  const labelRevenue = "{% trans 'Gəlir' %}";
+  const labelLessons = "{% trans 'Dərslər' %}";
+</script>
+```
+Bu üsulla Django ilk render zamanı stringi çevirir, JS isə hazır dəyəri alır.
+
+---
+
 ### Gələcək Plan (i18n Roadmap)
 
-- [ ] **Bütün app template-ləri** (`bookings/`, `courses/`, `payments/`, `support/`, `assessments/`, `notifications/`) — hər mətn `{% trans "..." %}` ilə işarələnməlidir
+#### Prioritet 1 — Dashboard (dərhal edilməlidir)
+- [x] `templates/analytics/dashboard.html` — yuxarıdakı cədvəldəki bütün hardcoded mətnlər `{% trans "..." %}` ilə əvəzlənməlidir
+- [x] Chart.js label-ları üçün `<script>` daxilində `{% trans %}` dəyişən üsulu tətbiq edilməlidir
+- [x] `.po` fayllarına yeni stringlər əlavə edilib `compilemessages` işlədilməlidir
+
+#### Prioritet 2 — Digər səhifələr
+- [ ] `templates/bookings/booking_list.html` — başlıq, cədvəl header, düymə, boş vəziyyət mətnləri
+- [ ] `templates/payments/payment_list.html` — başlıq, cədvəl header, status badge mətnləri
+- [ ] `templates/courses/` — bütün template-lər
+- [ ] `templates/support/` — ticket səhifələri
+- [ ] `templates/assessments/` — qiymətləndirmə səhifələri
+- [ ] `templates/notifications/` — bildiriş səhifəsi
+- [ ] `templates/users/` — profil, tələbə siyahısı səhifələri
+
+#### Prioritet 3 — Python kodu
 - [ ] **Form label + placeholder + help_text** (`forms.py`) — `gettext_lazy()` ilə əvəzlənməlidir
 - [ ] **View-lardakı messages** (`messages.success(...)`) — `_("...")` ilə əvəzlənməlidir
-- [ ] **Model `TextChoices`** — `get_FOO_display()` artıq avtomatik tərcümə edir, `.po`-ya əlavə edilməlidir
+- [ ] **Model `TextChoices`** — `.po` faylına əlavə edilməlidir ki, `get_FOO_display()` düzgün işləsin
+
+#### Prioritet 4 — Tam tamamlama
 - [ ] **Django Admin paneli** — AZ dilinə tam çevrilməsi
-- [ ] **Email şablonları** — 3 dildə ayrıca HTML şablonlar hazırlanmalıdır
-- [ ] **Tələbənin profil dil seçimi** — `User.language_preference` field-i + `LocaleMiddleware` inteqrasiyası
-- [ ] **`makemessages` skripti** — yeni mətn əlavə ediləndə: `python manage.py makemessages -a` + `compilemessages`
+- [ ] **Email şablonları** — 3 dildə ayrıca HTML şablonlar
+- [ ] **Tələbənin profil dil seçimi** — `User.language_preference` field-i + `LocaleMiddleware`
+- [ ] **`makemessages` skripti** — hər yeni mətn əlavəsindən sonra: `python manage.py makemessages -a` → `.po` faylını doldur → `compilemessages`
 
 ---
 
