@@ -607,14 +607,15 @@ Bu üsulla Django ilk render zamanı stringi çevirir, JS isə hazır dəyəri a
 - [x] Chart.js label-ları üçün `<script>` daxilində `{% trans %}` dəyişən üsulu tətbiq edilməlidir
 - [x] `.po` fayllarına yeni stringlər əlavə edilib `compilemessages` işlədilməlidir
 
-#### Prioritet 2 — Digər səhifələr
-- [ ] `templates/bookings/booking_list.html` — başlıq, cədvəl header, düymə, boş vəziyyət mətnləri
-- [ ] `templates/payments/payment_list.html` — başlıq, cədvəl header, status badge mətnləri
-- [ ] `templates/courses/` — bütün template-lər
-- [ ] `templates/support/` — ticket səhifələri
-- [ ] `templates/assessments/` — qiymətləndirmə səhifələri
-- [ ] `templates/notifications/` — bildiriş səhifəsi
-- [ ] `templates/users/` — profil, tələbə siyahısı səhifələri
+#### Prioritet 2 — Digər səhifələr (Hardcoded Mətnlər — `{% trans %}` tələb edir)
+- [ ] **Tələbə İdarəetməsi (`templates/users/student_list.html`)** — "Tələbələr", "Bütün tələbələrinizi idarə edin", dashboard kartları ("Ümumi", "Aktiv", "Gözləyən", "Dondurulmuş"), cədvəl filtrləri ("Hamısı", "Aktiv", "Gözləyən", "Dondurulmuş"), cədvəl başlıqları ("TƏLƏBƏ", "EMAIL", "STATUS", "HƏFTƏLİK DƏRS", "QEYDİYYAT")
+- [ ] **Qeydiyyat Müraciətləri (`templates/users/registration_requests.html`)** — "Qeydiyyat müraciətləri", "Bütün müraciətləri idarə edin", filtrlər ("Hamısı", "Gözləyən", "Təsdiqlənən", "Rədd edilən"), cədvəl başlıqları ("NAMİZƏD", "DƏRS PAKETİ", "HƏFTƏLİK DƏRS", "BAŞLAMA TARİXİ", "STATUS")
+- [ ] **Cədvəl İdarəetməsi (`templates/bookings/crm/schedule_manage.html`)** — "Cədvəl İdarəetməsi", "Həftəlik boş vaxtlarınızı təyin edin", "Yeni Vaxt Aralığı", "Necə işləyir?", "Həftəlik Cədvəl", "Slot yarat" və "Yaradılmış Slotlar"
+- [ ] **Kurslar (`templates/courses/course_list.html`)** — "Kurslar", "Mövcud kurs proqramları", "+ Yeni kurs", səviyyə göstəriciləri ("İrəliləmiş", "Orta", "Başlanğıc")
+- [ ] **Qiymətləndirmələr (`templates/assessments/assessment_list.html`)** — "Qiymətləndirmələr", "Bütün qiymətləndirmə tapşırıqları", "+ Yeni Qiymətləndirmə", boş cədvəl bildirişi ("Qiymətləndirmə yoxdur", "Hələ heç bir qiymətləndirmə yoxdur.", "+ İlk Qiymətləndirməni Yarat")
+- [ ] **Ödənişlər (`templates/payments/payment_list.html`)** — başlıq, cədvəl header, status badge mətnləri
+- [ ] **Dəstək (`templates/support/`)** — ticket səhifələri
+- [ ] **Bildirişlər (`templates/notifications/`)** — bildiriş səhifəsi
 
 #### Prioritet 3 — Python kodu
 - [ ] **Form label + placeholder + help_text** (`forms.py`) — `gettext_lazy()` ilə əvəzlənməlidir
