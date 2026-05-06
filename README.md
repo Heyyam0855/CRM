@@ -1,324 +1,322 @@
-# 🎓 LMS Platform — Fərdi Online Tədris İdarəetmə Sistemi
+# 🎓 LMS Platform — Personal 1-on-1 Online Teaching Management System
 
-**AI Model**: Claude Sonnet 4.6 | **Framework**: Django 5.0+ | **Dil**: Azərbaycan  
-**Repository**: https://github.com/Heyyam0855/CRM.git
+**AI Model**: Claude Sonnet 4.6 | **Framework**: Django 5.0+ | **Repository**: https://github.com/Heyyam0855/CRM.git
 
 ---
 
-## 📌 Layihə Haqqında
+## 📌 About the Project
 
-Bu **LMS (Learning Management System)** platformu tək müəllimin çoxlu tələbəni **fərdi online format** (1-1) ilə idarə etməsi üçün hazırlanıb.
+This **LMS (Learning Management System)** platform is designed for a single teacher to manage multiple students in a **1-on-1 online format**.
 
 ```
-Platform:     1-1 fərdi online tədris (müəllim → tələbə)
-Dərs qiyməti: 25 AZN (SABİT)
-Ödəniş:       Aylıq abunə VEYA dərs əsaslı (pay-as-you-go)
-Video:        Google Meet (dərslər) + YouTube (materiallar)
-Repo:         Hər tələbə üçün GitHub private repo (avtomatik)
-Xatırlatma:   24 saat + 1 saat əvvəl Celery task-ları
+Platform:     1-on-1 personalized online teaching (teacher → student)
+Lesson price: 25 AZN (FIXED)
+Payment:      Monthly subscription OR pay-as-you-go (per lesson)
+Video:        Google Meet (live lessons) + YouTube (course materials)
+Repo:         Automatic private GitHub repository per student
+Reminders:    Celery tasks — 24 hours and 1 hour before each lesson
 ```
 
 ---
 
-## 🏗️ Texniki Stack
+## 🏗️ Tech Stack
 
-| Komponent       | Texnologiya                                      |
-|-----------------|--------------------------------------------------|
-| Backend         | Django 5.0.6 (Python 3.11+)                      |
-| Database        | PostgreSQL 15+                                   |
-| Cache / Queue   | Redis 7+ · Celery 5.4.0 · Celery Beat            |
-| Real-time       | Django Channels 4.1 + WebSocket (Daphne)         |
-| Frontend        | Bootstrap 5.3 · HTMX · Alpine.js                |
-| Auth            | django-allauth · JWT · django-otp (2FA)          |
-| Storage         | DigitalOcean Spaces (S3-compatible, boto3)       |
-| Payment         | ePoint payment gateway                           |
-| External API    | GitHub (PyGithub) · Google Meet · YouTube        |
-| REST API        | Django REST Framework + drf-spectacular          |
-| Deployment      | DigitalOcean App Platform / Railway              |
-
----
-
-## ✅ Görülən İşlər (Tamamlanan)
-
-### 👤 1. İstifadəçi İdarəetməsi (`apps/users/`)
-**Status: ✅ 100% Tamamlandı**
-
-- [x] `User` modeli — email əsaslı autentifikasiya, müəllim/tələbə rolları
-- [x] `StudentProfile` modeli — PENDING / ACTIVE / INACTIVE / FROZEN / GRADUATED statusları
-- [x] `RegistrationRequest` — tələbə qeydiyyat sorğularının idarəsi
-- [x] CRM interfeysi — müəllim bütün tələbələri görmə, axtarış, filtr
-- [x] Tələbə status dəyişmə view-ı (ACTIVE/INACTIVE/FROZEN)
-- [x] Tələbə qeydlər sistemi (müəllim tərəfindən)
-- [x] Tələbə özü qeydiyyat formu (`/auth/register/`)
-- [x] Qeydiyyat sonrası ödəniş axını
-- [x] İki ödəniş modeli: `MONTHLY` (aylıq abunə) / `PER_LESSON` (dərs əsaslı)
+| Component      | Technology                                        |
+|----------------|---------------------------------------------------|
+| Backend        | Django 5.0.6 (Python 3.11+)                       |
+| Database       | PostgreSQL 15+                                    |
+| Cache / Queue  | Redis 7+ · Celery 5.4.0 · Celery Beat             |
+| Real-time      | Django Channels 4.1 + WebSocket (Daphne)          |
+| Frontend       | Bootstrap 5.3 · HTMX · Alpine.js                 |
+| Auth           | django-allauth · JWT · django-otp (2FA)           |
+| Storage        | DigitalOcean Spaces (S3-compatible, boto3)        |
+| Payment        | ePoint payment gateway                            |
+| External APIs  | GitHub (PyGithub) · Google Meet · YouTube         |
+| REST API       | Django REST Framework + drf-spectacular           |
+| Deployment     | DigitalOcean App Platform / Railway               |
 
 ---
 
-### 📚 2. Kurs İdarəetməsi (`apps/courses/`)
-**Status: ✅ 90% Tamamlandı**
+## ✅ Completed Features
 
-- [x] `Category` modeli — hierarchical kurs kateqoriyaları
-- [x] `Course` modeli — DRAFT / ACTIVE / ARCHIVED statusları, səviyyə seçimi
-- [x] `Enrollment` modeli — tələbə kurs qeydiyyatı (unique constraint)
-- [x] `Module` modeli — kurs modulları/fəsilləri, sıralama
-- [x] Kurs siyahısı view-ı (HTMX dəstəkli, pagination: 12)
-- [x] Kurs detalı view-ı — modul/dərs siyahısı, enrollment statusu
-- [x] Kurs yaratma/redaktə view-ları (müəllim üçün)
+### 👤 1. User Management (`apps/users/`)
+**Status: ✅ 100% Complete**
 
----
-
-### 📅 3. Dərs Rezervasiya Sistemi (`apps/bookings/`)
-**Status: ✅ 95% Tamamlandı**
-
-- [x] `WeeklySchedule` — müəllimin həftəlik proqramı (gün, başlanğıc/bitmə saatı)
-- [x] `AvailabilitySlot` — fərdi dərs vaxt slotları, gələcək tarix validator
-- [x] `Booking` — dərs rezervasiyası: PENDING / CONFIRMED / COMPLETED / CANCELLED / NO_SHOW / RESCHEDULED
-- [x] Dərs növləri: STANDARD / TRIAL / CONSULTATION / REVIEW
-- [x] Sabit qiymət: 25 AZN (biznes sabiti)
-- [x] 24 saat ləğvetmə qaydası (`can_cancel` property)
-- [x] `BookingService` — atomic booking yaratma (slot lock ilə)
-- [x] `ScheduleService` — həftəlik proqrama əsasən avtomatik slot generasiyası
-- [x] Calendly tipli calendar interfeysi
-- [x] HTMX ilə mövcud slotların dinamik yüklənməsi
-- [x] Google Meet linki — async Celery task ilə avtomatik yaradılır
-- [x] Xatırlatma task-ları: dərsdən 24 saat + 1 saat əvvəl
+- [x] `User` model — email-based authentication, teacher/student roles
+- [x] `StudentProfile` model — PENDING / ACTIVE / INACTIVE / FROZEN / GRADUATED statuses
+- [x] `RegistrationRequest` — student registration request management
+- [x] CRM interface — teacher can view, search and filter all students
+- [x] Student status change view (ACTIVE / INACTIVE / FROZEN)
+- [x] Student notes system (added by teacher)
+- [x] Student self-registration form (`/auth/register/`)
+- [x] Post-registration payment flow
+- [x] Two payment models: `MONTHLY` (subscription) / `PER_LESSON` (pay-as-you-go)
 
 ---
 
-### 💳 4. Ödəniş Sistemi (`apps/payments/`)
-**Status: ✅ 95% Tamamlandı**
+### 📚 2. Course Management (`apps/courses/`)
+**Status: ✅ 90% Complete**
 
-- [x] `Payment` modeli — universal: PENDING / COMPLETED / FAILED / REFUNDED / OVERDUE / CANCELLED
-- [x] Ödəniş metodları: EPOINT / BANK_TRANSFER / CASH / ONLINE
-- [x] `MonthlySubscription` modeli — aylıq abunə: ACTIVE / PAUSED / CANCELLED
-- [x] **ePoint payment gateway** tam inteqrasiyası
-  - [x] Ödənişin başladılması (`EPointInitiateView`)
-  - [x] Uğurlu ödəniş callback (`EPointSuccessView`)
-  - [x] Xəta callback (`EPointErrorView`)
-  - [x] Server-to-server webhook (`EPointCallbackView`) — imza yoxlaması ilə
-- [x] Faktura sistemi — avtomatik nömrələnmə
-- [x] `PaymentService.create_lesson_payment()` — dərs başına 25 AZN, 24 saat limit
-- [x] `PaymentService.create_monthly_payment()` — `həftəlik_dərs × 4 × 25 AZN`
-- [x] Gecikmiş ödəniş izləmə (OVERDUE status)
+- [x] `Category` model — hierarchical course categories
+- [x] `Course` model — DRAFT / ACTIVE / ARCHIVED statuses, difficulty level
+- [x] `Enrollment` model — student course enrollment (unique constraint)
+- [x] `Module` model — course modules/chapters with ordering
+- [x] Course list view (HTMX-powered, pagination: 12)
+- [x] Course detail view — module/lesson list, enrollment status
+- [x] Course create/edit views (teacher only)
 
 ---
 
-### 🔔 5. Bildiriş Sistemi (`apps/notifications/`)
-**Status: ⚠️ 70% Tamamlandı**
+### 📅 3. Lesson Booking System (`apps/bookings/`)
+**Status: ✅ 95% Complete**
 
-- [x] `Notification` modeli — tip: BOOKING_CONFIRMED / LESSON_REMINDER / PAYMENT_DUE / REPO_CREATED / GENERAL
-- [x] JSON `data` field — əlavə kontekst üçün
-- [x] Bildiriş siyahısı view-ı (pagination: 30)
-- [x] "Hamısını oxunmuş işarələ" (HTMX dəstəkli)
-- [x] Django Channels + WebSocket routing konfiqurasiyası
-- [x] Celery task-ları: dərs xatırlatmaları, booking təsdiq emailləri
-- [ ] SMS bildirişləri (Twilio) — TODO
-- [ ] Email HTML şablonları — natamam
-
----
-
-### 🐙 6. GitHub İnteqrasiyası (`apps/github_integration/`)
-**Status: ✅ 95% Tamamlandı**
-
-- [x] `StudentRepository` modeli — PENDING / CREATING / CREATED / FAILED / ARCHIVED
-- [x] `GitHubService.create_student_repository()` — private repo yaratma
-- [x] Tələbəni collaborator kimi əlavə etmə (push icazəsi)
-- [x] Repo adı formatı: `{ad-soyad}-{kurs-slug}`
-- [x] Xəta handling + status izləmə
-- [x] Organization və şəxsi repo dəstəyi
+- [x] `WeeklySchedule` — teacher's weekly schedule (day, start/end time)
+- [x] `AvailabilitySlot` — individual lesson time slots with future date validation
+- [x] `Booking` — lesson reservations: PENDING / CONFIRMED / COMPLETED / CANCELLED / NO_SHOW / RESCHEDULED
+- [x] Lesson types: STANDARD / TRIAL / CONSULTATION / REVIEW
+- [x] Fixed price: 25 AZN (business constant)
+- [x] 24-hour cancellation policy (`can_cancel` property)
+- [x] `BookingService` — atomic booking creation (with slot locking)
+- [x] `ScheduleService` — automatic slot generation based on weekly schedule
+- [x] Calendly-style calendar interface
+- [x] HTMX-powered dynamic slot loading
+- [x] Google Meet link — auto-created via async Celery task
+- [x] Reminder tasks: 24 hours and 1 hour before the lesson
 
 ---
 
-### 📝 7. Qiymətləndirmə Sistemi (`apps/assessments/`)
-**Status: ✅ 85% Tamamlandı**
+### 💳 4. Payment System (`apps/payments/`)
+**Status: ✅ 95% Complete**
 
-- [x] `Assessment` modeli — QUIZ / HOMEWORK / PROJECT / EXAM növləri
-- [x] Xal izləmə: `score / max_score`, `percentage` property
-- [x] GitHub/fayl submission URL
-- [x] Müəllim feedback sahəsi
-- [x] Qiymətləndirmə siyahısı (tələbə yalnız özünküləri görür)
-- [x] Müəllim qiymət verir (`AssessmentGradeView`)
-- [x] Son tarix (`due_date`) + təqdim tarixi (`submitted_at`)
-
----
-
-### 🎫 8. Dəstək Ticket Sistemi (`apps/support/`)
-**Status: ✅ 90% Tamamlandı**
-
-- [x] `Ticket` modeli — OPEN / IN_PROGRESS / RESOLVED / CLOSED
-- [x] Prioritet: LOW / MEDIUM / HIGH / URGENT
-- [x] `TicketMessage` — çoxsaylı mesaj əsaslı söhbət sistemi
-- [x] Müəllim/tələbə mesaj fərqləndirməsi (`is_from_teacher`)
-- [x] Ticket siyahısı, yaratma, detalı view-ları
-- [x] Həll tarixi (`resolved_at`) izləmə
+- [x] `Payment` model — universal statuses: PENDING / COMPLETED / FAILED / REFUNDED / OVERDUE / CANCELLED
+- [x] Payment methods: EPOINT / BANK_TRANSFER / CASH / ONLINE
+- [x] `MonthlySubscription` model — ACTIVE / PAUSED / CANCELLED
+- [x] **ePoint payment gateway** full integration
+  - [x] Payment initiation (`EPointInitiateView`)
+  - [x] Success callback (`EPointSuccessView`)
+  - [x] Error callback (`EPointErrorView`)
+  - [x] Server-to-server webhook (`EPointCallbackView`) — with signature verification
+- [x] Invoice system — automatic numbering
+- [x] `PaymentService.create_lesson_payment()` — 25 AZN per lesson, 24-hour limit
+- [x] `PaymentService.create_monthly_payment()` — `lessons_per_week × 4 × 25 AZN`
+- [x] Overdue payment tracking (OVERDUE status)
 
 ---
 
-### 📊 9. Analitika Dashboard (`apps/analytics/`)
-**Status: ✅ 85% Tamamlandı**
+### 🔔 5. Notification System (`apps/notifications/`)
+**Status: ⚠️ 70% Complete**
 
-- [x] `DashboardView` — müəllim üçün əsas idarəetmə paneli
-- [x] KPI kartları: aktiv tələbə sayı, gözləyən qeydiyyatlar, aylıq bookingslər
-- [x] Gəlir hesablaması — cari ay COMPLETED ödənişlər
-- [x] Gecikmiş ödəniş sayacı
-- [x] Növbəti 5 dərs (upcoming lessons)
-- [x] 6 aylıq aylıq gəlir trendi (Chart.js JSON data)
-- [x] 6 aylıq aylıq booking trendi
-- [x] Azərbaycan ay adları (Yan, Fev, Mar, Apr, May, İyn...)
+- [x] `Notification` model — types: BOOKING_CONFIRMED / LESSON_REMINDER / PAYMENT_DUE / REPO_CREATED / GENERAL
+- [x] JSON `data` field for additional context
+- [x] Notification list view (pagination: 30)
+- [x] "Mark all as read" (HTMX-powered)
+- [x] Django Channels + WebSocket routing configuration
+- [x] Celery tasks: lesson reminders, booking confirmation emails
+- [ ] SMS notifications (Twilio) — TODO
+- [ ] HTML email templates — incomplete
+
+---
+
+### 🐙 6. GitHub Integration (`apps/github_integration/`)
+**Status: ✅ 95% Complete**
+
+- [x] `StudentRepository` model — PENDING / CREATING / CREATED / FAILED / ARCHIVED
+- [x] `GitHubService.create_student_repository()` — private repo creation
+- [x] Add student as collaborator (push access)
+- [x] Repo naming format: `{first-last}-{course-slug}`
+- [x] Error handling + status tracking
+- [x] Organization and personal repo support
+
+---
+
+### 📝 7. Assessment System (`apps/assessments/`)
+**Status: ✅ 85% Complete**
+
+- [x] `Assessment` model — types: QUIZ / HOMEWORK / PROJECT / EXAM
+- [x] Score tracking: `score / max_score`, `percentage` property
+- [x] GitHub/file submission URL
+- [x] Teacher feedback field
+- [x] Assessment list (students see only their own)
+- [x] Teacher grades submissions (`AssessmentGradeView`)
+- [x] Due date (`due_date`) + submission date (`submitted_at`)
+
+---
+
+### 🎫 8. Support Ticket System (`apps/support/`)
+**Status: ✅ 90% Complete**
+
+- [x] `Ticket` model — OPEN / IN_PROGRESS / RESOLVED / CLOSED
+- [x] Priority levels: LOW / MEDIUM / HIGH / URGENT
+- [x] `TicketMessage` — multi-message conversation thread
+- [x] Teacher/student message distinction (`is_from_teacher`)
+- [x] Ticket list, create, and detail views
+- [x] Resolution date (`resolved_at`) tracking
+
+---
+
+### 📊 9. Analytics Dashboard (`apps/analytics/`)
+**Status: ✅ 85% Complete**
+
+- [x] `DashboardView` — main teacher control panel
+- [x] KPI cards: active students, pending registrations, monthly bookings
+- [x] Revenue calculation — completed payments for current month
+- [x] Overdue payment counter
+- [x] Next 5 upcoming lessons
+- [x] 6-month monthly revenue trend (Chart.js JSON data)
+- [x] 6-month monthly booking trend
 - [ ] Excel/PDF export — TODO
 
 ---
 
-### 🔐 10. Autentifikasiya və Təhlükəsizlik
-**Status: ✅ 90% Tamamlandı**
+### 🔐 10. Authentication & Security
+**Status: ✅ 90% Complete**
 
-- [x] django-allauth — tam auth sistemi (login, logout, password reset)
-- [x] Google OAuth2 sosial giriş
+- [x] django-allauth — full auth system (login, logout, password reset)
+- [x] Google OAuth2 social login
 - [x] 2FA (Two-Factor Authentication) — django-otp
-- [x] JWT token-lar — djangorestframework-simplejwt
-- [x] `LoginRequiredMixin` — bütün protected view-larda
-- [x] `TeacherRequiredMixin` — müəllim əməliyyatları üçün
-- [x] `StudentOwnerMixin` — tələbə öz resurslarına
-- [x] CSRF qorunması
-- [x] CORS konfiqurasiyası
+- [x] JWT tokens — djangorestframework-simplejwt
+- [x] `LoginRequiredMixin` on all protected views
+- [x] `TeacherRequiredMixin` for teacher-only operations
+- [x] `StudentOwnerMixin` — students access only their own resources
+- [x] CSRF protection
+- [x] CORS configuration
 
 ---
 
 ### 🌐 11. REST API (`/api/v1/`)
-**Status: ⚠️ 60% Tamamlandı**
+**Status: ⚠️ 60% Complete**
 
-- [x] Django REST Framework konfiqurasiyası
-- [x] drf-spectacular — API sxema yaradılması
-- [x] JWT autentifikasiyası API-da
-- [x] Bookings API endpoint-ləri
-- [x] Users API endpoint-ləri (qismən)
-- [x] Courses API endpoint-ləri (qismən)
-- [x] Payments API endpoint-ləri (qismən)
-- [ ] Tam Swagger/OpenAPI sənədləşməsi — TODO
+- [x] Django REST Framework configuration
+- [x] drf-spectacular — API schema generation
+- [x] JWT authentication on API endpoints
+- [x] Bookings API endpoints
+- [x] Users API endpoints (partial)
+- [x] Courses API endpoints (partial)
+- [x] Payments API endpoints (partial)
+- [ ] Full Swagger/OpenAPI documentation — TODO
 
 ---
 
-### ⚙️ 12. İnfrastruktur və Konfiqurasiya
-**Status: ✅ 90% Tamamlandı**
+### ⚙️ 12. Infrastructure & Configuration
+**Status: ✅ 90% Complete**
 
-- [x] `config/settings/base.py` — əsas konfiqurasiya
-- [x] `config/settings/development.py` — lokal inkişaf mühiti
-- [x] `config/settings/production.py` — production konfigurasiyası
+- [x] `config/settings/base.py` — base configuration
+- [x] `config/settings/development.py` — local development environment
+- [x] `config/settings/production.py` — production configuration
 - [x] Docker + Docker Compose (development + production)
 - [x] `Dockerfile` + `entrypoint.sh`
 - [x] `docker-compose.prod.yml` — production stack
-- [x] WhiteNoise — static fayl xidməti
-- [x] DigitalOcean Spaces (S3) — media fayl saxlama
+- [x] WhiteNoise — static file serving
+- [x] DigitalOcean Spaces (S3) — media file storage
 - [x] Health check endpoint (`/health/`)
-- [x] Django Debug Toolbar (development)
-- [x] Rosetta — tərcümə interfeysi
-- [x] i18n — çoxdilli dəstək (az/en/ru)
-- [x] Celery Beat — planlaşdırılmış tapşırıqlar
+- [x] Django Debug Toolbar (development only)
+- [x] Rosetta — translation interface
+- [x] i18n — multilingual support (az/en/ru)
+- [x] Celery Beat — scheduled tasks
 - [x] Django Channels (Daphne ASGI server)
-- [x] pytest + pytest-django konfiqurasiyası
+- [x] pytest + pytest-django configuration
 
 ---
 
-## 📁 Layihə Strukturu
+## 📁 Project Structure
 
 ```
 lms_platform/
 ├── apps/
-│   ├── users/              ✅ CRM + tələbə idarəetməsi
-│   ├── courses/            ✅ Kurs + modul idarəsi
-│   ├── bookings/           ✅ Calendly tipli rezervasiya
-│   ├── payments/           ✅ ePoint ödəniş gateway
-│   ├── github_integration/ ✅ Avtomatik GitHub repo
+│   ├── users/              ✅ CRM + student management
+│   ├── courses/            ✅ Course + module management
+│   ├── bookings/           ✅ Calendly-style reservations
+│   ├── payments/           ✅ ePoint payment gateway
+│   ├── github_integration/ ✅ Automatic GitHub repo
 │   ├── youtube/            📋 YouTube API
 │   ├── video_conferencing/ 📋 Google Meet API
-│   ├── notifications/      ⚠️ Bildiriş sistemi (qismən)
-│   ├── support/            ✅ Ticket sistemi
-│   ├── analytics/          ✅ Dashboard analitika
-│   └── assessments/        ✅ Qiymətləndirmə
-├── config/                 ✅ Django ayarları
+│   ├── notifications/      ⚠️ Notification system (partial)
+│   ├── support/            ✅ Support ticket system
+│   ├── analytics/          ✅ Dashboard analytics
+│   └── assessments/        ✅ Assessment & grading
+├── config/                 ✅ Django settings
 ├── core/                   ✅ Utilities, mixins, permissions
-├── templates/              ✅ Bootstrap 5 + HTMX şablonlar
-├── static/                 ✅ CSS/JS resursları
-├── locale/                 ✅ az/en/ru tərcümələr
-└── tests/                  ✅ pytest-django testlər
+├── templates/              ✅ Bootstrap 5 + HTMX templates
+├── static/                 ✅ CSS/JS assets
+├── locale/                 ✅ az/en/ru translations
+└── tests/                  ✅ pytest-django tests
 ```
 
 ---
 
-## 📊 Ümumi Tamamlanma Statusu
+## 📊 Overall Progress
 
-| Modul                    | Status | Faiz |
-|--------------------------|--------|------|
-| İstifadəçi İdarəetməsi   | ✅     | 100% |
-| Kurs İdarəetməsi         | ✅     | 90%  |
-| Dərs Rezervasiyası       | ✅     | 95%  |
-| Ödəniş Sistemi (ePoint)  | ✅     | 95%  |
-| Bildiriş Sistemi         | ⚠️     | 70%  |
-| GitHub İnteqrasiyası     | ✅     | 95%  |
-| Qiymətləndirmə           | ✅     | 85%  |
-| Dəstək Ticket Sistemi    | ✅     | 90%  |
-| Analitika Dashboard      | ✅     | 85%  |
-| Autentifikasiya / Auth   | ✅     | 90%  |
-| REST API                 | ⚠️     | 60%  |
-| İnfrastruktur / DevOps   | ✅     | 90%  |
-
----
-
-## 🔜 Görüləcək İşlər (TODO)
-
-- [ ] Email HTML şablonlarının tamamlanması (SendGrid/Mailgun)
-- [ ] SMS bildirişləri (Twilio inteqrasiyası)
-- [ ] WebSocket consumer-larının tam implementasiyası
-- [ ] Analytics Excel/PDF export funksiyası
-- [ ] REST API tam Swagger sənədləşməsi
-- [ ] YouTube API inteqrasiyasının tamamlanması
-- [ ] Google Calendar sinxronizasiyası
-- [ ] Stripe ödəniş gateway alternativ inteqrasiyası
-- [ ] Test coverage-nin artırılması (hədəf: >80%)
-- [ ] Course lesson (dərs materialları) detallarının əlavə edilməsi
+| Module                   | Status | Progress |
+|--------------------------|--------|----------|
+| User Management          | ✅     | 100%     |
+| Course Management        | ✅     | 90%      |
+| Lesson Booking           | ✅     | 95%      |
+| Payment System (ePoint)  | ✅     | 95%      |
+| Notification System      | ⚠️     | 70%      |
+| GitHub Integration       | ✅     | 95%      |
+| Assessment System        | ✅     | 85%      |
+| Support Ticket System    | ✅     | 90%      |
+| Analytics Dashboard      | ✅     | 85%      |
+| Authentication / Auth    | ✅     | 90%      |
+| REST API                 | ⚠️     | 60%      |
+| Infrastructure / DevOps  | ✅     | 90%      |
 
 ---
 
-## 🚀 Lokal İşə Salma
+## 🔜 TODO
+
+- [ ] Complete HTML email templates (SendGrid/Mailgun)
+- [ ] SMS notifications (Twilio integration)
+- [ ] Full WebSocket consumer implementation
+- [ ] Analytics Excel/PDF export
+- [ ] Full Swagger/OpenAPI documentation
+- [ ] YouTube API integration
+- [ ] Google Calendar synchronization
+- [ ] Stripe payment gateway as alternative
+- [ ] Increase test coverage (target: >80%)
+- [ ] Course lesson material detail pages
+
+---
+
+## 🚀 Local Setup
 
 ```bash
-# 1. Virtual mühiti aktivləşdir
+# 1. Activate virtual environment
 .venv-1\Scripts\activate
 
-# 2. Paketləri quraşdır
+# 2. Install dependencies
 pip install -r requirements/development.txt
 
-# 3. Miqrasiyaları tətbiq et
+# 3. Apply migrations
 python manage.py migrate --settings=config.settings.local
 
-# 4. Superuser yarat
+# 4. Create superuser
 python manage.py runscript create_superuser --settings=config.settings.local
 
-# 5. Serveri işə sal
+# 5. Run the server
 python manage.py runserver --settings=config.settings.local
 ```
 
 ```bash
-# Docker ilə işə sal
+# Run with Docker
 docker-compose up --build
 ```
 
 ---
 
-## 💰 Biznes Qaydaları
+## 💰 Business Rules
 
 ```python
-LESSON_PRICE         = Decimal('25.00')   # SABİT — DƏYIŞDIRILMƏZ!
-CANCELLATION_HOURS   = 24                 # Ləğvetmə minimum saatı
-MAX_LESSONS_PER_WEEK = 7                  # Həftəlik maksimum dərs
+LESSON_PRICE         = Decimal('25.00')   # FIXED — DO NOT CHANGE!
+CANCELLATION_HOURS   = 24                 # Minimum hours before cancellation
+MAX_LESSONS_PER_WEEK = 7                  # Maximum lessons per week
 
-# Aylıq abunə hesablaması
-# Misal: 2 dərs/həftə → 2 × 4 × 25 = 200 AZN/ay
+# Monthly subscription calculation
+# Example: 2 lessons/week → 2 × 4 × 25 = 200 AZN/month
 monthly_price = lessons_per_week * 4 * 25
 ```
 
 ---
 
 *LMS Platform — Django 5.0+ | PostgreSQL | Redis | Celery | HTMX | Alpine.js*  
-*AI Model: Claude Sonnet 4.6 | Son yeniləmə: 03.05.2026*
+*AI Model: Claude Sonnet 4.6 | Last updated: 06.05.2026*
