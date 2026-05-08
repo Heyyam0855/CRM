@@ -86,24 +86,6 @@
 </div>
 
 {# ── WebSocket for real-time notifications ── #}
-<script>
-    const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const notificationSocket = new WebSocket(
-        `${wsProtocol}://${window.location.host}/ws/notifications/`
-    );
-    notificationSocket.onmessage = function(e) {
-        const data = JSON.parse(e.data);
-        if (data.type === 'unread_count') {
-            const badge = document.getElementById('notification-badge');
-            if (badge) {
-                badge.textContent = data.count > 0 ? data.count : '';
-                badge.style.display = data.count > 0 ? 'flex' : 'none';
-            }
-        } else if (data.type === 'notification') {
-            window.dispatchEvent(new CustomEvent('notify', { detail: { message: data.message } }));
-        }
-    };
-</script>
 
 {% else %}
 {# ── Unauthenticated layout ── #}
@@ -122,6 +104,9 @@
 <script src="https://unpkg.com/htmx.org@1.9.12"></script>
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+{% if request.user.is_authenticated %}
+<script src="{% static 'js/notifications.js' %}"></script>
+{% endif %}
 {% block extra_js %}{% endblock %}
 </body>
 </html>

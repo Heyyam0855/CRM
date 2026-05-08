@@ -1,6 +1,5 @@
 ﻿{% extends 'base.html' %}
-
-{% load i18n %}
+{% load static i18n %}
 {% block title %}{% trans "İdarəçilik Paneli" %} — LMS{% endblock %}
 
 {% block breadcrumb %}
@@ -88,7 +87,10 @@
             </div>
         </div>
         <div class="p-4">
-            <div id="revenue-chart" style="height:260px;min-height:260px"></div>
+            <div id="revenue-chart" style="height:260px;min-height:260px"
+                 data-revenue="{{ monthly_revenue_data|default:'[0,0,0,0,0,0]' }}"
+                 data-bookings="{{ monthly_bookings_data|default:'[0,0,0,0,0,0]' }}"
+                 data-labels="{{ month_labels|default:'[\"Yan\",\"Fev\",\"Mar\",\"Apr\",\"May\",\"İyn\"]' }}"></div>
         </div>
     </div>
 
@@ -204,55 +206,6 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-function liveClock() {
-    const m = ['Yan','Fev','Mar','Apr','May','İyn','İyl','Avq','Sen','Okt','Noy','Dek'];
-    return {
-        time: '', date: '',
-        start() { this.tick(); setInterval(() => this.tick(), 1000); },
-        tick() {
-            const n = new Date();
-            this.time = n.toLocaleTimeString('az-AZ',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-            this.date = n.getDate()+' '+m[n.getMonth()]+' '+n.getFullYear();
-        }
-    };
-}
-function counter(target) {
-    return {
-        display: '0',
-        init() {
-            const t = parseInt(target)||0;
-            if(!t){this.display='0';return;}
-            const dur=500, st=performance.now();
-            const go=(ts)=>{const p=Math.min((ts-st)/dur,1);this.display=Math.round((1-Math.pow(1-p,3))*t).toLocaleString('az-AZ');if(p<1)requestAnimationFrame(go);};
-            requestAnimationFrame(go);
-        }
-    };
-}
-document.addEventListener('DOMContentLoaded', function() {
-    var el = document.querySelector("#revenue-chart");
-    if (!el) return;
-    new ApexCharts(el, {
-        chart: { type:'area', height:300, toolbar:{show:false}, fontFamily:'Inter,sans-serif', zoom:{enabled:false} },
-        series: [
-            { name:'{% trans "Gəlir" %} (AZN)', data: {{ monthly_revenue_data|default:"[0,0,0,0,0,0]" }} },
-            { name:'{% trans "Dərslər" %}', data: {{ monthly_bookings_data|default:"[0,0,0,0,0,0]" }} }
-        ],
-        colors: ['#6366f1','#10b981'],
-        stroke: { width:[2.5,2], curve:'smooth' },
-        fill: { type:'gradient', gradient:{shadeIntensity:1,opacityFrom:0.15,opacityTo:0.01,stops:[0,90,100]} },
-        xaxis: {
-            categories: {{ month_labels|default:"['Yan','Fev','Mar','Apr','May','İyn']" }},
-            labels:{style:{fontSize:'11px',colors:'#94a3b8',fontWeight:500}},
-            axisBorder:{show:false}, axisTicks:{show:false}
-        },
-        yaxis: { labels:{style:{fontSize:'11px',colors:'#94a3b8'}}, min:0, forceNiceScale:true },
-        grid: { borderColor:'#f1f5f9', strokeDashArray:4, xaxis:{lines:{show:false}}, padding:{left:8,right:8} },
-        legend:{show:false}, dataLabels:{enabled:false},
-        tooltip: { theme:'light', style:{fontSize:'12px'}, y:{formatter:function(v,o){return o.seriesIndex===0?v+' AZN':v+' {% trans "dərs" %}'}} },
-        markers: { size:0, hover:{size:5} },
-        noData: { text:'{% trans "Hələ məlumat yoxdur" %}', style:{fontSize:'14px',color:'#94a3b8'} }
-    }).render();
-});
-</script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+<script src="{% static 'js/charts.js' %}"></script>
 {% endblock %}
