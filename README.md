@@ -111,9 +111,10 @@ Reminders:    Celery tasks — 24 hours and 1 hour before each lesson
 - [x] Notification list view (pagination: 30)
 - [x] "Mark all as read" (HTMX-powered)
 - [x] Django Channels + WebSocket routing configuration
+- [x] Real-time badge counter via WebSocket (`notifications.js`)
 - [x] Celery tasks: lesson reminders, booking confirmation emails
 - [ ] SMS notifications (Twilio) — TODO
-- [ ] HTML email templates — incomplete
+- [ ] HTML email templates — TODO
 
 ---
 
@@ -150,6 +151,7 @@ Reminders:    Celery tasks — 24 hours and 1 hour before each lesson
 - [x] `TicketMessage` — multi-message conversation thread
 - [x] Teacher/student message distinction (`is_from_teacher`)
 - [x] Ticket list, create, and detail views
+- [x] Auto-scroll to latest message on page load (`support.js`)
 - [x] Resolution date (`resolved_at`) tracking
 
 ---
@@ -162,9 +164,11 @@ Reminders:    Celery tasks — 24 hours and 1 hour before each lesson
 - [x] Revenue calculation — completed payments for current month
 - [x] Overdue payment counter
 - [x] Next 5 upcoming lessons
-- [x] 6-month monthly revenue trend (ApexCharts JSON data)
-- [x] 6-month monthly booking trend
-- [ ] Excel/PDF export — TODO
+- [x] 6-month monthly revenue trend (ApexCharts)
+- [x] 6-month monthly booking trend (ApexCharts)
+- [x] Animated KPI counters (`dashboard.js`)
+- [x] Live clock widget (`dashboard.js`)
+- [ ] Excel / PDF export — TODO
 
 ---
 
@@ -246,37 +250,19 @@ lms_platform/
 
 ## 🧩 Frontend JS Module Structure
 
-Bütün inline `<script>` blokları ayrı modul fayllarına çıxarılıb (`static/js/`):
+All inline `<script>` blocks have been extracted into dedicated module files under `static/js/`:
 
-| Fayl | Məzmun |
-|------|--------|
-| `static/js/notifications.js` | WebSocket real-time bildiriş sistemi |
-| `static/js/dashboard.js` | Alpine: `liveClock()` + `counter()` animasiya |
-| `static/js/charts.js` | ApexCharts gəlir/dərs qrafiki (`#revenue-chart`) |
-| `static/js/bookings.js` | Alpine: `bookingCalendar()` — Calendly UI |
-| `static/js/auth.js` | Alpine: `pricingCalc()` — 25 AZN × həftəlik dərs |
-| `static/js/courses.js` | Alpine: `courseForm()` — şəkil drag-drop önizləmə |
-| `static/js/support.js` | Chat mesaj scroll avtomatizasiyası |
+| File | Purpose |
+|------|---------|
+| `static/js/notifications.js` | WebSocket real-time notification badge updater |
+| `static/js/dashboard.js` | Alpine.js: `liveClock()` + animated `counter()` |
+| `static/js/charts.js` | ApexCharts: 6-month revenue & bookings chart |
+| `static/js/bookings.js` | Alpine.js: `bookingCalendar()` — Calendly-style UI |
+| `static/js/auth.js` | Alpine.js: `pricingCalc()` — 25 AZN × weekly lessons |
+| `static/js/courses.js` | Alpine.js: `courseForm()` — image drag-and-drop preview |
+| `static/js/support.js` | Auto-scroll to latest chat message on page load |
 
-> Django template dəyişənləri (`calendar_data`, `csrf_token` və s.) `data-*` atributları ilə JS-ə ötürülür.
-
----
-
-## 🧩 Frontend JS Module Structure
-
-Bütün inline `<script>` blokları ayrı modul fayllarına çıxarılıb (`static/js/`):
-
-| Fayl | Məzmun |
-|------|--------|
-| `static/js/notifications.js` | WebSocket real-time bildiriş sistemi |
-| `static/js/dashboard.js` | Alpine: `liveClock()` + `counter()` animasiya |
-| `static/js/charts.js` | ApexCharts gəlir/dərs qrafiki (`#revenue-chart`) |
-| `static/js/bookings.js` | Alpine: `bookingCalendar()` — Calendly UI |
-| `static/js/auth.js` | Alpine: `pricingCalc()` — 25 AZN x həftəlik dərs |
-| `static/js/courses.js` | Alpine: `courseForm()` — şəkil drag-drop önizləmə |
-| `static/js/support.js` | Chat məsaj scroll avtomatizasiyası |
-
-> Django template dəyişənləri (`calendar_data`, `csrf_token` və s.) `data-*` atributları ilə JS-ə ötürülür.
+> Django template variables (`calendar_data`, `csrf_token`, etc.) are passed to JavaScript via `data-*` attributes on container elements, keeping templates and scripts cleanly separated.
 
 ---
 
@@ -299,7 +285,7 @@ Bütün inline `<script>` blokları ayrı modul fayllarına çıxarılıb (`stat
 
 ---
 
-## 🔜 TODO
+## 🔜 Remaining TODO
 
 - [ ] Complete HTML email templates (SendGrid/Mailgun)
 - [ ] SMS notifications (Twilio integration)
