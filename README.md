@@ -27,7 +27,7 @@ Reminders:    Celery tasks — 24 hours and 1 hour before each lesson
 | Database       | PostgreSQL 15+                                    |
 | Cache / Queue  | Redis 7+ · Celery 5.4.0 · Celery Beat             |
 | Real-time      | Django Channels 4.1 + WebSocket (Daphne)          |
-| Frontend       | Bootstrap 5.3 · HTMX · Alpine.js                 |
+| Frontend       | Tailwind CSS 3 · HTMX · Alpine.js                |
 | Auth           | django-allauth · JWT · django-otp (2FA)           |
 | Storage        | DigitalOcean Spaces (S3-compatible, boto3)        |
 | Payment        | ePoint payment gateway                            |
@@ -162,7 +162,7 @@ Reminders:    Celery tasks — 24 hours and 1 hour before each lesson
 - [x] Revenue calculation — completed payments for current month
 - [x] Overdue payment counter
 - [x] Next 5 upcoming lessons
-- [x] 6-month monthly revenue trend (Chart.js JSON data)
+- [x] 6-month monthly revenue trend (ApexCharts JSON data)
 - [x] 6-month monthly booking trend
 - [ ] Excel/PDF export — TODO
 
@@ -236,11 +236,47 @@ lms_platform/
 │   └── assessments/        ✅ Assessment & grading
 ├── config/                 ✅ Django settings
 ├── core/                   ✅ Utilities, mixins, permissions
-├── templates/              ✅ Bootstrap 5 + HTMX templates
-├── static/                 ✅ CSS/JS assets
+├── templates/              ✅ Tailwind CSS + HTMX templates
+├── static/                 ✅ CSS (Tailwind output) + JS modular files
 ├── locale/                 ✅ az/en/ru translations
 └── tests/                  ✅ pytest-django tests
 ```
+
+---
+
+## 🧩 Frontend JS Module Structure
+
+Bütün inline `<script>` blokları ayrı modul fayllarına çıxarılıb (`static/js/`):
+
+| Fayl | Məzmun |
+|------|--------|
+| `static/js/notifications.js` | WebSocket real-time bildiriş sistemi |
+| `static/js/dashboard.js` | Alpine: `liveClock()` + `counter()` animasiya |
+| `static/js/charts.js` | ApexCharts gəlir/dərs qrafiki (`#revenue-chart`) |
+| `static/js/bookings.js` | Alpine: `bookingCalendar()` — Calendly UI |
+| `static/js/auth.js` | Alpine: `pricingCalc()` — 25 AZN × həftəlik dərs |
+| `static/js/courses.js` | Alpine: `courseForm()` — şəkil drag-drop önizləmə |
+| `static/js/support.js` | Chat mesaj scroll avtomatizasiyası |
+
+> Django template dəyişənləri (`calendar_data`, `csrf_token` və s.) `data-*` atributları ilə JS-ə ötürülür.
+
+---
+
+## 🧩 Frontend JS Module Structure
+
+Bütün inline `<script>` blokları ayrı modul fayllarına çıxarılıb (`static/js/`):
+
+| Fayl | Məzmun |
+|------|--------|
+| `static/js/notifications.js` | WebSocket real-time bildiriş sistemi |
+| `static/js/dashboard.js` | Alpine: `liveClock()` + `counter()` animasiya |
+| `static/js/charts.js` | ApexCharts gəlir/dərs qrafiki (`#revenue-chart`) |
+| `static/js/bookings.js` | Alpine: `bookingCalendar()` — Calendly UI |
+| `static/js/auth.js` | Alpine: `pricingCalc()` — 25 AZN x həftəlik dərs |
+| `static/js/courses.js` | Alpine: `courseForm()` — şəkil drag-drop önizləmə |
+| `static/js/support.js` | Chat məsaj scroll avtomatizasiyası |
+
+> Django template dəyişənləri (`calendar_data`, `csrf_token` və s.) `data-*` atributları ilə JS-ə ötürülür.
 
 ---
 
@@ -319,4 +355,4 @@ monthly_price = lessons_per_week * 4 * 25
 ---
 
 *LMS Platform — Django 5.0+ | PostgreSQL | Redis | Celery | HTMX | Alpine.js*  
-*AI Model: Claude Sonnet 4.6 | Last updated: 06.05.2026*
+*AI Model: Claude Sonnet 4.6 | Last updated: 08.05.2026*
