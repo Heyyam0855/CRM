@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LMS Tətbiq</string>
+
+    <!-- Auth -->
+    <string name="login_title">Daxil ol</string>
+    <string name="email_hint">E-poçt ünvanı</string>
+    <string name="password_hint">Şifrə</string>
+    <string name="login_button">Daxil ol</string>
+    <string name="register_button">Qeydiyyat</string>
+    <string name="forgot_password">Şifrəni unutdum</string>
+
+    <!-- Dashboard -->
+    <string name="next_lesson">Növbəti dərs</string>
+    <string name="my_lessons">Dərslərim</string>
+    <string name="payment_status">Ödəniş statusu</string>
+
+    <!-- Bookings -->
+    <string name="book_lesson">Dərs sifariş et</string>
+    <string name="cancel_booking">Ləğv et</string>
+    <string name="lesson_price">25 AZN</string>
+    <string name="booking_confirmed">Dərs təsdiqləndi</string>
+    <string name="booking_cancelled">Dərs ləğv edildi</string>
+
+    <!-- Payments -->
+    <string name="payment_monthly">Aylıq abunə</string>
+    <string name="payment_per_lesson">Dərs əsaslı</string>
+    <string name="pay_now">İndi ödə</string>
+    <string name="payment_history">Ödəniş tarixi</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Ana səhifə</string>
+    <string name="nav_lessons">Dərslər</string>
+    <string name="nav_courses">Kurslar</string>
+    <string name="nav_notifications">Bildirişlər</string>
+    <string name="nav_profile">Profil</string>
+
+    <!-- Common -->
+    <string name="loading">Yüklənir...</string>
+    <string name="error_network">Şəbəkə xətası. Yenidən cəhd edin.</string>
+    <string name="error_unknown">Bilinməyən xəta baş verdi.</string>
+    <string name="retry">Yenidən cəhd et</string>
+    <string name="cancel">Ləğv et</string>
+    <string name="confirm">Təsdiq et</string>
+    <string name="save">Saxla</string>
+    <string name="back">Geri</string>
+</resources>
+
