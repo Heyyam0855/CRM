@@ -1,0 +1,25 @@
+# Android Studio
+*.iml
+.gradle/
+/local.properties
+/.idea/
+.DS_Store
+/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+
+# App build outputs
+app/build/
+
+# Keystore faylları (təhlükəsizlik)
+*.jks
+*.keystore
+
+# Google Services (Firebase) — öz faylını əlavə et
+google-services.json
+
+# Environment
+.env
+local.properties
+
