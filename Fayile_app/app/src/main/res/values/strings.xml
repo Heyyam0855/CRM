@@ -35,6 +35,20 @@
     <string name="nav_notifications">Bildirişlər</string>
     <string name="nav_profile">Profil</string>
 
+    <!-- Profile -->
+    <string name="logout">Çıxış</string>
+    <string name="profile_title">Profilim</string>
+
+    <!-- Courses -->
+    <string name="courses_title">Kurslar</string>
+    <string name="no_courses">Hələ kurs yoxdur</string>
+
+    <!-- Bookings -->
+    <string name="book_new">+ Yeni dərs</string>
+    <string name="no_bookings">Hələ rezervasiya yoxdur</string>
+    <string name="confirm_booking">Dərsi Təsdiqlə</string>
+    <string name="selected_slot">Seçilmiş slot</string>
+
     <!-- Common -->
     <string name="loading">Yüklənir...</string>
     <string name="error_network">Şəbəkə xətası. Yenidən cəhd edin.</string>
